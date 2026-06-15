@@ -1,13 +1,14 @@
 ---
 import { social, site } from '../data/site';
 import T from './T.astro';
+import { link } from '../lib/link';
 ---
 
 <footer class="site-foot">
   <div class="wrap">
     <div class="foot-cta">
       <T as="p" class="foot-cta-line" k="footer.cta" />
-      <a class="foot-cta-link" href="/contacto">
+      <a class="foot-cta-link" href={link('/contacto')}>
         <T k="footer.cta.link" />
         <span aria-hidden="true">→</span>
       </a>

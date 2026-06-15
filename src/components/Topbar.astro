@@ -1,9 +1,10 @@
 ---
 import { site } from '../data/site';
+import { link } from '../lib/link';
 ---
 
 <header class="topbar">
-  <a class="wordmark" href="/">{site.name}</a>
+  <a class="wordmark" href={link('/')}>{site.name}</a>
 
   <div class="topbar-right">
     <button class="lang" data-lang-btn type="button" aria-label="Cambiar idioma · Switch language">

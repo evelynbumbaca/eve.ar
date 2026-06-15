@@ -76,3 +76,31 @@ export const projects: Project[] = [
   { id: 'fundacion-rio', cat: 'branding', year: '2023', title: 'Fundación Río', disc: { es: 'Identidad de Marca', en: 'Brand Identity' }, ratio: '4 / 5' },
   { id: 'tipo-festival', cat: 'art', year: '2023', title: 'Tipo Festival', disc: { es: 'Campaña · Dirección de Arte', en: 'Campaign · Art Direction' }, ratio: '4 / 5' },
 ];
+
+/* ---------- contenido de caso (placeholder, bilingue) ---------- */
+export const caseSample = {
+  role: { es: 'Identidad · Dirección de Arte · Diseño Web', en: 'Identity · Art Direction · Web Design' },
+  intro: {
+    es: 'Una identidad construida sobre el contraste entre lo artesanal y lo sistemático. El proyecto buscaba traducir una energía local en un sistema visual flexible, capaz de vivir tanto en lo impreso como en pantalla.',
+    en: 'An identity built on the contrast between the handmade and the systematic. The project set out to translate a local energy into a flexible visual system, able to live across print and screen alike.',
+  },
+  objetivo: {
+    label: { es: 'Objetivo', en: 'Objective' },
+    es: 'Unificar una marca dispersa en una voz coherente, sin perder el carácter espontáneo que la hacía reconocible.',
+    en: 'Unify a fragmented brand into one coherent voice, without losing the spontaneous character that made it recognizable.',
+  },
+  solucion: {
+    label: { es: 'Solución', en: 'Solution' },
+    es: 'Un sistema modular de tipografía y color, anclado en una grilla flexible que permite componer piezas rápidas con la misma lógica estructural.',
+    en: 'A modular system of type and color, anchored in a flexible grid that lets pieces be composed quickly with the same structural logic.',
+  },
+  quote: {
+    es: 'El diseño no decora: ordena, amplifica y vuelve memorable.',
+    en: "Design doesn't decorate — it orders, amplifies, and makes memorable.",
+  },
+  sections: [
+    { es: 'Sistema tipográfico', en: 'Type system' },
+    { es: 'Paleta y materiales', en: 'Palette & materials' },
+    { es: 'Aplicaciones', en: 'Applications' },
+  ],
+};

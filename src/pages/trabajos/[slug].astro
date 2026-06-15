@@ -1,0 +1,162 @@
+---
+import Base from '../../layouts/Base.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import T from '../../components/T.astro';
+import { projects, caseSample as C } from '../../data/site';
+import { link } from '../../lib/link';
+
+export function getStaticPaths() {
+  return projects.map((p, i) => ({
+    params: { slug: p.id },
+    props: { project: p, next: projects[(i + 1) % projects.length] },
+  }));
+}
+
+const { project: P, next: NEXT } = Astro.props;
+---
+
+<Base title={`${P.title} — EVE`} description={`${P.title} — caso de estudio. ${P.disc.es}.`}>
+  <article class="case">
+    <header class="c-hero wrap">
+      <div class="c-kicker rise">
+        <span data-es={P.disc.es} data-en={P.disc.en}>{P.disc.es}</span>
+        <span class="dot">/</span>
+        <span>{P.year}</span>
+        <span class="dot">/</span>
+        <span>Buenos Aires</span>
+      </div>
+      <h1 class="c-title reveal"><span class="revfill">{P.title}</span></h1>
+    </header>
+
+    <div class="wrap">
+      <div class="c-hero-img reveal"><span class="ph revfill" data-label={`${P.title} — hero`}></span></div>
+    </div>
+
+    <div class="wrap">
+      <dl class="c-meta">
+        <div><dt><T es="Cliente" en="Client" /></dt><dd>{P.title}</dd></div>
+        <div>
+          <dt><T es="Servicios" en="Services" /></dt>
+          <dd><span data-es={P.disc.es} data-en={P.disc.en}>{P.disc.es}</span></dd>
+        </div>
+        <div><dt><T es="Año" en="Year" /></dt><dd>{P.year}</dd></div>
+        <div>
+          <dt><T es="Rol" en="Role" /></dt>
+          <dd><span data-es={C.role.es} data-en={C.role.en}>{C.role.es}</span></dd>
+        </div>
+      </dl>
+    </div>
+
+    <div class="c-body wrap">
+      <p class="c-intro rise"><span data-es={C.intro.es} data-en={C.intro.en}>{C.intro.es}</span></p>
+
+      <div class="c-os">
+        <div class="os-box objetivo rise">
+          <h4><span data-es={C.objetivo.label.es} data-en={C.objetivo.label.en}>{C.objetivo.label.es}</span></h4>
+          <p><span data-es={C.objetivo.es} data-en={C.objetivo.en}>{C.objetivo.es}</span></p>
+        </div>
+        <div class="os-box solucion rise">
+          <h4><span data-es={C.solucion.label.es} data-en={C.solucion.label.en}>{C.solucion.label.es}</span></h4>
+          <p><span data-es={C.solucion.es} data-en={C.solucion.en}>{C.solucion.es}</span></p>
+        </div>
+      </div>
+
+      {C.sections.map((s, i) => (
+        <figure class={`c-figure ${i === 1 ? 'tall' : ''}`}>
+          <div class="frame reveal"><span class="ph revfill" data-label={s.es}></span></div>
+          <figcaption>
+            <span data-es={s.es} data-en={s.en}>{s.es}</span>
+            <span class="mono">FIG {String(i + 1).padStart(2, '0')}</span>
+          </figcaption>
+        </figure>
+      ))}
+
+      <blockquote class="c-quote rise">
+        <span data-es={`“${C.quote.es}”`} data-en={`“${C.quote.en}”`}>“{C.quote.es}”</span>
+      </blockquote>
+    </div>
+
+    <div class="wrap">
+      <div class="c-next">
+        <span class="lab"><T es="Siguiente proyecto" en="Next project" /></span>
+        <a href={link(`/trabajos/${NEXT.id}`)}>{NEXT.title} <span aria-hidden="true">→</span></a>
+      </div>
+    </div>
+  </article>
+
+  <SiteFooter />
+</Base>
+
+<style>
+  .case { padding-bottom: clamp(40px, 8vh, 96px); }
+
+  .c-hero { padding-block: clamp(120px, 18vh, 200px) clamp(26px, 4vh, 44px); max-width: 980px; }
+  .c-kicker {
+    display: flex; gap: 14px;
+    font-family: var(--sans); font-size: 12px; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--ink-60); margin-bottom: 16px;
+  }
+  .c-kicker .dot { color: var(--ink-35); }
+  .c-title {
+    font-family: var(--serif); font-weight: 400;
+    font-size: clamp(2.4rem, 7vw, 5.5rem); line-height: 1.0; letter-spacing: -0.02em;
+  }
+  .c-title .revfill { display: block; }
+
+  .c-hero-img { margin-top: clamp(20px, 3vh, 36px); width: 100%; aspect-ratio: 16 / 9; border-radius: 3px; }
+  .c-hero-img .ph { width: 100%; height: 100%; }
+
+  .c-meta {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;
+    padding: clamp(22px, 3vh, 34px) 0;
+    border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+    margin-top: clamp(26px, 4vh, 44px);
+  }
+  .c-meta dt { font-family: var(--sans); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-60); margin-bottom: 7px; }
+  .c-meta dd { font-family: var(--serif); font-size: clamp(15px, 1.3vw, 18px); line-height: 1.3; }
+
+  .c-body { max-width: 980px; }
+  .c-intro {
+    font-family: var(--serif); font-weight: 300;
+    font-size: clamp(20px, 2.5vw, 30px); line-height: 1.32; letter-spacing: -0.01em;
+    max-width: 24ch; margin: clamp(34px, 5vh, 60px) 0 0;
+  }
+
+  .c-os { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(16px, 2vw, 26px); margin-top: clamp(34px, 5vh, 56px); }
+  .os-box { border: 1px solid var(--ink); border-radius: 3px; padding: clamp(20px, 2vw, 30px); }
+  .os-box h4 {
+    font-family: var(--sans); font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--ink); margin-bottom: 13px; display: flex; align-items: center; gap: 9px;
+  }
+  .os-box h4::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--ink); }
+  .os-box.solucion h4::before { background: transparent; box-shadow: inset 0 0 0 1.5px var(--ink); }
+  .os-box p { font-family: var(--serif); font-size: clamp(16px, 1.5vw, 20px); line-height: 1.4; }
+
+  .c-figure { margin-top: clamp(40px, 7vh, 90px); }
+  .c-figure .frame { width: 100%; aspect-ratio: 3 / 2; border-radius: 3px; }
+  .c-figure.tall .frame { aspect-ratio: 4 / 5; max-width: 620px; margin: 0 auto; }
+  .c-figure .ph { width: 100%; height: 100%; }
+  .c-figure figcaption {
+    font-family: var(--sans); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--ink-60); margin-top: 13px; display: flex; justify-content: space-between;
+  }
+
+  .c-quote {
+    font-family: var(--serif); font-weight: 300; font-style: italic;
+    font-size: clamp(26px, 4vw, 48px); line-height: 1.16; letter-spacing: -0.015em;
+    text-wrap: balance; padding: clamp(50px, 9vh, 110px) 0; max-width: 20ch; margin: 0 auto; text-align: center;
+  }
+
+  .c-next {
+    display: flex; align-items: baseline; justify-content: space-between; gap: 20px;
+    border-top: 1px solid var(--ink); padding-top: 24px; margin-top: clamp(30px, 5vh, 60px);
+  }
+  .c-next .lab { font-family: var(--sans); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-60); }
+  .c-next a { font-family: var(--serif); font-size: clamp(26px, 4.4vw, 56px); line-height: 1; letter-spacing: -0.015em; transition: opacity 0.25s var(--ease); }
+  .c-next a:hover { opacity: 0.55; }
+
+  @media (max-width: 860px) {
+    .c-meta { grid-template-columns: 1fr 1fr; gap: 18px 24px; }
+    .c-os { grid-template-columns: 1fr; }
+  }
+</style>

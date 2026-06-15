@@ -1,5 +1,6 @@
 ---
 import type { Project } from '../data/site';
+import { link } from '../lib/link';
 
 interface Props {
   project: Project;
@@ -7,7 +8,7 @@ interface Props {
 const { project: p } = Astro.props;
 ---
 
-<a class="card" href={`/trabajos/${p.id}`} data-cat={p.cat}>
+<a class="card" href={link(`/trabajos/${p.id}`)} data-cat={p.cat}>
   <div class="card-frame reveal" style={`aspect-ratio:${p.ratio}`}>
     <span class="card-img ph revfill" data-label={`${p.title} — cover`}></span>
   </div>

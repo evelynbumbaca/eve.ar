@@ -1,12 +1,13 @@
 ---
 import { nav, site } from '../data/site';
 import T from './T.astro';
+import { link } from '../lib/link';
 ---
 
 <div class="overlay" id="overlay">
   <nav aria-label="Principal">
     {nav.map((n) => (
-      <a href={n.href} data-es={n.es} data-en={n.en}>{n.es}</a>
+      <a href={link(n.href)} data-es={n.es} data-en={n.en}>{n.es}</a>
     ))}
   </nav>
 

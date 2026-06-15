@@ -1,0 +1,42 @@
+---
+import Base from '../layouts/Base.astro';
+import T from '../components/T.astro';
+import { link } from '../lib/link';
+---
+
+<Base title="404 — EVE">
+  <section class="nf">
+    <div class="wrap">
+      <p class="nf-code mono cap">Error 404</p>
+      <h1 class="nf-title"><T es="Esta página no existe." en="This page doesn't exist." /></h1>
+      <a class="nf-back" href={link('/')}>
+        <span aria-hidden="true">←</span>
+        <T es="Volver al inicio" en="Back home" />
+      </a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .nf { min-height: 80svh; display: flex; align-items: center; }
+  .nf-code { color: var(--ink-60); margin-bottom: 18px; }
+  .nf-title {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: var(--fs-h1);
+    line-height: 1.0;
+    letter-spacing: -0.02em;
+    max-width: 16ch;
+  }
+  .nf-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: clamp(28px, 4vh, 44px);
+    font-family: var(--sans);
+    font-size: var(--fs-small);
+    letter-spacing: 0.04em;
+    transition: opacity 0.2s var(--ease);
+  }
+  .nf-back:hover { opacity: 0.6; }
+</style>
