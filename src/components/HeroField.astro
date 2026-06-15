@@ -1,0 +1,203 @@
+---
+/* ============================================================
+   HeroField — campo interactivo de portadas sobre blanco.
+   Derivan solas (auto-drift) + parallax con el cursor + arrastrable
+   con inercia + click entra al proyecto. Loop infinito (tile 3x3).
+   Las .ph son placeholders; se reemplazan por las portadas reales.
+   ============================================================ */
+import { projects } from '../data/site';
+import { link } from '../lib/link';
+
+const TILE = { w: 1600, h: 1100 };
+
+// Posiciones dispersas dentro de un tile (px). ar = aspecto W/H, p = indice de proyecto.
+const placements = [
+  { x: 60, y: 70, w: 250, ar: '4/5', p: 0 },
+  { x: 410, y: 30, w: 300, ar: '3/2', p: 1 },
+  { x: 800, y: 110, w: 200, ar: '4/5', p: 2 },
+  { x: 1080, y: 50, w: 280, ar: '1/1', p: 3 },
+  { x: 1390, y: 150, w: 175, ar: '3/4', p: 4 },
+  { x: 170, y: 440, w: 300, ar: '4/3', p: 5 },
+  { x: 580, y: 470, w: 230, ar: '4/5', p: 6 },
+  { x: 930, y: 430, w: 260, ar: '3/2', p: 7 },
+  { x: 1280, y: 520, w: 220, ar: '4/5', p: 0 },
+  { x: 90, y: 830, w: 220, ar: '1/1', p: 1 },
+  { x: 450, y: 850, w: 280, ar: '3/4', p: 2 },
+  { x: 850, y: 820, w: 240, ar: '4/5', p: 3 },
+  { x: 1200, y: 870, w: 250, ar: '4/3', p: 4 },
+];
+
+const tiles = [];
+for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) tiles.push({ ox: i * TILE.w, oy: j * TILE.h });
+---
+
+<section class="field" data-field aria-label="Proyectos">
+  <div class="field-parallax" data-parallax>
+    <div class="field-world" data-world data-tw={TILE.w} data-th={TILE.h}>
+      {tiles.map((t) => (
+        <div class="tile" style={`transform:translate(${t.ox}px,${t.oy}px)`}>
+          {placements.map((pl) => {
+            const proj = projects[pl.p % projects.length];
+            return (
+              <a
+                class="fcard"
+                href={link(`/trabajos/${proj.id}`)}
+                style={`left:${pl.x}px;top:${pl.y}px;width:${pl.w}px;aspect-ratio:${pl.ar}`}
+                data-title={proj.title}
+                draggable="false"
+              >
+                <span class="fcard-img ph" data-label={proj.title}></span>
+              </a>
+            );
+          })}
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <p class="field-hint" aria-hidden="true">
+    <span data-es="Arrastrá · clic para entrar" data-en="Drag · click to open">Arrastrá · clic para entrar</span>
+  </p>
+</section>
+
+<style>
+  .field {
+    position: relative;
+    width: 100%;
+    height: 100svh;
+    min-height: 560px;
+    background: #fff;
+    overflow: hidden;
+    cursor: grab;
+    touch-action: pan-y;
+    user-select: none;
+  }
+  .field.is-dragging { cursor: grabbing; }
+
+  .field-parallax,
+  .field-world { position: absolute; inset: 0; will-change: transform; }
+
+  .tile { position: absolute; top: 0; left: 0; width: 1600px; height: 1100px; }
+
+  .fcard {
+    position: absolute;
+    display: block;
+    border-radius: 2px;
+    overflow: hidden;
+    box-shadow: 0 6px 22px rgba(22, 21, 15, 0.06);
+    transition: transform 0.4s var(--ease), box-shadow 0.4s var(--ease);
+    -webkit-user-drag: none;
+  }
+  .fcard-img { display: block; width: 100%; height: 100%; }
+  .field:not(.is-dragging) .fcard:hover {
+    transform: scale(1.05);
+    box-shadow: 0 22px 60px rgba(22, 21, 15, 0.20);
+    z-index: 6;
+  }
+
+  .field-hint {
+    position: absolute;
+    left: 50%;
+    bottom: clamp(20px, 4vh, 40px);
+    transform: translateX(-50%);
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-35);
+    pointer-events: none;
+    animation: hintpulse 3.2s var(--ease) infinite;
+  }
+  @keyframes hintpulse { 0%, 100% { opacity: 0.45; } 50% { opacity: 0.9; } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .field-hint { animation: none; }
+  }
+</style>
+
+<script>
+  const field = document.querySelector('[data-field]') as HTMLElement | null;
+  const world = document.querySelector('[data-world]') as HTMLElement | null;
+  const para = document.querySelector('[data-parallax]') as HTMLElement | null;
+
+  if (field && world && para) {
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const TW = parseFloat(world.dataset.tw || '1600');
+    const TH = parseFloat(world.dataset.th || '1100');
+
+    // posicion del mundo (se envuelve modulo tile -> loop infinito)
+    let offX = -TW * 0.5;
+    let offY = -TH * 0.4;
+    // deriva automatica (lenta, diagonal)
+    const driftX = reduce ? 0 : -0.22;
+    const driftY = reduce ? 0 : -0.12;
+    // inercia del arrastre
+    let velX = 0, velY = 0;
+    // parallax del cursor
+    let tPX = 0, tPY = 0, cPX = 0, cPY = 0;
+    const PARA = 0.03;
+
+    let cx = innerWidth / 2, cy = innerHeight / 2;
+    const setCenter = () => { cx = innerWidth / 2; cy = innerHeight / 2; };
+    addEventListener('resize', setCenter, { passive: true });
+
+    let dragging = false, moved = false;
+    let startX = 0, startY = 0, lastX = 0, lastY = 0;
+
+    field.addEventListener('pointerdown', (e) => {
+      dragging = true; moved = false;
+      startX = lastX = e.clientX; startY = lastY = e.clientY;
+      velX = velY = 0;
+      field.classList.add('is-dragging');
+      try { field.setPointerCapture(e.pointerId); } catch {}
+    });
+
+    field.addEventListener('pointermove', (e) => {
+      if (e.pointerType === 'mouse' && !reduce) {
+        tPX = (e.clientX - cx) * -PARA;
+        tPY = (e.clientY - cy) * -PARA;
+      }
+      if (!dragging) return;
+      const dx = e.clientX - lastX, dy = e.clientY - lastY;
+      offX += dx; offY += dy;
+      velX = dx; velY = dy;
+      if (Math.abs(e.clientX - startX) + Math.abs(e.clientY - startY) > 6) moved = true;
+      lastX = e.clientX; lastY = e.clientY;
+    });
+
+    const end = (e: PointerEvent) => {
+      if (!dragging) return;
+      dragging = false;
+      field.classList.remove('is-dragging');
+      try { field.releasePointerCapture(e.pointerId); } catch {}
+    };
+    field.addEventListener('pointerup', end);
+    field.addEventListener('pointercancel', end);
+    field.addEventListener('pointerleave', () => { if (dragging) { dragging = false; field.classList.remove('is-dragging'); } });
+
+    // si hubo arrastre, no navegar al soltar
+    field.addEventListener('click', (e) => {
+      if (moved) { e.preventDefault(); e.stopPropagation(); moved = false; }
+    }, true);
+
+    const wrap = (v: number, size: number) => (((v % size) + size) % size) - size;
+
+    let raf = 0;
+    const frame = () => {
+      velX *= 0.94; velY *= 0.94;
+      offX += driftX + velX;
+      offY += driftY + velY;
+      cPX += (tPX - cPX) * 0.06;
+      cPY += (tPY - cPY) * 0.06;
+      world.style.transform = `translate3d(${wrap(offX, TW)}px, ${wrap(offY, TH)}px, 0)`;
+      para.style.transform = `translate3d(${cPX}px, ${cPY}px, 0)`;
+      raf = requestAnimationFrame(frame);
+    };
+    raf = requestAnimationFrame(frame);
+
+    document.addEventListener('visibilitychange', () => {
+      cancelAnimationFrame(raf);
+      if (!document.hidden) raf = requestAnimationFrame(frame);
+    });
+  }
+</script>
