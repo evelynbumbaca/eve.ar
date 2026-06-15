@@ -1,14 +1,13 @@
 ---
 /* ============================================================
-   HeroField — campo 3D de portadas con camara (dolly).
-   · Mucho aire en Z: capas de profundidad bien separadas.
-   · Deriva orientada por el cursor + parallax de perspective-origin
-     (mirar dentro del espacio 3D, "circularidad").
-   · Hover: la CAMARA hace dolly hacia la portada -> se centra y
-     amplia; el fondo tambien se acerca (en menor medida) y se desliza
-     con la circularidad (efecto iman). Ease-in-out.
-   · Hit-testing propio sobre lo que se ve (con hold-radius, sin
-     oscilacion). Las .ph son placeholders.
+   HeroField — campo 3D de portadas, zoom calmo guiado por el cursor.
+   · Mucho aire en Z (capas de profundidad) + deriva suave (enjambre).
+   · Cuando el cursor SE DETIENE, la escena hace un zoom (lean-in) con
+     origen EN el cursor: esa seccion se agranda y el cursor queda
+     dentro de la portada (clickeable). No zoomea mientras te movés
+     (no marea). Todo con smooth-damp (ease-in-out).
+   · Hit-testing propio para hover (cursor) y click.
+   Las .ph son placeholders -> luego las portadas reales.
    ============================================================ */
 import { projects } from '../data/site';
 import { link } from '../lib/link';
@@ -28,7 +27,7 @@ const N = 22;
 const cards = Array.from({ length: N }, (_, i) => ({
   bxf: rnd() * 2 - 1,
   byf: rnd() * 2 - 1,
-  bz: Math.round(-1500 + rnd() * 1650), // mucho mas aire en Z [-1500, 150]
+  bz: Math.round(-1500 + rnd() * 1650),
   w: 160 + Math.round(rnd() * 140),
   ar: ratios[Math.floor(rnd() * ratios.length)],
   p: i % projects.length,
@@ -75,7 +74,7 @@ const cards = Array.from({ length: N }, (_, i) => ({
     cursor: default;
   }
   .field.over-card { cursor: pointer; }
-  .stage { position: absolute; inset: 0; transform-style: preserve-3d; }
+  .stage { position: absolute; inset: 0; transform-style: preserve-3d; will-change: transform; }
 
   .fcard {
     position: absolute;
@@ -85,13 +84,9 @@ const cards = Array.from({ length: N }, (_, i) => ({
     overflow: hidden;
     transform-origin: center center;
     will-change: transform;
-    transition: opacity 0.6s var(--ease);
     -webkit-user-drag: none;
   }
   .fcard-img { display: block; width: 100%; height: 100%; }
-
-  /* el fondo acompana, apenas atenuado */
-  .field.has-focus .fcard:not(.is-focus) { opacity: 0.5; }
 
   .field-hint {
     position: absolute;
@@ -108,27 +103,22 @@ const cards = Array.from({ length: N }, (_, i) => ({
 
 <script>
   const field = document.querySelector('[data-field]') as HTMLElement | null;
+  const stage = document.querySelector('[data-stage]') as HTMLElement | null;
 
-  if (field) {
+  if (field && stage) {
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
     const still = location.hash === '#freeze';
     const animate = !reduce && !still;
 
     const P = 750;
-    const MAXV = 1.7;
-    const DOLLY = 240;       // cuanto se acerca toda la escena al enfocar
-    const FRONT = 250;       // z de la portada enfocada
-    const EMPH = 1.45;       // escala extra de la enfocada
-    const DUR = 0.5;         // ease-in-out del foco
-    const HOLD = 44;         // radio para sostener el foco (anti-oscilacion)
+    const ZOOM = 0.16;  // cuanto agranda al frenar (lean-in) — ya 30% mas bajo
+    const SPD = 600;    // px/s: por encima -> "moviendose" (sin zoom)
 
     type Card = {
       el: HTMLElement; bxf: number; byf: number; bz: number;
       fa: number; fs: number; ph: number; w: number; h: number;
-      fp: number; aX: number; aY: number; aZ: number; vz: number;
-      rl: number; rr: number; rt: number; rb: number;
+      hs: number; vz: number; rl: number; rr: number; rt: number; rb: number;
     };
-
     const cards: Card[] = Array.from(field.querySelectorAll<HTMLElement>('.fcard')).map((el) => ({
       el,
       bxf: parseFloat(el.dataset.bxf || '0'), byf: parseFloat(el.dataset.byf || '0'),
@@ -136,7 +126,7 @@ const cards = Array.from({ length: N }, (_, i) => ({
       fa: parseFloat(el.dataset.fa || '20'), fs: parseFloat(el.dataset.fs || '0.4'),
       ph: parseFloat(el.dataset.ph || '0'),
       w: el.offsetWidth, h: el.offsetHeight,
-      fp: 0, aX: 0, aY: 0, aZ: 0, vz: 0, rl: 0, rr: 0, rt: 0, rb: 0,
+      hs: 1, vz: 0, rl: 0, rr: 0, rt: 0, rb: 0,
     }));
 
     let cw = field.clientWidth, ch = field.clientHeight;
@@ -152,16 +142,8 @@ const cards = Array.from({ length: N }, (_, i) => ({
     field.addEventListener('pointermove', (e) => { const r = field.getBoundingClientRect(); px = e.clientX - r.left; py = e.clientY - r.top; inside = true; });
     field.addEventListener('pointerleave', () => { inside = false; });
 
-    let focus: Card | null = null, holdX = 0, holdY = 0;
-    const setFocus = (c: Card | null) => {
-      if (focus === c) return;
-      if (focus) focus.el.classList.remove('is-focus');
-      focus = c; holdX = px; holdY = py;
-      field.classList.toggle('has-focus', !!c);
-      field.classList.toggle('over-card', !!c);
-      if (c) c.el.classList.add('is-focus');
-    };
-
+    // hit-test sobre los rects de perspectiva (el zoom 2D con origen en el
+    // cursor preserva la contencion, asi que esto sigue siendo valido)
     const hitAt = (x: number, y: number) => {
       let hit: Card | null = null, hz = -1e9;
       for (const c of cards) if (x >= c.rl && x <= c.rr && y >= c.rt && y <= c.rb && c.vz > hz) { hz = c.vz; hit = c; }
@@ -175,12 +157,23 @@ const cards = Array.from({ length: N }, (_, i) => ({
 
     const wrap = (v: number, r: number) => (((v + r) % (2 * r)) + 2 * r) % (2 * r) - r;
     const clamp = (v: number, a: number, b: number) => (v < a ? a : v > b ? b : v);
-    const se = (x: number) => { x = clamp(x, 0, 1); return x * x * x * (x * (x * 6 - 15) + 10); };
-    const lerp = (a: number, b: number, e: number) => a + (b - a) * e;
 
-    let offX = 0, offY = 0, vx = 0, vy = 0;
-    let ox = 0, oy = 0, gf = 0;
-    let camX = 0, camY = 0, camZ = 0; // camara (dolly+pan), suavizada
+    type SD = { v: number; vel: number };
+    const smoothDamp = (s: SD, target: number, smoothTime: number, dt: number) => {
+      const omega = 2 / Math.max(0.0001, smoothTime);
+      const x = omega * dt;
+      const exp = 1 / (1 + x + 0.48 * x * x + 0.235 * x * x * x);
+      const change = s.v - target;
+      const temp = (s.vel + omega * change) * dt;
+      s.vel = (s.vel - omega * temp) * exp;
+      s.v = target + (change + temp) * exp;
+      return s.v;
+    };
+
+    let offX = 0, offY = 0;
+    const eng: SD = { v: 0, vel: 0 }, zoom: SD = { v: 0, vel: 0 };
+    let ozx = cw / 2, ozy = ch / 2; // origen del zoom (cursor, suavizado solo cuando se mueve)
+    let lpx = -1, lpy = -1;
     const t0 = performance.now();
     let last = t0, raf = 0;
 
@@ -188,61 +181,41 @@ const cards = Array.from({ length: N }, (_, i) => ({
       const t = (now - t0) / 1000;
       const dt = Math.min(0.05, (now - last) / 1000); last = now;
 
-      // 1) foco por hit-test (rects del frame anterior) + hold-radius
-      if (!inside) setFocus(null);
-      else if (focus) { if (Math.hypot(px - holdX, py - holdY) > HOLD) setFocus(hitAt(px, py)); }
-      else setFocus(hitAt(px, py));
+      // engagement = quietud del cursor (1 = frenado, 0 = moviendose)
+      let speed = 0;
+      if (inside && lpx >= 0) speed = Math.hypot(px - lpx, py - lpy) / Math.max(dt, 0.001);
+      lpx = px; lpy = py;
+      const engT = inside && !reduce ? clamp(1 - speed / SPD, 0, 1) : 0;
+      smoothDamp(eng, engT, 0.14, dt);
+      smoothDamp(zoom, ZOOM * eng.v, 0.32, dt); // ease-in-out
 
-      gf += clamp((focus ? 1 : 0) - gf, -dt / DUR, dt / DUR);
-      const gE = se(gf);
+      // el origen del zoom sigue al cursor; cuando esta casi quieto, fijo
+      if (inside) { ozx += (px - ozx) * (0.25 + 0.6 * eng.v); ozy += (py - ozy) * (0.25 + 0.6 * eng.v); }
+      const s = 1 + zoom.v;
+      stage.style.transformOrigin = `${ozx.toFixed(1)}px ${ozy.toFixed(1)}px`;
+      stage.style.transform = `scale(${s.toFixed(4)})`;
 
-      // 2) perspective-origin sigue al cursor (circularidad); recentra al enfocar
-      const tox = inside && animate ? ((px - cw / 2) / (cw / 2)) * 0.12 * (1 - gE) : 0;
-      const toy = inside && animate ? ((py - ch / 2) / (ch / 2)) * 0.10 * (1 - gE) : 0;
-      ox += (tox - ox) * 0.06; oy += (toy - oy) * 0.06;
-      const Ox = cw * (0.5 + ox), Oy = ch * (0.48 + oy);
-      field.style.perspectiveOrigin = `${((0.5 + ox) * 100).toFixed(2)}% ${((0.48 + oy) * 100).toFixed(2)}%`;
+      // deriva suave (enjambre)
+      if (animate) { offX += -0.28; offY += -0.16; }
 
-      // 3) deriva orientada por el cursor (se ralentiza al enfocar)
-      let tvx = 0, tvy = 0;
-      if (animate) {
-        if (inside) { tvx = ((px - cw / 2) / (cw / 2)) * MAXV; tvy = ((py - ch / 2) / (ch / 2)) * MAXV; }
-        else { tvx = -0.5; tvy = -0.28; }
-      }
-      vx += (tvx - vx) * 0.05; vy += (tvy - vy) * 0.05;
-      const slow = 1 - 0.82 * gE;
-      offX += vx * slow; offY += vy * slow;
+      const hov = inside ? hitAt(px, py) : null;
+      field.classList.toggle('over-card', !!hov);
 
-      // pass A: posicion ambiente
+      const Ox = cw * 0.5, Oy = ch * 0.48;
       for (const c of cards) {
-        c.aX = wrap(c.bxf * XR + offX + Math.sin(t * c.fs + c.ph) * c.fa * (animate ? 1 : 0), XR);
-        c.aY = wrap(c.byf * YR + offY + Math.sin(t * c.fs * 0.8 + c.ph) * c.fa * (animate ? 1 : 0), YR);
-        c.aZ = c.bz + Math.sin(t * c.fs * 0.6 + c.ph) * c.fa * 0.5 * (animate ? 1 : 0);
-      }
-
-      // 4) camara: dolly hacia adelante + pan para centrar la enfocada
-      const camXt = focus ? -focus.aX : 0;
-      const camYt = focus ? -focus.aY : 0;
-      const camZt = focus ? DOLLY : 0;
-      camX += (camXt - camX) * 0.09;
-      camY += (camYt - camY) * 0.09;
-      camZ += (camZt - camZ) * 0.09;
-
-      // pass B: visual (camara para todos; la enfocada va al frente/centro) + rects
-      for (const c of cards) {
-        c.fp += clamp((focus === c ? 1 : 0) - c.fp, -dt / DUR, dt / DUR);
-        const e = se(c.fp);
-        // escena con camara (dolly+pan): el fondo tambien se acerca y se desliza
-        const sx = c.aX + camX, sy = c.aY + camY, sz = c.aZ + camZ;
-        // mezcla hacia el estado enfocado (centro exacto, frente fijo, enfasis)
-        const X = lerp(sx, 0, e), Y = lerp(sy, 0, e), Z = lerp(sz, FRONT, e), S = lerp(1, EMPH, e);
-        c.vz = Z;
-        const tx = cw / 2 + X - c.w / 2, ty = ch / 2 + Y - c.h / 2;
-        c.el.style.transform = `translate3d(${tx.toFixed(1)}px, ${ty.toFixed(1)}px, ${Z.toFixed(1)}px) scale(${S.toFixed(3)})`;
-        // rect proyectado (para hit-test del proximo frame)
-        const f = P / (P - Z);
-        const pcx = Ox + (cw / 2 + X - Ox) * f, pcy = Oy + (ch / 2 + Y - Oy) * f;
-        const hw = (c.w * S * f) / 2, hh = (c.h * S * f) / 2;
+        const aX = wrap(c.bxf * XR + offX + Math.sin(t * c.fs + c.ph) * c.fa * (animate ? 1 : 0), XR);
+        const aY = wrap(c.byf * YR + offY + Math.sin(t * c.fs * 0.8 + c.ph) * c.fa * (animate ? 1 : 0), YR);
+        const aZ = c.bz + Math.sin(t * c.fs * 0.6 + c.ph) * c.fa * 0.5 * (animate ? 1 : 0);
+        c.hs += (((c === hov) ? 1.05 : 1) - c.hs) * 0.16;
+        const S = c.hs;
+        c.vz = aZ;
+        const tx = cw / 2 + aX - c.w / 2, ty = ch / 2 + aY - c.h / 2;
+        c.el.style.transform = `translate3d(${tx.toFixed(1)}px, ${ty.toFixed(1)}px, ${aZ.toFixed(1)}px) scale(${S.toFixed(3)})`;
+        // rect proyectado, luego escalado 2D respecto del origen del zoom
+        const f = P / (P - aZ);
+        let pcx = Ox + (cw / 2 + aX - Ox) * f, pcy = Oy + (ch / 2 + aY - Oy) * f;
+        let hw = (c.w * S * f) / 2, hh = (c.h * S * f) / 2;
+        pcx = ozx + (pcx - ozx) * s; pcy = ozy + (pcy - ozy) * s; hw *= s; hh *= s;
         c.rl = pcx - hw; c.rr = pcx + hw; c.rt = pcy - hh; c.rb = pcy + hh;
       }
       raf = requestAnimationFrame(frame);
