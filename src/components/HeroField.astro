@@ -1,58 +1,83 @@
 ---
 /* ============================================================
-   HeroField — campo interactivo de portadas sobre blanco.
-   Derivan solas (auto-drift) + parallax con el cursor + arrastrable
-   con inercia + click entra al proyecto. Loop infinito (tile 3x3).
-   Las .ph son placeholders; se reemplazan por las portadas reales.
+   HeroField — campo cinematográfico de portadas sobre blanco.
+   · 3 capas de profundidad (parallax 3D): derivan a distinta
+     velocidad y reaccionan distinto al cursor.
+   · Hover: la portada se agranda y las demás se atenúan.
+   · Al salir el mouse: parallax a neutro + zoom-out (se ve más).
+   · Arrastrable con inercia. Click entra al proyecto. Loop 3x3.
+   Las .ph son placeholders -> luego las portadas reales.
    ============================================================ */
 import { projects } from '../data/site';
 import { link } from '../lib/link';
 
 const TILE = { w: 1600, h: 1100 };
 
-// Posiciones dispersas dentro de un tile (px). ar = aspecto W/H, p = indice de proyecto.
-const placements = [
-  { x: 60, y: 70, w: 250, ar: '4/5', p: 0 },
-  { x: 410, y: 30, w: 300, ar: '3/2', p: 1 },
-  { x: 800, y: 110, w: 200, ar: '4/5', p: 2 },
-  { x: 1080, y: 50, w: 280, ar: '1/1', p: 3 },
-  { x: 1390, y: 150, w: 175, ar: '3/4', p: 4 },
-  { x: 170, y: 440, w: 300, ar: '4/3', p: 5 },
-  { x: 580, y: 470, w: 230, ar: '4/5', p: 6 },
-  { x: 930, y: 430, w: 260, ar: '3/2', p: 7 },
-  { x: 1280, y: 520, w: 220, ar: '4/5', p: 0 },
-  { x: 90, y: 830, w: 220, ar: '1/1', p: 1 },
-  { x: 450, y: 850, w: 280, ar: '3/4', p: 2 },
-  { x: 850, y: 820, w: 240, ar: '4/5', p: 3 },
-  { x: 1200, y: 870, w: 250, ar: '4/3', p: 4 },
+type Item = { x: number; y: number; w: number; ar: string; p: number };
+
+// dk = factor de deriva/arrastre · pk = factor de parallax del cursor
+const layers: { name: string; dk: number; pk: number; items: Item[] }[] = [
+  {
+    name: 'back', dk: 0.68, pk: 0.30,
+    items: [
+      { x: 120, y: 120, w: 165, ar: '4/5', p: 0 },
+      { x: 720, y: 70, w: 200, ar: '3/2', p: 1 },
+      { x: 1200, y: 210, w: 160, ar: '4/5', p: 2 },
+      { x: 470, y: 660, w: 175, ar: '1/1', p: 3 },
+      { x: 1320, y: 760, w: 165, ar: '3/4', p: 5 },
+    ],
+  },
+  {
+    name: 'mid', dk: 0.86, pk: 0.62,
+    items: [
+      { x: 300, y: 250, w: 250, ar: '4/5', p: 4 },
+      { x: 980, y: 300, w: 280, ar: '3/2', p: 6 },
+      { x: 130, y: 770, w: 240, ar: '4/3', p: 7 },
+      { x: 800, y: 820, w: 230, ar: '4/5', p: 0 },
+      { x: 1290, y: 520, w: 240, ar: '1/1', p: 2 },
+    ],
+  },
+  {
+    name: 'front', dk: 1.08, pk: 1.0,
+    items: [
+      { x: 520, y: 110, w: 340, ar: '3/2', p: 1 },
+      { x: 1060, y: 650, w: 360, ar: '4/5', p: 3 },
+      { x: 110, y: 420, w: 320, ar: '4/3', p: 6 },
+      { x: 770, y: 480, w: 300, ar: '4/5', p: 5 },
+    ],
+  },
 ];
 
-const tiles = [];
-for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) tiles.push({ ox: i * TILE.w, oy: j * TILE.h });
+const grid = [];
+for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) grid.push({ ox: i * TILE.w, oy: j * TILE.h });
 ---
 
 <section class="field" data-field aria-label="Proyectos">
-  <div class="field-parallax" data-parallax>
-    <div class="field-world" data-world data-tw={TILE.w} data-th={TILE.h}>
-      {tiles.map((t) => (
-        <div class="tile" style={`transform:translate(${t.ox}px,${t.oy}px)`}>
-          {placements.map((pl) => {
-            const proj = projects[pl.p % projects.length];
-            return (
-              <a
-                class="fcard"
-                href={link(`/trabajos/${proj.id}`)}
-                style={`left:${pl.x}px;top:${pl.y}px;width:${pl.w}px;aspect-ratio:${pl.ar}`}
-                data-title={proj.title}
-                draggable="false"
-              >
-                <span class="fcard-img ph" data-label={proj.title}></span>
-              </a>
-            );
-          })}
+  <div class="field-zoom" data-zoom>
+    {layers.map((L) => (
+      <div class={`layer layer-${L.name}`} data-layer data-pk={L.pk} data-dk={L.dk}>
+        <div class="world" data-world data-tw={TILE.w} data-th={TILE.h}>
+          {grid.map((t) => (
+            <div class="tile" style={`transform:translate(${t.ox}px,${t.oy}px)`}>
+              {L.items.map((pl) => {
+                const proj = projects[pl.p % projects.length];
+                return (
+                  <a
+                    class="fcard"
+                    href={link(`/trabajos/${proj.id}`)}
+                    style={`left:${pl.x}px;top:${pl.y}px;width:${pl.w}px;aspect-ratio:${pl.ar}`}
+                    data-title={proj.title}
+                    draggable="false"
+                  >
+                    <span class="fcard-img ph" data-label={proj.title}></span>
+                  </a>
+                );
+              })}
+            </div>
+          ))}
         </div>
-      ))}
-    </div>
+      </div>
+    ))}
   </div>
 
   <p class="field-hint" aria-hidden="true">
@@ -74,9 +99,10 @@ for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) tiles.push({ ox: i * TIL
   }
   .field.is-dragging { cursor: grabbing; }
 
-  .field-parallax,
-  .field-world { position: absolute; inset: 0; will-change: transform; }
-
+  .field-zoom { position: absolute; inset: 0; transform-origin: center center; will-change: transform; }
+  .layer { position: absolute; inset: 0; will-change: transform; }
+  .layer-back { opacity: 0.86; }
+  .world { position: absolute; inset: 0; will-change: transform; }
   .tile { position: absolute; top: 0; left: 0; width: 1600px; height: 1100px; }
 
   .fcard {
@@ -84,15 +110,19 @@ for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) tiles.push({ ox: i * TIL
     display: block;
     border-radius: 2px;
     overflow: hidden;
-    box-shadow: 0 6px 22px rgba(22, 21, 15, 0.06);
-    transition: transform 0.4s var(--ease), box-shadow 0.4s var(--ease);
+    box-shadow: 0 6px 22px rgba(22, 21, 15, 0.07);
+    transition: transform 0.5s var(--ease-out), box-shadow 0.5s var(--ease), opacity 0.45s var(--ease);
     -webkit-user-drag: none;
   }
   .fcard-img { display: block; width: 100%; height: 100%; }
+
+  /* Hover cinematográfico: la portada bajo el cursor se agranda,
+     las demás se atenúan (quedan secundarias). */
+  .field-zoom:has(.fcard:hover) .fcard:not(:hover) { opacity: 0.3; }
   .field:not(.is-dragging) .fcard:hover {
-    transform: scale(1.05);
-    box-shadow: 0 22px 60px rgba(22, 21, 15, 0.20);
-    z-index: 6;
+    transform: scale(1.22);
+    z-index: 50;
+    box-shadow: 0 34px 90px rgba(22, 21, 15, 0.30);
   }
 
   .field-hint {
@@ -108,34 +138,47 @@ for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) tiles.push({ ox: i * TIL
     pointer-events: none;
     animation: hintpulse 3.2s var(--ease) infinite;
   }
-  @keyframes hintpulse { 0%, 100% { opacity: 0.45; } 50% { opacity: 0.9; } }
+  @keyframes hintpulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 0.85; } }
 
   @media (prefers-reduced-motion: reduce) {
     .field-hint { animation: none; }
+    .fcard { transition: opacity 0.3s var(--ease); }
   }
 </style>
 
 <script>
   const field = document.querySelector('[data-field]') as HTMLElement | null;
-  const world = document.querySelector('[data-world]') as HTMLElement | null;
-  const para = document.querySelector('[data-parallax]') as HTMLElement | null;
+  const zoomEl = document.querySelector('[data-zoom]') as HTMLElement | null;
 
-  if (field && world && para) {
+  if (field && zoomEl) {
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const TW = parseFloat(world.dataset.tw || '1600');
-    const TH = parseFloat(world.dataset.th || '1100');
+
+    const layers = Array.from(field.querySelectorAll<HTMLElement>('[data-layer]')).map((el) => {
+      const world = el.querySelector<HTMLElement>('[data-world]')!;
+      return {
+        layer: el,
+        world,
+        pk: parseFloat(el.dataset.pk || '1'),
+        dk: parseFloat(el.dataset.dk || '1'),
+        tw: parseFloat(world.dataset.tw || '1600'),
+        th: parseFloat(world.dataset.th || '1100'),
+      };
+    });
 
     // posicion del mundo (se envuelve modulo tile -> loop infinito)
-    let offX = -TW * 0.5;
-    let offY = -TH * 0.4;
-    // deriva automatica (lenta, diagonal)
-    const driftX = reduce ? 0 : -0.22;
-    const driftY = reduce ? 0 : -0.12;
+    let offX = -800, offY = -440;
+    // deriva automatica (un poco mas rapida)
+    const driftX = reduce ? 0 : -0.36;
+    const driftY = reduce ? 0 : -0.2;
     // inercia del arrastre
     let velX = 0, velY = 0;
-    // parallax del cursor
+    // parallax del cursor (objetivo / actual)
     let tPX = 0, tPY = 0, cPX = 0, cPY = 0;
-    const PARA = 0.03;
+    const PARA = 0.05;
+    // zoom (respiro): afuera = mas chico (se ve mas), adentro = inmersivo
+    const REST = 0.82, ACTIVE = 1.06;
+    let zoom = REST, tZoom = REST;
+    let engaged = false;
 
     let cx = innerWidth / 2, cy = innerHeight / 2;
     const setCenter = () => { cx = innerWidth / 2; cy = innerHeight / 2; };
@@ -153,9 +196,10 @@ for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) tiles.push({ ox: i * TIL
     });
 
     field.addEventListener('pointermove', (e) => {
-      if (e.pointerType === 'mouse' && !reduce) {
-        tPX = (e.clientX - cx) * -PARA;
-        tPY = (e.clientY - cy) * -PARA;
+      if (e.pointerType === 'mouse') {
+        engaged = true;
+        if (!reduce) { tPX = (e.clientX - cx) * -PARA; tPY = (e.clientY - cy) * -PARA; }
+        tZoom = ACTIVE;
       }
       if (!dragging) return;
       const dx = e.clientX - lastX, dy = e.clientY - lastY;
@@ -173,24 +217,38 @@ for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) tiles.push({ ox: i * TIL
     };
     field.addEventListener('pointerup', end);
     field.addEventListener('pointercancel', end);
-    field.addEventListener('pointerleave', () => { if (dragging) { dragging = false; field.classList.remove('is-dragging'); } });
+
+    // al salir el mouse: parallax a neutro + zoom-out (se ve la mayoria)
+    field.addEventListener('pointerleave', (e) => {
+      if (dragging) { dragging = false; field.classList.remove('is-dragging'); }
+      if ((e as PointerEvent).pointerType !== 'touch') {
+        engaged = false; tPX = 0; tPY = 0; tZoom = REST;
+      }
+    });
 
     // si hubo arrastre, no navegar al soltar
     field.addEventListener('click', (e) => {
       if (moved) { e.preventDefault(); e.stopPropagation(); moved = false; }
     }, true);
 
-    const wrap = (v: number, size: number) => (((v % size) + size) % size) - size;
+    const wrap = (v: number, s: number) => (((v % s) + s) % s) - s;
 
     let raf = 0;
     const frame = () => {
       velX *= 0.94; velY *= 0.94;
       offX += driftX + velX;
       offY += driftY + velY;
-      cPX += (tPX - cPX) * 0.06;
-      cPY += (tPY - cPY) * 0.06;
-      world.style.transform = `translate3d(${wrap(offX, TW)}px, ${wrap(offY, TH)}px, 0)`;
-      para.style.transform = `translate3d(${cPX}px, ${cPY}px, 0)`;
+      cPX += (tPX - cPX) * 0.07;
+      cPY += (tPY - cPY) * 0.07;
+      zoom += (tZoom - zoom) * 0.05;
+
+      zoomEl.style.transform = `scale(${zoom.toFixed(4)})`;
+      for (const L of layers) {
+        L.world.style.transform =
+          `translate3d(${wrap(offX * L.dk, L.tw).toFixed(2)}px, ${wrap(offY * L.dk, L.th).toFixed(2)}px, 0)`;
+        L.layer.style.transform =
+          `translate3d(${(cPX * L.pk).toFixed(2)}px, ${(cPY * L.pk).toFixed(2)}px, 0)`;
+      }
       raf = requestAnimationFrame(frame);
     };
     raf = requestAnimationFrame(frame);
