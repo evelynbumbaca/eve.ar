@@ -1,0 +1,108 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import T from '../components/T.astro';
+import { projects, filters } from '../data/site';
+---
+
+<Base>
+  <Hero />
+
+  <section class="home-intro">
+    <div class="wrap">
+      <T as="p" class="lede rise" k="home.intro" />
+    </div>
+  </section>
+
+  <section id="trabajos" class="work">
+    <div class="wrap">
+      <header class="work-head">
+        <T as="span" class="work-kicker mono cap" k="home.work.kicker" />
+        <div class="filters" role="group" aria-label="Filtros">
+          {filters.map((f, i) => (
+            <button
+              class:list={['chip', { 'is-on': i === 0 }]}
+              data-filter={f.key}
+              data-es={f.label.es}
+              data-en={f.label.en}
+              type="button"
+            >{f.label.es}</button>
+          ))}
+        </div>
+      </header>
+
+      <div class="grid">
+        {projects.map((p) => <ProjectCard project={p} />)}
+      </div>
+    </div>
+  </section>
+
+  <SiteFooter />
+</Base>
+
+<style>
+  .home-intro { padding-top: clamp(40px, 7vh, 96px); }
+  .lede {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: var(--fs-lead);
+    line-height: 1.34;
+    letter-spacing: -0.01em;
+    max-width: 30ch;
+  }
+
+  .work { padding-top: var(--section); }
+  .work-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 18px 24px;
+    margin-bottom: clamp(26px, 4vh, 44px);
+  }
+  .work-kicker { color: var(--ink-60); }
+
+  .filters { display: flex; flex-wrap: wrap; gap: 9px; }
+  .chip {
+    font-family: var(--sans);
+    font-size: clamp(13px, 1vw, 15px);
+    padding: 7px 15px;
+    border: 1px solid var(--ink);
+    border-radius: 40px;
+    color: var(--ink);
+    transition: background 0.25s var(--ease), color 0.25s var(--ease);
+  }
+  .chip:hover { background: var(--ink-12); }
+  .chip.is-on { background: var(--ink); color: var(--paper); }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(20px, 2.4vw, 38px) clamp(16px, 1.8vw, 26px);
+  }
+
+  @media (max-width: 680px) {
+    .grid { grid-template-columns: repeat(2, 1fr); }
+    .lede { font-size: clamp(1.4rem, 6vw, 2rem); max-width: none; }
+  }
+  @media (max-width: 420px) {
+    .grid { grid-template-columns: 1fr 1fr; gap: 18px 12px; }
+  }
+</style>
+
+<script>
+  const chips = Array.from(document.querySelectorAll<HTMLButtonElement>('.chip'));
+  const cards = Array.from(document.querySelectorAll<HTMLElement>('.card'));
+  chips.forEach((chip) => {
+    chip.addEventListener('click', () => {
+      const f = chip.dataset.filter;
+      chips.forEach((c) => c.classList.toggle('is-on', c === chip));
+      cards.forEach((card) => {
+        const show = f === 'all' || card.dataset.cat === f;
+        card.classList.toggle('is-hidden', !show);
+      });
+    });
+  });
+</script>

@@ -1,54 +1,70 @@
 # eve.ar — Portfolio de Eve
 
 Sitio portfolio de **Eve**, Diseñadora Multimedia & UX/UI radicada en Buenos Aires, Argentina.
-Editorial, bilingüe (ES/EN) y pensado para ser profesional, atractivo e impactante.
+Editorial, bilingüe (ES/EN), minimalista en blanco y negro. Construido con **Astro** y pensado
+para desplegarse en **Cloudflare Pages** con dominio propio `eve.ar`.
 
-> Punto de partida exportado desde **Claude Design**. Desde acá lo profundizamos:
-> más personalidad y narrativa, secciones nuevas (Estudio, Contacto, Tienda → Gumroad),
-> un hero animado de impacto, y deploy en **Cloudflare Pages** con dominio propio `eve.ar`.
+## Stack
+
+- **[Astro](https://astro.build)** — sitio 100% estático (sin JS de framework en runtime).
+- CSS propio con *design tokens* (sin frameworks de estilo).
+- Bilingüe ES/EN con intercambio en vivo (sin recargar).
+- Animaciones: hero generativo en `<canvas>` + *reveal* por máscara al hacer scroll.
 
 ## Estructura
 
 ```
-index.html              Home — intro + grilla de proyectos (estilo Verena Michelitsch)
-case.html               Caso de estudio — 3 variantes de layout (editorial / split / margin)
-assets/
-  data.js               Contenido bilingüe (bio, filtros, nav, proyectos, caso de muestra)
-  chrome.js             Barra superior + menú overlay full-screen (estilo Made Thought)
-  home.js               Render de la home (grilla + filtros + idioma)
-  case.js               Render del caso (layouts + idioma)
-  reveal.js             Animaciones de aparición al hacer scroll
-  styles.css            Tokens de diseño + chrome + animaciones (compartido)
-  home.css              Layout de la home
-  case.css              Layout de los casos
-  tweaks*.{jsx,css}     Panel de exploración de Claude Design (paleta/tipografía/ritmo) — solo dev
-design-process/         Capturas del proceso y referencias (Verena, Made Thought, Gossamer)
+src/
+  pages/
+    index.astro          Home — hero animado + intro + grilla de trabajos
+  layouts/
+    Base.astro           HTML base, fuentes, y lógica de cliente (idioma, menú, reveal)
+  components/
+    Topbar.astro         Barra superior (logo · ES/EN · menú)
+    MenuOverlay.astro     Menú overlay full-screen (estilo Made Thought)
+    Hero.astro           Hero: flow-field de tinta en canvas + título cinético
+    ProjectCard.astro    Tarjeta de proyecto
+    SiteFooter.astro     Footer editorial con CTA
+    T.astro              Helper de texto bilingüe (<T k="..." /> o <T es=".." en=".." />)
+  data/
+    site.ts              Datos: navegación, filtros, proyectos, redes, contacto
+  i18n/
+    ui.ts                Microcopy de interfaz (ES/EN)
+  styles/
+    tokens.css           Variables de diseño (paleta, tipografía, escala, ritmo)
+    global.css           Reset, base y utilidades compartidas
+design-process/          Capturas, referencias y la versión vanilla original (legacy-vanilla/)
 ```
-
-## Lenguaje visual
-
-- Minimalismo editorial B/N: papel cálido `#faf9f5` + tinta `#16150f`
-- Serif **Spectral** para títulos · grotesca para UI · monoespaciada para metadatos
-- Bilingüe ES/EN · animaciones de reveal · menú overlay tipográfico
-- Referencias: **Verena Michelitsch** (grilla), **Made Thought** (tipografía/menú), **Gossamer** (color)
 
 ## Correr localmente
 
-Es un sitio estático, sin paso de build. Serví la carpeta con cualquier servidor:
-
 ```bash
-python3 -m http.server 8000
-# o bien
-npx serve .
+npm install        # una sola vez
+npm run dev        # servidor de desarrollo -> http://localhost:4321
+npm run build      # compila a /dist
+npm run preview    # previsualiza /dist
 ```
 
-Abrí http://localhost:8000
+## Despliegue (Cloudflare Pages)
+
+- Build command: `npm run build`
+- Output directory: `dist`
+- Node version: 18+ (recomendado 22)
+- `/dist` no se versiona (lo regenera Cloudflare en cada push).
+
+## Lenguaje visual
+
+- Papel cálido `#faf9f5` + tinta `#16150f`. Serif **Spectral** protagonista; grotesca para UI; mono para metadatos.
+- Referencias: Verena Michelitsch (grilla), Made Thought (tipografía/menú).
 
 ## Roadmap
 
-- [ ] Hero animado de impacto en el inicio
-- [ ] Sección **Estudio** (sobre mí + metodología)
-- [ ] **Contacto** interactivo + tradicional
-- [ ] **Tienda** → Gumroad (productos digitales)
-- [ ] Profundizar identidad visual y narrativa
+- [x] Base Astro + sistema de diseño en tokens
+- [x] Home: hero animado (canvas) + grilla de trabajos + footer
+- [x] Bilingüe ES/EN en vivo
+- [ ] Página **Estudio** (sobre mí + metodología)
+- [ ] Página **Contacto** (interactivo + tradicional)
+- [ ] Página **Tienda** → Gumroad
+- [ ] Páginas de **caso** `/trabajos/[slug]`
+- [ ] Cargar trabajos reales (reemplazar placeholders)
 - [ ] Deploy en Cloudflare Pages + dominio `eve.ar`

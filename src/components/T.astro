@@ -1,0 +1,33 @@
+---
+/* ============================================================
+   <T /> — texto bilingue que se intercambia en vivo.
+   Uso:
+     <T k="hero.sub" />                 (clave del diccionario ui.ts)
+     <T es="Hola" en="Hi" />            (texto inline)
+     <T as="h1" k="hero.title.1" />     (etiqueta custom)
+   ============================================================ */
+import { ui, DEFAULT_LANG } from '../i18n/ui';
+
+interface Props {
+  k?: string;
+  es?: string;
+  en?: string;
+  as?: keyof HTMLElementTagNameMap;
+  class?: string;
+}
+
+const { k, es, en, as = 'span', class: className } = Astro.props;
+
+let esText = es ?? '';
+let enText = en ?? '';
+if (k) {
+  esText = ui.es[k] ?? k;
+  enText = ui.en[k] ?? k;
+}
+
+const Tag = as as any;
+const attrs = k
+  ? { 'data-i18n': k }
+  : { 'data-es': esText, 'data-en': enText };
+---
+<Tag class={className} {...attrs}>{esText}</Tag>

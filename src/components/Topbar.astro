@@ -1,0 +1,82 @@
+---
+import { site } from '../data/site';
+---
+
+<header class="topbar">
+  <a class="wordmark" href="/">{site.name}</a>
+
+  <div class="topbar-right">
+    <button class="lang" data-lang-btn type="button" aria-label="Cambiar idioma · Switch language">
+      <b data-lang-opt="es" class="on">ES</b>
+      <span>/</span>
+      <b data-lang-opt="en">EN</b>
+    </button>
+
+    <button class="burger" data-menu-toggle type="button" aria-label="Abrir menú · Open menu">
+      <i></i><i></i><i></i>
+    </button>
+  </div>
+</header>
+
+<style>
+  .topbar {
+    position: fixed;
+    inset: 0 0 auto 0;
+    z-index: var(--z-chrome);
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: clamp(16px, 2.4vw, 28px) var(--pad);
+    mix-blend-mode: difference;
+    pointer-events: none;
+  }
+  .topbar a,
+  .topbar button { pointer-events: auto; }
+
+  .wordmark {
+    font-family: var(--sans);
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-size: 13px;
+    color: #fff; /* difference -> legible sobre cualquier fondo */
+  }
+
+  .topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+  }
+
+  .lang {
+    display: flex;
+    align-items: center;
+    font-family: var(--sans);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    color: #fff;
+  }
+  .lang b { font-weight: 500; opacity: 0.4; transition: opacity 0.25s var(--ease); }
+  .lang b.on { opacity: 1; }
+  .lang span { opacity: 0.4; padding: 0 6px; }
+
+  .burger {
+    width: 30px;
+    height: 18px;
+    position: relative;
+  }
+  .burger i {
+    position: absolute;
+    left: 0; right: 0;
+    height: 1.5px;
+    background: #fff;
+    transition: transform 0.45s var(--ease), opacity 0.3s;
+  }
+  .burger i:nth-child(1) { top: 0; }
+  .burger i:nth-child(2) { top: 50%; transform: translateY(-50%); }
+  .burger i:nth-child(3) { bottom: 0; }
+
+  :global(body.menu-open) .burger i:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+  :global(body.menu-open) .burger i:nth-child(2) { opacity: 0; }
+  :global(body.menu-open) .burger i:nth-child(3) { transform: translateY(-8.5px) rotate(-45deg); }
+</style>

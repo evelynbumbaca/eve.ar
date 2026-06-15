@@ -1,0 +1,126 @@
+---
+import '../styles/global.css';
+import Topbar from '../components/Topbar.astro';
+import MenuOverlay from '../components/MenuOverlay.astro';
+import { ui } from '../i18n/ui';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'EVE — Multimedia & UX/UI Designer · Buenos Aires',
+  description = 'Eve, Diseñadora Multimedia & UX/UI radicada en Buenos Aires. Identidad, editorial, UX/UI y dirección de arte.',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#faf9f5" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&display=swap"
+      rel="stylesheet"
+    />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:locale" content="es_AR" />
+  </head>
+  <body>
+    <Topbar />
+    <MenuOverlay />
+
+    <main id="top">
+      <slot />
+    </main>
+
+    <!-- Logica de cliente: idioma en vivo, menu, reveal on scroll -->
+    <script is:inline define:vars={{ ui }}>
+      (function () {
+        /* ---------- idioma (ES/EN en vivo) ---------- */
+        const KEY = 'eve-lang';
+        let lang = localStorage.getItem(KEY) || 'es';
+
+        function swap(el, l) {
+          if (el.hasAttribute('data-i18n')) {
+            const v = (ui[l] || {})[el.getAttribute('data-i18n')];
+            if (v != null) el.textContent = v;
+          } else {
+            const v = el.getAttribute('data-' + l);
+            if (v != null) el.textContent = v;
+          }
+        }
+        function applyLang(l) {
+          document.documentElement.lang = l;
+          document.querySelectorAll('[data-i18n],[data-es]').forEach((el) => swap(el, l));
+          document.querySelectorAll('[data-lang-opt]').forEach((s) => {
+            s.classList.toggle('on', s.getAttribute('data-lang-opt') === l);
+          });
+        }
+        window.__eveSetLang = (l) => {
+          lang = l;
+          localStorage.setItem(KEY, l);
+          applyLang(l);
+        };
+        applyLang(lang);
+
+        /* ---------- menu overlay ---------- */
+        const closeMenu = () => document.body.classList.remove('menu-open');
+
+        document.addEventListener('click', (e) => {
+          if (e.target.closest('[data-lang-btn]')) {
+            window.__eveSetLang(lang === 'es' ? 'en' : 'es');
+            return;
+          }
+          if (e.target.closest('[data-menu-toggle]')) {
+            document.body.classList.toggle('menu-open');
+            return;
+          }
+          if (e.target.closest('.overlay nav a')) closeMenu();
+        });
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape') closeMenu();
+        });
+
+        /* ---------- reveal on scroll ---------- */
+        const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+        function reveal() {
+          const vh = innerHeight;
+          document.querySelectorAll('.reveal, .rise').forEach((el) => {
+            if (el.classList.contains('in')) return;
+            const r = el.getBoundingClientRect();
+            if (r.top < vh * 0.9 && r.bottom > 0) el.classList.add('in');
+          });
+        }
+        if (reduce) {
+          document.querySelectorAll('.reveal, .rise').forEach((el) => el.classList.add('in'));
+        } else {
+          reveal();
+          requestAnimationFrame(reveal);
+          let tick = false;
+          addEventListener('scroll', () => {
+            if (!tick) {
+              tick = true;
+              requestAnimationFrame(() => {
+                reveal();
+                tick = false;
+              });
+            }
+          }, { passive: true });
+          addEventListener('resize', reveal, { passive: true });
+          setTimeout(() => document.querySelectorAll('.reveal, .rise').forEach((el) => el.classList.add('in')), 3500);
+        }
+      })();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,96 @@
+---
+import { social, site } from '../data/site';
+import T from './T.astro';
+---
+
+<footer class="site-foot">
+  <div class="wrap">
+    <div class="foot-cta">
+      <T as="p" class="foot-cta-line" k="footer.cta" />
+      <a class="foot-cta-link" href="/contacto">
+        <T k="footer.cta.link" />
+        <span aria-hidden="true">→</span>
+      </a>
+    </div>
+
+    <div class="foot-grid">
+      <span class="mono cap"><T k="footer.work" /></span>
+      <nav class="foot-social" aria-label="Redes">
+        {social.map((s) => (
+          <a href={s.href} target="_blank" rel="noopener noreferrer">{s.label}</a>
+        ))}
+      </nav>
+    </div>
+
+    <div class="foot-base">
+      <span>© {new Date().getFullYear()} {site.name} — {site.domain}</span>
+      <span><T k="footer.rights" /></span>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-foot {
+    border-top: 1px solid var(--line);
+    margin-top: var(--section);
+    padding-block: clamp(48px, 8vh, 96px) clamp(28px, 4vh, 44px);
+  }
+
+  .foot-cta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px 32px;
+    padding-bottom: clamp(40px, 7vh, 80px);
+  }
+  .foot-cta-line {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: var(--fs-h2);
+    letter-spacing: -0.015em;
+    color: var(--ink-60);
+  }
+  .foot-cta-link {
+    font-family: var(--serif);
+    font-size: var(--fs-h2);
+    letter-spacing: -0.015em;
+    display: inline-flex;
+    gap: 14px;
+    align-items: baseline;
+    transition: opacity 0.25s var(--ease);
+  }
+  .foot-cta-link span { transition: transform 0.3s var(--ease); display: inline-block; }
+  .foot-cta-link:hover { opacity: 0.6; }
+  .foot-cta-link:hover span { transform: translateX(6px); }
+
+  .foot-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 16px 24px;
+    padding: 22px 0;
+    border-top: 1px solid var(--line);
+    color: var(--ink-60);
+  }
+  .foot-social { display: flex; flex-wrap: wrap; gap: 18px; }
+  .foot-social a {
+    font-family: var(--sans);
+    font-size: var(--fs-small);
+    letter-spacing: 0.02em;
+    transition: opacity 0.2s var(--ease);
+  }
+  .foot-social a:hover { opacity: 0.55; }
+
+  .foot-base {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 8px 24px;
+    margin-top: clamp(40px, 7vh, 72px);
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    color: var(--ink-35);
+  }
+</style>

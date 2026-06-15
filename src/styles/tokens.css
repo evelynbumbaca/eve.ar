@@ -1,0 +1,52 @@
+/* ============================================================
+   eve.ar — Design tokens
+   B/N editorial: papel calido + tinta. Serif protagonista.
+   ============================================================ */
+
+:root {
+  /* ---------- paleta: papel + tinta ---------- */
+  --paper: #faf9f5;
+  --ink: #16150f;
+  --ink-80: rgba(22, 21, 15, 0.80);
+  --ink-60: rgba(22, 21, 15, 0.56);
+  --ink-45: rgba(22, 21, 15, 0.45);
+  --ink-35: rgba(22, 21, 15, 0.32);
+  --ink-18: rgba(22, 21, 15, 0.18);
+  --ink-12: rgba(22, 21, 15, 0.12);
+  --ink-06: rgba(22, 21, 15, 0.06);
+  --line: rgba(22, 21, 15, 0.18);
+
+  --bg: var(--paper);
+  --fg: var(--ink);
+  --accent: var(--ink);
+
+  /* ---------- tipografia ---------- */
+  --serif: 'Spectral', Georgia, 'Times New Roman', serif;
+  --sans: 'Neue Haas Grotesk', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --mono: 'SFMono-Regular', ui-monospace, 'SF Mono', 'Menlo', monospace;
+
+  /* escala tipografica fluida */
+  --fs-display: clamp(3.2rem, 11vw, 11rem);
+  --fs-h1: clamp(2.2rem, 6vw, 5rem);
+  --fs-h2: clamp(1.6rem, 3.6vw, 2.8rem);
+  --fs-h3: clamp(1.15rem, 1.6vw, 1.5rem);
+  --fs-lead: clamp(1.3rem, 2.6vw, 2.1rem);
+  --fs-body: 1rem;
+  --fs-small: 0.8125rem;
+  --fs-micro: 0.6875rem;
+
+  /* ---------- espaciado y ritmo ---------- */
+  --pad: clamp(20px, 4vw, 64px);
+  --gap: clamp(16px, 1.8vw, 26px);
+  --section: clamp(72px, 13vh, 168px);
+
+  /* ---------- movimiento ---------- */
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur: 0.6s;
+
+  /* ---------- layout ---------- */
+  --maxw: 1400px;
+  --z-overlay: 55;
+  --z-chrome: 60;
+}
