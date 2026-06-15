@@ -32,6 +32,7 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 
 /* ---------- placeholder (mientras no haya imagenes reales) ---------- */
 .ph {
+  display: block;
   position: relative;
   width: 100%;
   background:
@@ -54,6 +55,7 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 /* ---------- reveal on scroll ---------- */
 .reveal { overflow: hidden; }
 .reveal > .revfill {
+  display: block;
   transform: translateY(101%) scale(1.05);
   transition: transform 1.05s var(--ease);
   will-change: transform;
