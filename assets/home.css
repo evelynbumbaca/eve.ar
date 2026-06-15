@@ -1,0 +1,64 @@
+/* EVE — home layout */
+.home{padding:clamp(78px,11vh,118px) var(--pad) 0}
+
+.intro{margin-bottom:clamp(40px,7vh,86px)}
+.hero-anim{
+  width:100%;
+  aspect-ratio:16/9;
+}
+.filters{
+  display:flex;flex-wrap:wrap;gap:9px;
+  margin-top:clamp(18px,2.4vw,26px);
+}
+.chip{
+  font-family:var(--sans);font-size:clamp(13px,1vw,15px);
+  letter-spacing:.01em;
+  padding:7px 15px;border:1px solid var(--ink);border-radius:40px;
+  background:none;color:var(--ink);cursor:pointer;
+  transition:background .25s var(--ease),color .25s var(--ease);
+}
+.chip:hover{background:var(--ink-12)}
+.chip.is-on{background:var(--ink);color:var(--bg)}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:clamp(20px,2.4vw,38px) clamp(16px,1.8vw,26px);
+}
+.card{display:block}
+.card-frame{
+  border-radius:0;
+  width:100%;
+}
+.card-img{
+  width:100%;height:100%;
+  border-radius:0;
+  transition:opacity .4s var(--ease);
+}
+.card:hover .card-img{opacity:.82}
+.card-meta{padding-top:13px}
+.card-meta h3{
+  font-family:var(--serif);font-weight:400;
+  font-size:clamp(17px,1.45vw,21px);line-height:1.1;
+  letter-spacing:-.005em;
+}
+.card-meta p{
+  display:flex;justify-content:flex-start;gap:10px;
+  font-family:var(--sans);font-weight:400;font-size:10px;line-height:1;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ink-60);margin:3px 0 0;
+}
+.card-meta p span{color:var(--ink-35)}
+
+.home-foot{
+  display:flex;justify-content:space-between;
+  margin-top:clamp(48px,8vh,96px);
+  padding:22px 0;border-top:1px solid var(--line);
+  color:var(--ink-60);
+}
+
+@media(max-width:1024px){.grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:680px){
+  .grid{grid-template-columns:repeat(2,1fr)}
+  #lede{font-size:clamp(24px,7vw,34px)}
+}
+@media(max-width:420px){.grid{grid-template-columns:1fr 1fr;gap:18px 12px}}

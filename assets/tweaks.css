@@ -1,0 +1,183 @@
+/* ============================================================
+   EVE — Tweak layers
+   Three expressive levers, all driven by data-* on :root so they
+   survive home.js re-renders (lang / filter rebuild #app only).
+     data-palette : paper | gallery | noir   — the colour world
+     data-type    : editorial | swiss | mono  — the typographic voice
+     data-rhythm  : sparse | balanced | dense — the gallery cadence
+   ============================================================ */
+
+/* placeholder uses palette vars so it recolours with the mood */
+.ph{
+  background:
+    repeating-linear-gradient(135deg,
+      var(--ph-1, rgba(22,21,15,.06)) 0 10px,
+      transparent 10px 20px),
+    var(--ph-2, #e4e1d8);
+}
+
+/* smooth the mood/voice transitions */
+body{ transition:background .6s var(--ease), color .6s var(--ease); }
+.card-img, .ph, .chip, .card-meta h3{
+  transition:background .6s var(--ease), color .35s var(--ease),
+             aspect-ratio .5s var(--ease), letter-spacing .35s var(--ease);
+}
+
+/* ============================================================
+   1 · PALETTE — the colour world
+   ============================================================ */
+:root[data-palette="paper"]{
+  --bg:#faf9f5; --ink:#16150f;
+  --ink-60:rgba(22,21,15,.56); --ink-35:rgba(22,21,15,.32); --ink-12:rgba(22,21,15,.12);
+  --line:rgba(22,21,15,.18); --accent:#16150f;
+  --ph-1:rgba(22,21,15,.06); --ph-2:#e4e1d8;
+}
+:root[data-palette="gallery"]{
+  --bg:#ffffff; --ink:#0c0c0d;
+  --ink-60:rgba(12,12,13,.55); --ink-35:rgba(12,12,13,.30); --ink-12:rgba(12,12,13,.10);
+  --line:rgba(12,12,13,.20); --accent:#0c0c0d;
+  --ph-1:rgba(12,12,13,.09); --ph-2:#e9e8e4;
+}
+:root[data-palette="noir"]{
+  --bg:#14130d; --ink:#f4f2ea;
+  --ink-60:rgba(244,242,234,.60); --ink-35:rgba(244,242,234,.34); --ink-12:rgba(244,242,234,.12);
+  --line:rgba(244,242,234,.20); --accent:#f4f2ea;
+  --ph-1:rgba(244,242,234,.07); --ph-2:#26241b;
+}
+
+/* gallery reads as a white cube: give placeholder frames a hairline edge */
+:root[data-palette="gallery"] .ph{ box-shadow:inset 0 0 0 1px rgba(12,12,13,.10); }
+
+/* ============================================================
+   2 · TYPE VOICE — re-cast the whole typographic personality
+   ============================================================ */
+
+/* — Editorial (default): serif titles, quiet UI — */
+:root[data-type="editorial"] .card-meta h3{
+  font-family:var(--serif); font-weight:400;
+  text-transform:none; letter-spacing:-.005em; font-style:normal;
+}
+
+/* — Swiss: grotesk poster — sans titles, set tight, shouting caps — */
+:root[data-type="swiss"] .card-meta h3{
+  font-family:var(--sans); font-weight:700;
+  text-transform:uppercase; letter-spacing:-.02em; line-height:.98;
+  font-size:clamp(16px,1.4vw,20px);
+}
+:root[data-type="swiss"] .chip{ font-weight:600; letter-spacing:.01em; }
+:root[data-type="swiss"] .card-meta p{ font-weight:600; }
+
+/* — Mono: technical index — everything monospaced, lower-case, tracked out — */
+:root[data-type="mono"] .card-meta h3{
+  font-family:var(--mono); font-weight:400;
+  text-transform:lowercase; letter-spacing:0; font-size:clamp(13px,1.05vw,16px);
+}
+:root[data-type="mono"] .chip{
+  font-family:var(--mono); text-transform:uppercase; letter-spacing:.08em;
+  border-radius:2px; font-size:clamp(11px,.85vw,13px);
+}
+:root[data-type="mono"] .card-meta p{ letter-spacing:.12em; }
+:root[data-type="mono"] .wordmark,
+:root[data-type="mono"] .overlay nav a{ font-family:var(--mono); }
+:root[data-type="mono"] .overlay nav a{ text-transform:lowercase; letter-spacing:-.01em; }
+
+/* ============================================================
+   3 · RHYTHM — gallery cadence (columns · ratio · stagger)
+   inline aspect-ratio on .card-frame is beaten with !important
+   ============================================================ */
+
+/* — Sparse: two big columns, generous air, dropped-in offset — */
+:root[data-rhythm="sparse"] .grid{
+  grid-template-columns:repeat(2,1fr);
+  gap:clamp(36px,5vw,84px) clamp(28px,4vw,60px);
+}
+:root[data-rhythm="sparse"] .card-frame{ aspect-ratio:5 / 6 !important; }
+:root[data-rhythm="sparse"] .grid .card:nth-child(even){ margin-top:clamp(28px,7vh,90px); }
+
+/* — Balanced (default): the original three-up — */
+:root[data-rhythm="balanced"] .grid{
+  grid-template-columns:repeat(3,1fr);
+  gap:clamp(20px,2.4vw,38px) clamp(16px,1.8vw,26px);
+}
+:root[data-rhythm="balanced"] .card-frame{ aspect-ratio:4 / 5 !important; }
+
+/* — Dense: tight contact-sheet index, square crops — */
+:root[data-rhythm="dense"] .grid{
+  grid-template-columns:repeat(4,1fr);
+  gap:clamp(10px,1.1vw,16px);
+}
+:root[data-rhythm="dense"] .card-frame{ aspect-ratio:1 / 1 !important; }
+:root[data-rhythm="dense"] .card-meta{ padding-top:9px; }
+:root[data-rhythm="dense"] .card-meta h3{ font-size:clamp(13px,1vw,16px); }
+
+@media(max-width:680px){
+  :root[data-rhythm="dense"] .grid{ grid-template-columns:repeat(2,1fr); }
+  :root[data-rhythm="sparse"] .grid .card:nth-child(even){ margin-top:0; }
+}
+
+/* ============================================================
+   CASE PAGES — carry the SAME type voice & palette through to
+   each project so the site reads as one system, not two.
+   The serif-bearing case elements:
+     .c-title .c-quote .c-intro .os-box p .c-meta dd .c-next a
+   ============================================================ */
+
+/* smooth voice swaps on case too */
+.c-title, .c-quote, .c-intro, .os-box p, .c-meta dd, .c-next a{
+  transition:font-size .35s var(--ease), letter-spacing .35s var(--ease),
+             color .35s var(--ease);
+}
+
+/* — Swiss: grotesk poster voice — sans, titles in tight caps — */
+:root[data-type="swiss"] .c-title{
+  font-family:var(--sans); font-weight:700;
+  text-transform:uppercase; letter-spacing:-.02em; line-height:.95;
+}
+:root[data-type="swiss"] .c-next a{
+  font-family:var(--sans); font-weight:700;
+  text-transform:uppercase; letter-spacing:-.02em;
+}
+:root[data-type="swiss"] .c-quote{
+  font-family:var(--sans); font-weight:600; font-style:normal;
+  letter-spacing:-.018em;
+}
+:root[data-type="swiss"] .c-intro{ font-family:var(--sans); font-weight:500; }
+:root[data-type="swiss"] .os-box p,
+:root[data-type="swiss"] .c-meta dd{ font-family:var(--sans); font-weight:600; }
+:root[data-type="swiss"] .c-meta dd{ font-weight:500; }
+
+/* — Mono: technical index voice — monospace, lower-case titles — */
+:root[data-type="mono"] .c-title{
+  font-family:var(--mono); font-weight:400;
+  text-transform:lowercase; letter-spacing:-.01em; line-height:1.04;
+  font-size:clamp(30px,5vw,60px);
+}
+:root[data-type="mono"] .c-quote{
+  font-family:var(--mono); font-weight:400; font-style:normal;
+  text-transform:lowercase; letter-spacing:-.005em;
+  font-size:clamp(22px,3.4vw,40px);
+}
+:root[data-type="mono"] .c-next a{
+  font-family:var(--mono); text-transform:lowercase; letter-spacing:-.01em;
+}
+:root[data-type="mono"] .c-intro,
+:root[data-type="mono"] .os-box p,
+:root[data-type="mono"] .c-meta dd{ font-family:var(--mono); letter-spacing:-.01em; }
+:root[data-type="mono"] .c-kicker,
+:root[data-type="mono"] .c-meta dt,
+:root[data-type="mono"] .c-figure figcaption,
+:root[data-type="mono"] .os-box h4{ font-family:var(--mono); letter-spacing:.06em; }
+:root[data-type="mono"] .wordmark,
+:root[data-type="mono"] .switcher button,
+:root[data-type="mono"] .switcher .lab{ font-family:var(--mono); }
+
+/* — Editorial keeps the serif already defined in case.css — */
+
+/* ---- palette-aware chrome that case.css hard-coded dark ---- */
+/* switcher pill: invert against the active background */
+:root[data-palette="noir"] .switcher{ background:rgba(244,242,234,.10); border:1px solid rgba(244,242,234,.18); }
+:root[data-palette="noir"] .switcher .lab{ color:rgba(244,242,234,.5); }
+:root[data-palette="noir"] .switcher button{ color:rgba(244,242,234,.62); }
+:root[data-palette="noir"] .switcher button:hover{ color:var(--ink); }
+:root[data-palette="noir"] .switcher button.on{ background:var(--ink); color:var(--bg); }
+:root[data-palette="gallery"] .switcher{ background:rgba(12,12,13,.94); }

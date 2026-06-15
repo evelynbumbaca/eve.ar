@@ -1,0 +1,156 @@
+/* EVE — case study (compact Made Thought + Anagrama objective/solution)
+   3 layout variants toggled via [data-layout] on .case  */
+
+.case{padding:0 0 clamp(60px,10vh,120px)}
+.wrap{max-width:1280px;margin:0 auto;padding:0 var(--pad)}
+
+/* ---------- hero (compact) ---------- */
+.c-hero{padding-block:clamp(96px,15vh,150px) clamp(26px,4vh,44px)}
+.c-kicker{
+  font-family:var(--sans);font-size:12px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ink-60);margin-bottom:16px;
+  display:flex;gap:14px;
+}
+.c-kicker .dot{color:var(--ink-35)}
+.c-title{
+  font-family:var(--serif);font-weight:400;
+  font-size:clamp(34px,6vw,72px);line-height:1.0;letter-spacing:-.018em;
+  text-wrap:balance;
+}
+.c-hero-img{
+  margin-top:clamp(26px,4vh,46px);width:100%;aspect-ratio:16/9;border-radius:3px;
+}
+.c-hero-img .ph{width:100%;height:100%}
+
+/* meta strip (Made Thought columns) */
+.c-meta{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:24px;
+  padding:clamp(22px,3vh,34px) 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  margin-top:clamp(26px,4vh,44px);
+}
+.c-meta dt{font-family:var(--sans);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-60);margin-bottom:7px}
+.c-meta dd{font-family:var(--serif);font-size:clamp(15px,1.3vw,18px);line-height:1.3}
+
+/* intro */
+.c-intro{
+  font-family:var(--serif);font-weight:300;
+  font-size:clamp(20px,2.5vw,30px);line-height:1.32;letter-spacing:-.01em;
+  max-width:24ch;
+}
+
+/* ---------- Anagrama objective / solution boxes ---------- */
+.c-os{display:grid;gap:clamp(16px,2vw,26px)}
+.os-box{
+  border:1px solid var(--ink);border-radius:3px;
+  padding:clamp(20px,2vw,30px);
+  background:transparent;
+}
+.os-box h4{
+  font-family:var(--sans);font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--ink);margin-bottom:13px;
+  display:flex;align-items:center;gap:9px;
+}
+.os-box h4::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--ink)}
+.os-box.solucion h4::before{background:transparent;box-shadow:inset 0 0 0 1.5px var(--ink)}
+.os-box p{
+  font-family:var(--serif);font-weight:400;
+  font-size:clamp(16px,1.5vw,20px);line-height:1.4;letter-spacing:-.005em;
+}
+
+/* image section + labels */
+.c-figure{margin-top:clamp(40px,7vh,90px)}
+.c-figure .frame{width:100%;border-radius:3px}
+.c-figure .ph{width:100%;height:100%}
+.c-figure figcaption{
+  font-family:var(--sans);font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-60);margin-top:13px;display:flex;justify-content:space-between;
+}
+
+/* pull quote */
+.c-quote{
+  font-family:var(--serif);font-weight:300;font-style:italic;
+  font-size:clamp(26px,4vw,48px);line-height:1.16;letter-spacing:-.015em;
+  text-wrap:balance;padding:clamp(50px,9vh,110px) 0;
+  max-width:20ch;margin:0 auto;text-align:center;
+}
+
+/* next */
+.c-next{
+  display:flex;align-items:baseline;justify-content:space-between;gap:20px;
+  border-top:1px solid var(--ink);padding-top:24px;margin-top:clamp(30px,5vh,60px);
+}
+.c-next .lab{font-family:var(--sans);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-60)}
+.c-next a{
+  font-family:var(--serif);font-size:clamp(26px,4.4vw,56px);line-height:1;letter-spacing:-.015em;
+  transition:opacity .25s var(--ease);
+}
+.c-next a:hover{opacity:.55}
+
+/* ============================================================
+   VARIANT 1 — EDITORIAL (centered column, full-bleed images)
+   ============================================================ */
+.case[data-layout="editorial"] .c-hero,
+.case[data-layout="editorial"] .c-body{max-width:980px;margin:0 auto}
+.case[data-layout="editorial"] .c-intro{margin:clamp(34px,5vh,60px) 0 0;text-align:left}
+.case[data-layout="editorial"] .c-os{
+  grid-template-columns:1fr 1fr;margin-top:clamp(34px,5vh,56px);
+}
+.case[data-layout="editorial"] .c-figure .frame{aspect-ratio:3/2}
+.case[data-layout="editorial"] .c-figure.tall .frame{aspect-ratio:4/5;max-width:620px;margin:0 auto}
+
+/* ============================================================
+   VARIANT 2 — SPLIT (sticky meta rail · scrolling image stream)
+   ============================================================ */
+.case[data-layout="split"] .c-hero{max-width:none}
+.case[data-layout="split"] .split-grid{
+  display:grid;grid-template-columns:minmax(300px,1fr) 1.55fr;
+  gap:clamp(30px,5vw,76px);align-items:start;margin-top:clamp(20px,3vh,40px);
+}
+.case[data-layout="split"] .split-rail{position:sticky;top:120px}
+.case[data-layout="split"] .c-intro{max-width:34ch;margin-bottom:clamp(26px,4vh,40px)}
+.case[data-layout="split"] .c-os{grid-template-columns:1fr;gap:14px}
+.case[data-layout="split"] .c-figure{margin-top:0}
+.case[data-layout="split"] .c-figure + .c-figure{margin-top:clamp(20px,3vh,38px)}
+.case[data-layout="split"] .stream .c-figure:nth-child(odd) .frame{aspect-ratio:4/5}
+.case[data-layout="split"] .stream .c-figure:nth-child(even) .frame{aspect-ratio:3/4}
+
+/* ============================================================
+   VARIANT 3 — MARGIN NOTES (narrow images · floating side boxes)
+   ============================================================ */
+.case[data-layout="margin"] .c-hero{max-width:none}
+.case[data-layout="margin"] .margin-grid{
+  display:grid;grid-template-columns:1fr minmax(220px,300px);
+  gap:clamp(28px,4vw,64px);align-items:start;
+}
+.case[data-layout="margin"] .c-col-main{max-width:760px}
+.case[data-layout="margin"] .c-aside{position:sticky;top:120px;display:grid;gap:18px}
+.case[data-layout="margin"] .c-aside .os-box{border:none;border-left:1px solid var(--ink);border-radius:0;padding:4px 0 4px 18px}
+.case[data-layout="margin"] .c-aside .os-box p{font-size:clamp(14px,1.2vw,16px)}
+.case[data-layout="margin"] .c-figure .frame{aspect-ratio:3/2}
+.case[data-layout="margin"] .c-figure.tall .frame{aspect-ratio:4/5}
+
+/* ---------- layout switcher ---------- */
+.switcher{
+  position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:50;
+  display:flex;align-items:center;gap:4px;
+  background:rgba(22,21,15,.92);backdrop-filter:blur(8px);
+  border-radius:40px;padding:5px;
+}
+.switcher .lab{font-family:var(--sans);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:rgba(247,246,243,.5);padding:0 10px 0 12px}
+.switcher button{
+  font-family:var(--sans);font-size:12px;letter-spacing:.02em;
+  color:rgba(247,246,243,.62);background:none;border:none;cursor:pointer;
+  padding:8px 15px;border-radius:30px;transition:color .2s,background .2s;
+}
+.switcher button:hover{color:#fff}
+.switcher button.on{background:var(--bg);color:var(--ink)}
+
+@media(max-width:860px){
+  .c-meta{grid-template-columns:1fr 1fr;gap:18px 24px}
+  .case[data-layout="split"] .split-grid,
+  .case[data-layout="margin"] .margin-grid{grid-template-columns:1fr;gap:clamp(28px,5vh,44px)}
+  .case[data-layout="split"] .split-rail,
+  .case[data-layout="margin"] .c-aside{position:static}
+  .case[data-layout="editorial"] .c-os{grid-template-columns:1fr}
+  .switcher .lab{display:none}
+}
