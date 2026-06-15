@@ -1,87 +1,67 @@
 ---
 /* ============================================================
-   HeroField — campo cinematográfico de portadas sobre blanco.
-   · 3 capas de profundidad (parallax 3D): derivan a distinta
-     velocidad y reaccionan distinto al cursor.
-   · Hover: la portada se agranda y las demás se atenúan.
-   · Al salir el mouse: parallax a neutro + zoom-out (se ve más).
-   · Arrastrable con inercia. Click entra al proyecto. Loop 3x3.
+   HeroField — enjambre 3D de portadas en un campo de profundidad.
+   · Perspectiva real (eje Z): flotan a distintas profundidades.
+   · Derivan continuamente (nube/enjambre), sin arrastre.
+   · Hover: zoom dramatico y veloz a esa portada; al salir, vuelve.
+   · Sin sombra. Click entra al proyecto.
+   Hit-testing propio (el nativo no anda con preserve-3d).
    Las .ph son placeholders -> luego las portadas reales.
    ============================================================ */
 import { projects } from '../data/site';
 import { link } from '../lib/link';
 
-const TILE = { w: 1600, h: 1100 };
+function mulberry32(a: number) {
+  return function () {
+    a |= 0; a = (a + 0x6d2b79f5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+const rnd = mulberry32(20260615);
+const ratios = ['4/5', '3/4', '1/1', '3/2', '4/3'];
 
-type Item = { x: number; y: number; w: number; ar: string; p: number };
-
-// dk = factor de deriva/arrastre · pk = factor de parallax del cursor
-const layers: { name: string; dk: number; pk: number; items: Item[] }[] = [
-  {
-    name: 'back', dk: 0.68, pk: 0.30,
-    items: [
-      { x: 120, y: 120, w: 165, ar: '4/5', p: 0 },
-      { x: 720, y: 70, w: 200, ar: '3/2', p: 1 },
-      { x: 1200, y: 210, w: 160, ar: '4/5', p: 2 },
-      { x: 470, y: 660, w: 175, ar: '1/1', p: 3 },
-      { x: 1320, y: 760, w: 165, ar: '3/4', p: 5 },
-    ],
-  },
-  {
-    name: 'mid', dk: 0.86, pk: 0.62,
-    items: [
-      { x: 300, y: 250, w: 250, ar: '4/5', p: 4 },
-      { x: 980, y: 300, w: 280, ar: '3/2', p: 6 },
-      { x: 130, y: 770, w: 240, ar: '4/3', p: 7 },
-      { x: 800, y: 820, w: 230, ar: '4/5', p: 0 },
-      { x: 1290, y: 520, w: 240, ar: '1/1', p: 2 },
-    ],
-  },
-  {
-    name: 'front', dk: 1.08, pk: 1.0,
-    items: [
-      { x: 520, y: 110, w: 340, ar: '3/2', p: 1 },
-      { x: 1060, y: 650, w: 360, ar: '4/5', p: 3 },
-      { x: 110, y: 420, w: 320, ar: '4/3', p: 6 },
-      { x: 770, y: 480, w: 300, ar: '4/5', p: 5 },
-    ],
-  },
-];
-
-const grid = [];
-for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) grid.push({ ox: i * TILE.w, oy: j * TILE.h });
+const N = 24;
+const cards = Array.from({ length: N }, (_, i) => ({
+  bxf: rnd() * 2 - 1,
+  byf: rnd() * 2 - 1,
+  bz: Math.round(-720 + rnd() * 770),
+  w: 150 + Math.round(rnd() * 135),
+  ar: ratios[Math.floor(rnd() * ratios.length)],
+  p: i % projects.length,
+  fa: 16 + Math.round(rnd() * 30),
+  fs: 0.25 + rnd() * 0.45,
+  ph: Math.round(rnd() * 628) / 100,
+}));
 ---
 
 <section class="field" data-field aria-label="Proyectos">
-  <div class="field-zoom" data-zoom>
-    {layers.map((L) => (
-      <div class={`layer layer-${L.name}`} data-layer data-pk={L.pk} data-dk={L.dk}>
-        <div class="world" data-world data-tw={TILE.w} data-th={TILE.h}>
-          {grid.map((t) => (
-            <div class="tile" style={`transform:translate(${t.ox}px,${t.oy}px)`}>
-              {L.items.map((pl) => {
-                const proj = projects[pl.p % projects.length];
-                return (
-                  <a
-                    class="fcard"
-                    href={link(`/trabajos/${proj.id}`)}
-                    style={`left:${pl.x}px;top:${pl.y}px;width:${pl.w}px;aspect-ratio:${pl.ar}`}
-                    data-title={proj.title}
-                    draggable="false"
-                  >
-                    <span class="fcard-img ph" data-label={proj.title}></span>
-                  </a>
-                );
-              })}
-            </div>
-          ))}
-        </div>
-      </div>
-    ))}
+  <div class="stage" data-stage>
+    {cards.map((c) => {
+      const proj = projects[c.p % projects.length];
+      return (
+        <a
+          class="fcard"
+          href={link(`/trabajos/${proj.id}`)}
+          style={`width:${c.w}px;aspect-ratio:${c.ar}`}
+          data-bxf={c.bxf}
+          data-byf={c.byf}
+          data-bz={c.bz}
+          data-fa={c.fa}
+          data-fs={c.fs}
+          data-ph={c.ph}
+          data-title={proj.title}
+          draggable="false"
+        >
+          <span class="fcard-img ph" data-label={proj.title}></span>
+        </a>
+      );
+    })}
   </div>
 
   <p class="field-hint" aria-hidden="true">
-    <span data-es="Arrastrá · clic para entrar" data-en="Drag · click to open">Arrastrá · clic para entrar</span>
+    <span data-es="Pasá el cursor · clic para entrar" data-en="Hover · click to open">Pasá el cursor · clic para entrar</span>
   </p>
 </section>
 
@@ -93,37 +73,29 @@ for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) grid.push({ ox: i * TILE
     min-height: 560px;
     background: #fff;
     overflow: hidden;
-    cursor: grab;
-    touch-action: pan-y;
-    user-select: none;
+    perspective: 900px;
+    perspective-origin: 50% 48%;
+    cursor: default;
   }
-  .field.is-dragging { cursor: grabbing; }
-
-  .field-zoom { position: absolute; inset: 0; transform-origin: center center; will-change: transform; }
-  .layer { position: absolute; inset: 0; will-change: transform; }
-  .layer-back { opacity: 0.86; }
-  .world { position: absolute; inset: 0; will-change: transform; }
-  .tile { position: absolute; top: 0; left: 0; width: 1600px; height: 1100px; }
+  .field.over-card { cursor: pointer; }
+  .stage { position: absolute; inset: 0; transform-style: preserve-3d; }
 
   .fcard {
     position: absolute;
+    left: 0;
+    top: 0;
     display: block;
     border-radius: 2px;
     overflow: hidden;
-    box-shadow: 0 6px 22px rgba(22, 21, 15, 0.07);
-    transition: transform 0.5s var(--ease-out), box-shadow 0.5s var(--ease), opacity 0.45s var(--ease);
+    transform-origin: center center;
+    will-change: transform;
+    transition: opacity 0.5s var(--ease);
     -webkit-user-drag: none;
   }
   .fcard-img { display: block; width: 100%; height: 100%; }
 
-  /* Hover cinematográfico: la portada bajo el cursor se agranda,
-     las demás se atenúan (quedan secundarias). */
-  .field-zoom:has(.fcard:hover) .fcard:not(:hover) { opacity: 0.3; }
-  .field:not(.is-dragging) .fcard:hover {
-    transform: scale(1.22);
-    z-index: 50;
-    box-shadow: 0 34px 90px rgba(22, 21, 15, 0.30);
-  }
+  /* foco: las demas se atenuan y quedan secundarias */
+  .field.has-focus .fcard:not(.is-focus) { opacity: 0.26; }
 
   .field-hint {
     position: absolute;
@@ -139,118 +111,125 @@ for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) grid.push({ ox: i * TILE
     animation: hintpulse 3.2s var(--ease) infinite;
   }
   @keyframes hintpulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 0.85; } }
-
-  @media (prefers-reduced-motion: reduce) {
-    .field-hint { animation: none; }
-    .fcard { transition: opacity 0.3s var(--ease); }
-  }
+  @media (prefers-reduced-motion: reduce) { .field-hint { animation: none; } }
 </style>
 
 <script>
   const field = document.querySelector('[data-field]') as HTMLElement | null;
-  const zoomEl = document.querySelector('[data-zoom]') as HTMLElement | null;
 
-  if (field && zoomEl) {
+  if (field) {
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const still = location.hash === '#freeze';
+    const animate = !reduce && !still;
 
-    const layers = Array.from(field.querySelectorAll<HTMLElement>('[data-layer]')).map((el) => {
-      const world = el.querySelector<HTMLElement>('[data-world]')!;
-      return {
-        layer: el,
-        world,
-        pk: parseFloat(el.dataset.pk || '1'),
-        dk: parseFloat(el.dataset.dk || '1'),
-        tw: parseFloat(world.dataset.tw || '1600'),
-        th: parseFloat(world.dataset.th || '1100'),
-      };
-    });
+    const P = 900;          // perspectiva (coincide con el CSS)
+    const SPEED = animate ? 0.85 : 0;
+    const FA = animate ? 1 : 0;
+    const HOVER_S = 2.2;    // cuanto agranda al hacer foco
+    const FRONT = 140;      // z al frente cuando esta enfocada
 
-    // posicion del mundo (se envuelve modulo tile -> loop infinito)
-    let offX = -800, offY = -440;
-    // deriva automatica (un poco mas rapida)
-    const driftX = reduce ? 0 : -0.36;
-    const driftY = reduce ? 0 : -0.2;
-    // inercia del arrastre
-    let velX = 0, velY = 0;
-    // parallax del cursor (objetivo / actual)
-    let tPX = 0, tPY = 0, cPX = 0, cPY = 0;
-    const PARA = 0.05;
-    // zoom (respiro): afuera = mas chico (se ve mas), adentro = inmersivo
-    const REST = 0.82, ACTIVE = 1.06;
-    let zoom = REST, tZoom = REST;
-    let engaged = false;
-
-    let cx = innerWidth / 2, cy = innerHeight / 2;
-    const setCenter = () => { cx = innerWidth / 2; cy = innerHeight / 2; };
-    addEventListener('resize', setCenter, { passive: true });
-
-    let dragging = false, moved = false;
-    let startX = 0, startY = 0, lastX = 0, lastY = 0;
-
-    field.addEventListener('pointerdown', (e) => {
-      dragging = true; moved = false;
-      startX = lastX = e.clientX; startY = lastY = e.clientY;
-      velX = velY = 0;
-      field.classList.add('is-dragging');
-      try { field.setPointerCapture(e.pointerId); } catch {}
-    });
-
-    field.addEventListener('pointermove', (e) => {
-      if (e.pointerType === 'mouse') {
-        engaged = true;
-        if (!reduce) { tPX = (e.clientX - cx) * -PARA; tPY = (e.clientY - cy) * -PARA; }
-        tZoom = ACTIVE;
-      }
-      if (!dragging) return;
-      const dx = e.clientX - lastX, dy = e.clientY - lastY;
-      offX += dx; offY += dy;
-      velX = dx; velY = dy;
-      if (Math.abs(e.clientX - startX) + Math.abs(e.clientY - startY) > 6) moved = true;
-      lastX = e.clientX; lastY = e.clientY;
-    });
-
-    const end = (e: PointerEvent) => {
-      if (!dragging) return;
-      dragging = false;
-      field.classList.remove('is-dragging');
-      try { field.releasePointerCapture(e.pointerId); } catch {}
+    type Card = {
+      el: HTMLElement; bxf: number; byf: number; bz: number;
+      fa: number; fs: number; ph: number; w: number; h: number;
+      X: number; Y: number; Zamb: number; z: number; s: number;
+      rl: number; rr: number; rt: number; rb: number;
     };
-    field.addEventListener('pointerup', end);
-    field.addEventListener('pointercancel', end);
 
-    // al salir el mouse: parallax a neutro + zoom-out (se ve la mayoria)
-    field.addEventListener('pointerleave', (e) => {
-      if (dragging) { dragging = false; field.classList.remove('is-dragging'); }
-      if ((e as PointerEvent).pointerType !== 'touch') {
-        engaged = false; tPX = 0; tPY = 0; tZoom = REST;
+    const cards: Card[] = Array.from(field.querySelectorAll<HTMLElement>('.fcard')).map((el) => ({
+      el,
+      bxf: parseFloat(el.dataset.bxf || '0'),
+      byf: parseFloat(el.dataset.byf || '0'),
+      bz: parseFloat(el.dataset.bz || '0'),
+      fa: parseFloat(el.dataset.fa || '20'),
+      fs: parseFloat(el.dataset.fs || '0.4'),
+      ph: parseFloat(el.dataset.ph || '0'),
+      w: el.offsetWidth, h: el.offsetHeight,
+      X: 0, Y: 0, Zamb: 0, z: parseFloat(el.dataset.bz || '0'), s: 1,
+      rl: 0, rr: 0, rt: 0, rb: 0,
+    }));
+
+    let cw = field.clientWidth, ch = field.clientHeight;
+    let XR = cw / 2 + 380, YR = ch / 2 + 160;
+    const measure = () => {
+      cw = field.clientWidth; ch = field.clientHeight;
+      XR = cw / 2 + 380; YR = ch / 2 + 160;
+      cards.forEach((c) => { c.w = c.el.offsetWidth; c.h = c.el.offsetHeight; });
+    };
+    addEventListener('resize', measure, { passive: true });
+
+    // puntero relativo al campo
+    let px = -1, py = -1, inside = false;
+    const toLocal = (e: PointerEvent | MouseEvent) => {
+      const r = field.getBoundingClientRect();
+      px = e.clientX - r.left; py = e.clientY - r.top;
+    };
+    field.addEventListener('pointermove', (e) => { toLocal(e); inside = true; });
+    field.addEventListener('pointerleave', () => { inside = false; });
+
+    let focus: Card | null = null;
+    const setFocus = (c: Card | null) => {
+      if (focus === c) return;
+      if (focus) focus.el.classList.remove('is-focus');
+      focus = c;
+      field.classList.toggle('has-focus', !!c);
+      field.classList.toggle('over-card', !!c);
+      if (c) c.el.classList.add('is-focus');
+    };
+
+    // click/tap: navega a la portada bajo el cursor (hit-test propio)
+    field.addEventListener('click', (e) => {
+      const r = field.getBoundingClientRect();
+      const x = e.clientX - r.left, y = e.clientY - r.top;
+      let hit: Card | null = null, hz = -1e9;
+      for (const c of cards) {
+        if (x >= c.rl && x <= c.rr && y >= c.rt && y <= c.rb && c.Zamb > hz) { hz = c.Zamb; hit = c; }
       }
+      if (hit) location.href = hit.el.getAttribute('href') || '#';
     });
 
-    // si hubo arrastre, no navegar al soltar
-    field.addEventListener('click', (e) => {
-      if (moved) { e.preventDefault(); e.stopPropagation(); moved = false; }
-    }, true);
+    const wrap = (v: number, r: number) => (((v + r) % (2 * r)) + 2 * r) % (2 * r) - r;
 
-    const wrap = (v: number, s: number) => (((v % s) + s) % s) - s;
-
+    const t0 = performance.now();
     let raf = 0;
-    const frame = () => {
-      velX *= 0.94; velY *= 0.94;
-      offX += driftX + velX;
-      offY += driftY + velY;
-      cPX += (tPX - cPX) * 0.07;
-      cPY += (tPY - cPY) * 0.07;
-      zoom += (tZoom - zoom) * 0.05;
+    const frame = (now: number) => {
+      const t = (now - t0) / 1000;
+      gx -= SPEED;
+      const Oy = ch * 0.48;
 
-      zoomEl.style.transform = `scale(${zoom.toFixed(4)})`;
-      for (const L of layers) {
-        L.world.style.transform =
-          `translate3d(${wrap(offX * L.dk, L.tw).toFixed(2)}px, ${wrap(offY * L.dk, L.th).toFixed(2)}px, 0)`;
-        L.layer.style.transform =
-          `translate3d(${(cPX * L.pk).toFixed(2)}px, ${(cPY * L.pk).toFixed(2)}px, 0)`;
+      // pass 1: posicion ambiente + rectangulo de deteccion (footprint base)
+      for (const c of cards) {
+        c.X = wrap(c.bxf * XR + gx + Math.sin(t * c.fs + c.ph) * c.fa * FA, XR);
+        c.Y = c.byf * YR * 0.82 + Math.sin(t * c.fs * 0.8 + c.ph) * c.fa * FA;
+        c.Zamb = c.bz + Math.sin(t * c.fs * 0.6 + c.ph) * c.fa * 0.5 * FA;
+        const f = P / (P - c.Zamb);
+        const pcx = cw / 2 + c.X * f;
+        const pcy = Oy + (ch / 2 - Oy + c.Y) * f;
+        const hw = (c.w * f) / 2, hh = (c.h * f) / 2;
+        c.rl = pcx - hw; c.rr = pcx + hw; c.rt = pcy - hh; c.rb = pcy + hh;
+      }
+
+      // hit-test propio -> foco
+      let hit: Card | null = null, hz = -1e9;
+      if (inside) {
+        for (const c of cards) {
+          if (px >= c.rl && px <= c.rr && py >= c.rt && py <= c.rb && c.Zamb > hz) { hz = c.Zamb; hit = c; }
+        }
+      }
+      setFocus(hit);
+
+      // pass 2: visual (la enfocada hace zoom y va al frente)
+      for (const c of cards) {
+        const f0 = focus === c;
+        c.z += ((f0 ? FRONT : c.Zamb) - c.z) * (f0 ? 0.2 : 0.14);
+        c.s += ((f0 ? HOVER_S : 1) - c.s) * (f0 ? 0.2 : 0.14);
+        const tx = cw / 2 + c.X - c.w / 2;
+        const ty = ch / 2 + c.Y - c.h / 2;
+        c.el.style.transform =
+          `translate3d(${tx.toFixed(1)}px, ${ty.toFixed(1)}px, ${c.z.toFixed(1)}px) scale(${c.s.toFixed(3)})`;
       }
       raf = requestAnimationFrame(frame);
     };
+    let gx = 0;
     raf = requestAnimationFrame(frame);
 
     document.addEventListener('visibilitychange', () => {
