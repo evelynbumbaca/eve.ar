@@ -40,7 +40,7 @@ export const social: { label: string; href: string }[] = [
 /* ---------- navegacion ---------- */
 export const nav: NavItem[] = [
   { es: 'Inicio', en: 'Index', href: '/' },
-  { es: 'Trabajos', en: 'Work', href: '/#trabajos' },
+  { es: 'Trabajos', en: 'Work', href: '/trabajos' },
   { es: 'Estudio', en: 'About', href: '/estudio' },
   { es: 'Tienda', en: 'Shop', href: '/tienda' },
   { es: 'Contacto', en: 'Contact', href: '/contacto' },

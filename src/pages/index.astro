@@ -1,39 +1,29 @@
 ---
 import Base from '../layouts/Base.astro';
-import HeroField from '../components/HeroField.astro';
-import ProjectCard from '../components/ProjectCard.astro';
+import HeroIndex from '../components/HeroIndex.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import T from '../components/T.astro';
-import { projects, filters } from '../data/site';
+import { link } from '../lib/link';
 ---
 
 <Base>
   <h1 class="visually-hidden">Eve — Diseñadora Multimedia & UX/UI · Buenos Aires, Argentina</h1>
 
-  <HeroField />
+  <HeroIndex />
 
-  <section id="trabajos" class="work">
+  <section class="home-about">
     <div class="wrap">
-      <div class="work-head">
-        <p class="locator">
-          <T es="Diseñadora Multimedia · Buenos Aires, Argentina" en="Multimedia Designer · Buenos Aires, Argentina" />
-        </p>
-        <div class="filters" role="group" aria-label="Filtros">
-          {filters.map((f, i) => (
-            <button
-              class:list={['chip', { 'is-on': i === 0 }]}
-              data-filter={f.key}
-              data-es={f.label.es}
-              data-en={f.label.en}
-              type="button"
-            >{f.label.es}</button>
-          ))}
-        </div>
-      </div>
-
-      <div class="grid">
-        {projects.map((p) => <ProjectCard project={p} />)}
-      </div>
+      <p class="ha-kicker mono cap"><T es="Estudio" en="About" /></p>
+      <p class="ha-lead rise">
+        <T
+          es="Eve es Diseñadora Multimedia & UX/UI radicada en Buenos Aires. Trabaja en la intersección entre lo editorial, la identidad de marca y el producto digital — con criterio, claridad y carácter."
+          en="Eve is a Multimedia & UX/UI Designer based in Buenos Aires. She works at the intersection of editorial, brand identity and digital product — with judgment, clarity and character."
+        />
+      </p>
+      <a class="ha-link rise rise-delay-1" href={link('/estudio')}>
+        <T es="Conocé el enfoque" en="Read the approach" />
+        <span aria-hidden="true">→</span>
+      </a>
     </div>
   </section>
 
@@ -41,61 +31,33 @@ import { projects, filters } from '../data/site';
 </Base>
 
 <style>
-  .work { padding-top: clamp(56px, 9vh, 110px); }
-  .work-head {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px 24px;
-    margin-bottom: clamp(26px, 4vh, 44px);
+  .home-about {
+    padding-top: clamp(64px, 12vh, 150px);
+    padding-bottom: clamp(8px, 3vh, 40px);
   }
-  .locator {
-    font-family: var(--sans);
-    font-size: var(--fs-small);
-    letter-spacing: 0.04em;
-    color: var(--ink-60);
-  }
-
-  .filters { display: flex; flex-wrap: wrap; gap: 9px; }
-  .chip {
-    font-family: var(--sans);
-    font-size: clamp(13px, 1vw, 15px);
-    padding: 7px 15px;
-    border: 1px solid var(--ink);
-    border-radius: 40px;
+  .ha-kicker { color: var(--ink-45); margin-bottom: clamp(22px, 4vh, 40px); }
+  .ha-lead {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: clamp(1.5rem, 3.4vw, 2.7rem);
+    line-height: 1.28;
+    letter-spacing: -0.015em;
     color: var(--ink);
-    transition: background 0.25s var(--ease), color 0.25s var(--ease);
+    max-width: 24ch;
   }
-  .chip:hover { background: var(--ink-12); }
-  .chip.is-on { background: var(--ink); color: var(--paper); }
-
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: clamp(20px, 2.4vw, 38px) clamp(16px, 1.8vw, 26px);
+  .ha-link {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-top: clamp(26px, 4vh, 46px);
+    font-family: var(--sans);
+    font-size: clamp(14px, 1.1vw, 16px);
+    letter-spacing: 0.02em;
+    border-bottom: 1px solid var(--ink);
+    padding-bottom: 4px;
+    transition: opacity var(--dur-micro) var(--ease-quint);
   }
-
-  @media (max-width: 680px) {
-    .grid { grid-template-columns: repeat(2, 1fr); }
-    .work-head { flex-direction: column; align-items: flex-start; }
-  }
-  @media (max-width: 420px) {
-    .grid { grid-template-columns: 1fr 1fr; gap: 18px 12px; }
-  }
+  .ha-link span { transition: transform var(--dur-ui) var(--ease-out); display: inline-block; }
+  .ha-link:hover { opacity: 0.62; }
+  .ha-link:hover span { transform: translateX(6px); }
 </style>
-
-<script>
-  const chips = Array.from(document.querySelectorAll<HTMLButtonElement>('.chip'));
-  const cards = Array.from(document.querySelectorAll<HTMLElement>('.card'));
-  chips.forEach((chip) => {
-    chip.addEventListener('click', () => {
-      const f = chip.dataset.filter;
-      chips.forEach((c) => c.classList.toggle('is-on', c === chip));
-      cards.forEach((card) => {
-        const show = f === 'all' || card.dataset.cat === f;
-        card.classList.toggle('is-hidden', !show);
-      });
-    });
-  });
-</script>

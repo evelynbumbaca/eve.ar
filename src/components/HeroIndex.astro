@@ -1,0 +1,306 @@
+---
+/* ============================================================
+   HeroIndex — Hero = indice editorial interactivo.
+   Patron de elite (verificado en research): lista tipografica
+   grande de trabajos; al pasar el cursor sobre un proyecto su
+   portada APARECE y SIGUE al cursor (lerp 0.14, translate3d),
+   los demas se atenuan, clic entra. El movimiento solo ocurre
+   donde esta el cursor -> no marea. Sin camara, sin deriva.
+   · Entrada: line-mask + stagger (easeOutExpo), gateada por
+     prefers-reduced-motion (base = sin movimiento).
+   · Tactil: filas como links tocables, sin cursor-follow.
+   · Las .ph son placeholders (entran las portadas reales luego).
+   ============================================================ */
+import { projects } from '../data/site';
+import { link } from '../lib/link';
+---
+
+<section class="hero" data-hero aria-label="Inicio">
+  <div class="hero-top wrap">
+    <p class="hero-id">
+      <span data-es="Diseñadora Multimedia & UX/UI" data-en="Multimedia & UX/UI Designer">Diseñadora Multimedia &amp; UX/UI</span>
+      <span class="sep" aria-hidden="true">—</span>
+      <span>Buenos Aires, AR</span>
+    </p>
+    <p class="hero-statement">
+      <span class="ln"><span class="ln-in" data-es="Diseño que ordena," data-en="Design that orders,">Diseño que ordena,</span></span>
+      <span class="ln"><span class="ln-in" data-es="amplifica y deja huella." data-en="amplifies — leaves a mark.">amplifica y deja huella.</span></span>
+    </p>
+  </div>
+
+  <nav class="index" aria-label="Trabajos seleccionados">
+    <ol class="index-list wrap" data-list>
+      {projects.map((p, i) => (
+        <li class="row" style={`--i:${i}`}>
+          <a class="row-link" href={link(`/trabajos/${p.id}`)} data-idx={i} data-title={p.title}>
+            <span class="row-in">
+              <span class="row-num">{String(i + 1).padStart(2, '0')}</span>
+              <span class="row-title">{p.title}</span>
+              <span class="row-meta">
+                <span class="row-disc" data-es={p.disc.es} data-en={p.disc.en}>{p.disc.es}</span>
+                <span class="row-year">{p.year}</span>
+              </span>
+              <span class="row-arrow" aria-hidden="true">→</span>
+            </span>
+          </a>
+        </li>
+      ))}
+    </ol>
+  </nav>
+
+  <div class="preview" data-preview aria-hidden="true">
+    {projects.map((p, i) => (
+      <figure class="pv-fig" data-fig={i}>
+        <span class="pv-ph ph" data-label={p.title}></span>
+      </figure>
+    ))}
+  </div>
+
+  <p class="hero-hint" aria-hidden="true">
+    <span data-es="Pasá el cursor · clic para ver el proyecto" data-en="Hover · click to open the project">Pasá el cursor · clic para ver el proyecto</span>
+  </p>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding-top: clamp(96px, 15vh, 168px);
+    padding-bottom: clamp(40px, 7vh, 72px);
+    background: var(--paper);
+    overflow: hidden;
+  }
+
+  /* ---------- bloque superior: identidad + statement ---------- */
+  .hero-top { margin-bottom: clamp(28px, 6vh, 72px); }
+  .hero-id {
+    display: flex; flex-wrap: wrap; gap: 0 12px;
+    font-family: var(--mono);
+    font-size: clamp(11px, 1vw, 13px);
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--ink-60);
+    margin-bottom: clamp(20px, 4vh, 40px);
+  }
+  .hero-id .sep { color: var(--ink-35); }
+
+  .hero-statement {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: clamp(1.9rem, 4.6vw, 4rem);
+    line-height: 1.04;
+    letter-spacing: -0.022em;
+    color: var(--ink);
+    max-width: 20ch;
+  }
+  .hero-statement .ln { display: block; overflow: hidden; }
+  .hero-statement .ln-in { display: block; }
+
+  /* ---------- indice de trabajos ---------- */
+  .index-list { list-style: none; }
+  .row { border-top: 1px solid var(--line); }
+  .row:last-child { border-bottom: 1px solid var(--line); }
+
+  .row-link { display: block; color: var(--ink); }
+  .row-in {
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
+    align-items: baseline;
+    gap: clamp(14px, 2.2vw, 36px);
+    padding-block: clamp(9px, 1.5vh, 19px);
+    transition: transform var(--dur-content) var(--ease-out),
+                opacity var(--dur-content) var(--ease-out);
+  }
+  .row-num {
+    font-family: var(--mono);
+    font-size: clamp(11px, 0.9vw, 13px);
+    color: var(--ink-35);
+    transition: color var(--dur-micro) var(--ease-quint);
+  }
+  .row-title {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(1.7rem, 4.6vw, 3.7rem);
+    line-height: 1;
+    letter-spacing: -0.022em;
+    transition: opacity var(--dur-ui) var(--ease-quint);
+  }
+  .row-meta {
+    display: flex; gap: 14px; align-items: baseline; justify-self: end;
+    font-family: var(--mono);
+    font-size: clamp(10px, 0.9vw, 12px);
+    letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--ink-45);
+    transition: opacity var(--dur-ui) var(--ease-quint);
+  }
+  .row-year { color: var(--ink-35); }
+  .row-arrow {
+    justify-self: end;
+    font-family: var(--sans);
+    font-size: clamp(15px, 1.4vw, 19px);
+    color: var(--ink);
+    opacity: 0; transform: translateX(-8px);
+    transition: opacity var(--dur-micro) var(--ease-quint),
+                transform var(--dur-micro) var(--ease-quint);
+  }
+
+  /* estado: hay una fila activa -> las demas se atenuan */
+  .hero.has-active .row-title { opacity: 0.32; }
+  .hero.has-active .row-meta { opacity: 0.4; }
+  .row-link.is-active .row-title { opacity: 1; }
+  .row-link.is-active .row-meta { opacity: 0.8; }
+  .row-link.is-active .row-num { color: var(--ink); }
+  .row-link.is-active .row-in { transform: translateX(clamp(6px, 1vw, 16px)); }
+  .row-link.is-active .row-arrow { opacity: 1; transform: translateX(0); }
+  .row-link:focus-visible { outline: none; }
+  .row-link:focus-visible .row-title { opacity: 1; text-decoration: underline; text-underline-offset: 6px; }
+
+  /* ---------- portada flotante que sigue al cursor ---------- */
+  .preview {
+    position: fixed;
+    left: 0; top: 0;
+    width: clamp(178px, 18vw, 272px);
+    aspect-ratio: 4 / 5;
+    pointer-events: none;
+    z-index: 40;
+    opacity: 0;
+    will-change: transform;
+    transition: opacity var(--dur-ui) var(--ease-out);
+  }
+  .hero.previewing .preview { opacity: 1; }
+  .pv-fig {
+    position: absolute; inset: 0;
+    opacity: 0; transform: scale(0.965);
+    transition: opacity var(--dur-ui) var(--ease-out),
+                transform var(--dur-content) var(--ease-out);
+  }
+  .pv-fig.on { opacity: 1; transform: scale(1); }
+  .pv-ph { width: 100%; height: 100%; border-radius: 3px; box-shadow: 0 24px 60px rgba(14,14,14,0.18); }
+
+  /* ---------- hint ---------- */
+  .hero-hint {
+    align-self: center;
+    font-family: var(--mono);
+    font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ink-35);
+  }
+
+  /* ---------- entrada (gateada: base = sin movimiento) ---------- */
+  .hero.anim .ln-in { transform: translateY(105%); }
+  .hero.anim .row-in { opacity: 0; transform: translateY(20px); }
+  .hero.anim .hero-id,
+  .hero.anim .hero-hint { opacity: 0; }
+
+  .hero.anim.ready .ln-in {
+    transform: translateY(0);
+    transition: transform var(--dur-hero) var(--ease-out);
+  }
+  .hero.anim.ready .ln:nth-child(2) .ln-in { transition-delay: 0.08s; }
+  .hero.anim.ready .row-in {
+    opacity: 1; transform: translateY(0);
+    transition: opacity var(--dur-content) var(--ease-out),
+                transform var(--dur-content) var(--ease-out);
+    transition-delay: calc(0.18s + var(--i) * 0.05s);
+  }
+  .hero.anim.ready .hero-id { opacity: 1; transition: opacity var(--dur-content) var(--ease-out); }
+  .hero.anim.ready .hero-hint { opacity: 1; transition: opacity var(--dur-content) var(--ease-out) 0.6s; }
+
+  /* ---------- responsive ---------- */
+  @media (max-width: 720px) {
+    .row-in { grid-template-columns: auto 1fr auto; gap: 12px 16px; }
+    .row-meta { display: none; }
+    .row-arrow { display: none; }
+    .hero-statement { font-size: clamp(1.7rem, 8vw, 3rem); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .preview { display: none; }
+  }
+  @media (hover: none) {
+    .preview { display: none; }
+    .hero-hint span[data-es] { /* en tactil el hint igual sirve */ }
+  }
+</style>
+
+<script>
+  const hero = document.querySelector('[data-hero]') as HTMLElement | null;
+  if (hero) {
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+    /* ----- entrada (solo si hay movimiento permitido) ----- */
+    if (!reduce) {
+      hero.classList.add('anim');
+      requestAnimationFrame(() => requestAnimationFrame(() => hero.classList.add('ready')));
+    }
+
+    /* ----- portada que sigue al cursor (solo puntero fino) ----- */
+    const preview = hero.querySelector<HTMLElement>('[data-preview]');
+    const figs = Array.from(hero.querySelectorAll<HTMLElement>('.pv-fig'));
+    const links = Array.from(hero.querySelectorAll<HTMLElement>('.row-link'));
+
+    if (fine && !reduce && preview) {
+      let active = -1;
+      let tx = 0, ty = 0, cx = 0, cy = 0;
+      let raf = 0, running = false;
+      const PW = () => preview.offsetWidth || 260;
+      const PH = () => preview.offsetHeight || 325;
+
+      const place = () => {
+        const vw = innerWidth, vh = innerHeight;
+        const w = PW(), h = PH();
+        // se mantiene en el vacio de la derecha (no tapa los titulos);
+        // sigue al cursor en Y y un poco en X.
+        const minLeft = vw * 0.46;
+        let lx = Math.max(cx + 56, minLeft);
+        lx = Math.min(lx, vw - w - 24);
+        let ly = Math.min(Math.max(cy, h / 2 + 16), vh - h / 2 - 16);
+        // lerp suave (factor 0.16)
+        tx += (lx - tx) * 0.16;
+        ty += (ly - ty) * 0.16;
+        preview.style.transform = `translate3d(${tx.toFixed(1)}px, ${ty.toFixed(1)}px, 0) translateY(-50%)`;
+        if (Math.abs(lx - tx) > 0.4 || Math.abs(ly - ty) > 0.4) {
+          raf = requestAnimationFrame(place);
+        } else { running = false; }
+      };
+      const kick = () => { if (!running) { running = true; raf = requestAnimationFrame(place); } };
+
+      hero.addEventListener('pointermove', (e) => { cx = e.clientX; cy = e.clientY; kick(); }, { passive: true });
+
+      const setActive = (idx: number) => {
+        if (idx === active) return;
+        if (active >= 0) figs[active]?.classList.remove('on');
+        if (links[active]) links[active].classList.remove('is-active');
+        active = idx;
+        if (idx >= 0) {
+          figs[idx]?.classList.add('on');
+          links[idx]?.classList.add('is-active');
+          hero.classList.add('has-active', 'previewing');
+          // primer posicionamiento sin esperar al lerp si venimos de cero
+          if (tx === 0 && ty === 0) { tx = Math.max(cx + 56, innerWidth * 0.46); ty = cy; }
+          kick();
+        } else {
+          hero.classList.remove('has-active', 'previewing');
+        }
+      };
+
+      links.forEach((lnk, i) => {
+        lnk.addEventListener('pointerenter', () => setActive(i));
+      });
+      const list = hero.querySelector('[data-list]');
+      list?.addEventListener('pointerleave', () => setActive(-1));
+
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) { cancelAnimationFrame(raf); running = false; }
+      });
+    } else {
+      // tactil / reduced: resaltar la fila tocada/enfocada, sin portada flotante
+      links.forEach((lnk) => {
+        lnk.addEventListener('pointerenter', () => { hero.classList.add('has-active'); lnk.classList.add('is-active'); });
+        lnk.addEventListener('pointerleave', () => { hero.classList.remove('has-active'); lnk.classList.remove('is-active'); });
+      });
+    }
+  }
+</script>

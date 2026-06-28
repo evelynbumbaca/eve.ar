@@ -20,10 +20,14 @@
   --fg: var(--ink);
   --accent: var(--ink);
 
-  /* ---------- tipografia ---------- */
+  /* ---------- tipografia ----------
+     Disciplina editorial: 2 familias + mono.
+     · Spectral  -> display/editorial (serif protagonista)
+     · Inter     -> interfaz, etiquetas, navegacion (grotesca neutra)
+     · Plex Mono -> meta, fechas, tags, numeracion ("pienso en sistemas") */
   --serif: 'Spectral', Georgia, 'Times New Roman', serif;
-  --sans: 'Neue Haas Grotesk', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  --mono: 'SFMono-Regular', ui-monospace, 'SF Mono', 'Menlo', monospace;
+  --sans: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --mono: 'IBM Plex Mono', 'SFMono-Regular', ui-monospace, 'SF Mono', 'Menlo', monospace;
 
   /* escala tipografica fluida */
   --fs-display: clamp(3.2rem, 11vw, 11rem);
@@ -40,10 +44,15 @@
   --gap: clamp(16px, 1.8vw, 26px);
   --section: clamp(72px, 13vh, 168px);
 
-  /* ---------- movimiento ---------- */
+  /* ---------- movimiento (valores de research: easeOutExpo/Quint) ---------- */
   --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
-  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);   /* easeOutExpo — entrada premium */
+  --ease-quint: cubic-bezier(0.23, 1, 0.32, 1); /* easeOutQuint — micro-UI */
   --dur: 0.6s;
+  --dur-micro: 0.2s;     /* feedback hover / micro-interaccion */
+  --dur-ui: 0.32s;       /* dropdowns, estados */
+  --dur-content: 0.5s;   /* revelados de contenido */
+  --dur-hero: 0.9s;      /* entrada editorial del hero */
 
   /* ---------- layout ---------- */
   --maxw: 1400px;

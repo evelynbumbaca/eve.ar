@@ -1,0 +1,102 @@
+---
+import Base from '../../layouts/Base.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import T from '../../components/T.astro';
+import { projects, filters } from '../../data/site';
+---
+
+<Base title="Trabajos — EVE" description="Trabajos seleccionados de Eve: identidad, editorial, UX/UI, packaging y dirección de arte.">
+  <article class="page trabajos">
+    <div class="wrap">
+      <header class="page-head">
+        <span class="kicker mono cap"><T es="Trabajos" en="Work" /></span>
+        <h1 class="page-title reveal">
+          <span class="revfill"><T es="Trabajos" en="Selected" /></span>
+        </h1>
+        <h1 class="page-title reveal">
+          <span class="revfill accent"><T es="seleccionados." en="work." /></span>
+        </h1>
+      </header>
+
+      <div class="filters" role="group" aria-label="Filtros">
+        {filters.map((f, i) => (
+          <button
+            class:list={['chip', { 'is-on': i === 0 }]}
+            data-filter={f.key}
+            data-es={f.label.es}
+            data-en={f.label.en}
+            type="button"
+          >{f.label.es}</button>
+        ))}
+      </div>
+
+      <div class="grid">
+        {projects.map((p) => <ProjectCard project={p} />)}
+      </div>
+    </div>
+  </article>
+
+  <SiteFooter />
+</Base>
+
+<style>
+  .page { padding-top: clamp(120px, 18vh, 200px); }
+  .page-head { margin-bottom: clamp(36px, 6vh, 72px); }
+  .kicker { display: block; color: var(--ink-60); margin-bottom: clamp(20px, 3vh, 34px); }
+  .page-title {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: var(--fs-h1);
+    line-height: 1.0;
+    letter-spacing: -0.02em;
+  }
+  .page-title .accent { font-style: italic; font-weight: 300; color: var(--ink-80); }
+  .page-title .revfill { display: block; }
+
+  .filters {
+    display: flex; flex-wrap: wrap; gap: 9px;
+    padding-bottom: clamp(26px, 4vh, 44px);
+    border-bottom: 1px solid var(--line);
+    margin-bottom: clamp(28px, 4vh, 48px);
+  }
+  .chip {
+    font-family: var(--sans);
+    font-size: clamp(13px, 1vw, 15px);
+    padding: 7px 15px;
+    border: 1px solid var(--ink);
+    border-radius: 40px;
+    color: var(--ink);
+    transition: background var(--dur-micro) var(--ease-quint), color var(--dur-micro) var(--ease-quint);
+  }
+  .chip:hover { background: var(--ink-12); }
+  .chip.is-on { background: var(--ink); color: var(--paper); }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(20px, 2.4vw, 38px) clamp(16px, 1.8vw, 26px);
+  }
+
+  @media (max-width: 680px) {
+    .grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 420px) {
+    .grid { grid-template-columns: 1fr 1fr; gap: 18px 12px; }
+  }
+</style>
+
+<script>
+  const chips = Array.from(document.querySelectorAll<HTMLButtonElement>('.chip'));
+  const cards = Array.from(document.querySelectorAll<HTMLElement>('.card'));
+  chips.forEach((chip) => {
+    chip.addEventListener('click', () => {
+      const f = chip.dataset.filter;
+      chips.forEach((c) => c.classList.toggle('is-on', c === chip));
+      cards.forEach((card) => {
+        const show = f === 'all' || card.dataset.cat === f;
+        card.classList.toggle('is-hidden', !show);
+      });
+    });
+  });
+</script>
