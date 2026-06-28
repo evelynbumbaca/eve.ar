@@ -19,6 +19,8 @@
   --bg: var(--paper);
   --fg: var(--ink);
   --accent: var(--ink);
+  /* único acento de color del sitio: la "firma" del cursor al acercarse al nombre */
+  --orange: #e2552d;
 
   /* ---------- tipografia ----------
      Disciplina editorial: 2 familias + mono.

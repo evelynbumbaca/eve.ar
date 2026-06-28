@@ -1,0 +1,116 @@
+---
+/* ============================================================
+   HeroName — Pantalla 1.
+   Nombre "Eve" gigante al centro (capa superior). Al acercar el
+   cursor (var --p 0→1, seteado por el rAF maestro), 6 portadas
+   entran deslizándose desde los laterales SIN tapar el nombre
+   (cordón geométrico). Al alejarse, se retraen.
+   · Fallback (sin fx-on): --p:1 -> collage estático visible.
+   · El nombre es el LCP: pintado, quieto, opacity 1 desde el inicio.
+   ============================================================ */
+import { projects } from '../data/site';
+
+// 6 figuras: 3 izquierda (--lane:-1), 3 derecha (--lane:1)
+const figs = [
+  { p: 0, lane: -1, i: 0, depth: 1, y: '13%' },
+  { p: 2, lane: -1, i: 1, depth: 0, y: '41%' },
+  { p: 4, lane: -1, i: 2, depth: 2, y: '67%' },
+  { p: 1, lane: 1, i: 0, depth: 2, y: '20%' },
+  { p: 3, lane: 1, i: 1, depth: 1, y: '49%' },
+  { p: 5, lane: 1, i: 2, depth: 0, y: '74%' },
+];
+---
+
+<section class="heroname" data-hero>
+  <div class="works" data-works aria-hidden="true">
+    {figs.map((f) => {
+      const proj = projects[f.p % projects.length];
+      return (
+        <figure
+          class:list={['work', f.lane === -1 ? 'lane-left' : 'lane-right']}
+          style={`--lane:${f.lane};--i:${f.i};--depth:${f.depth};--ratio:${proj.ratio.replace(/\s/g, '')};--slot-y:${f.y}`}
+        >
+          <span class="ph" data-label={proj.title}></span>
+        </figure>
+      );
+    })}
+  </div>
+
+  <p class="hn-name" data-name aria-hidden="true">
+    <span class="hn-name-fly" data-name-fly>Eve</span>
+  </p>
+
+  <p class="hn-hint mono cap" data-hint aria-hidden="true">
+    <span data-es="Acercá el cursor" data-en="Move closer">Acercá el cursor</span>
+  </p>
+</section>
+
+<style>
+  .heroname {
+    position: relative;
+    min-height: 100svh;
+    background: var(--paper);
+    overflow: hidden;
+  }
+
+  /* ---------- capa de portadas (revelado lateral) ---------- */
+  .works { position: absolute; inset: 0; --p: 1; pointer-events: none; }
+  :global(html.fx-on) .works { --p: 0; }
+
+  .work {
+    position: absolute;
+    top: var(--slot-y);
+    width: clamp(110px, calc(12vw + var(--depth) * 1.4vw), 208px);
+    aspect-ratio: var(--ratio);
+    max-height: 40vh;
+    --travel: calc(72px + var(--depth) * 24px);
+    /* progreso efectivo escalonado (interiores llegan antes) */
+    --pe: clamp(0, calc((var(--p, 1) - var(--i) * 0.06) / (1 - var(--i) * 0.06)), 1);
+    opacity: clamp(0, calc(var(--pe) * 1.15), 1);
+    transform:
+      translate3d(calc(var(--lane) * var(--travel) * (1 - var(--pe))), calc((1 - var(--pe)) * 8px), 0)
+      scale(calc(0.985 + var(--pe) * 0.015));
+  }
+  .work .ph { width: 100%; height: 100%; border-radius: 3px; box-shadow: 0 18px 44px rgba(14, 14, 14, 0.10); }
+  .lane-left { left: clamp(8px, 2vw, 44px); }
+  .lane-right { right: clamp(8px, 2vw, 44px); }
+  :global(html.fx-on) .work { will-change: transform, opacity; }
+
+  /* ---------- nombre ---------- */
+  .hn-name {
+    position: absolute; inset: 0;
+    display: grid; place-items: center;
+    z-index: 2; pointer-events: none;
+  }
+  .hn-name-fly {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: var(--fs-display);
+    line-height: 0.92;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    transform-origin: center center;
+  }
+  /* en modo enhanced el nombre es fijo y lo anima el rAF maestro (morph) */
+  :global(html.fx-on) .hn-name { display: block; z-index: 40; }
+  :global(html.fx-on) .hn-name-fly {
+    position: fixed;
+    left: 50%; top: 42%;
+    transform: translate(-50%, -50%);
+    will-change: transform;
+    transition: opacity 0.12s var(--ease-quint);
+  }
+
+  .hn-hint {
+    position: absolute;
+    left: 50%; bottom: clamp(22px, 5vh, 48px);
+    transform: translateX(-50%);
+    font-size: 11px; letter-spacing: 0.14em;
+    color: var(--ink-35);
+    z-index: 3;
+    animation: hnpulse 3.2s var(--ease) infinite;
+  }
+  @keyframes hnpulse { 0%, 100% { opacity: 0.35; } 50% { opacity: 0.75; } }
+  :global(html:not(.fx-on)) .hn-hint { display: none; }
+  @media (prefers-reduced-motion: reduce) { .hn-hint { display: none; } }
+</style>

@@ -1,63 +1,164 @@
 ---
 import Base from '../layouts/Base.astro';
+import Cursor from '../components/Cursor.astro';
+import HeroName from '../components/HeroName.astro';
+import AboutMorph from '../components/AboutMorph.astro';
 import HeroLectern from '../components/HeroLectern.astro';
 import SiteFooter from '../components/SiteFooter.astro';
-import T from '../components/T.astro';
-import { link } from '../lib/link';
 ---
 
-<Base title="Preview — Portada viva — EVE" description="Prototipo de hero.">
+<Base title="Preview — Inicio narrativo — EVE" description="Prototipo del inicio narrativo.">
+  {/* gate: activa el modo enhanced antes del primer paint (sin doble cursor / sin FOUC) */}
+  <script is:inline>
+    try {
+      var _fine = matchMedia('(hover:hover) and (pointer:fine)').matches;
+      var _reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
+      if (_fine && !_reduce) document.documentElement.classList.add('fx-on');
+    } catch (e) {}
+  </script>
+
   <h1 class="visually-hidden">Eve — Diseñadora Multimedia & UX/UI · Buenos Aires, Argentina</h1>
 
+  <Cursor />
+  <HeroName />
+  <AboutMorph />
   <HeroLectern />
-
-  <section class="home-about">
-    <div class="wrap">
-      <p class="ha-kicker mono cap"><T es="Estudio" en="About" /></p>
-      <p class="ha-lead rise">
-        <T
-          es="Eve es Diseñadora Multimedia & UX/UI radicada en Buenos Aires. Trabaja en la intersección entre lo editorial, la identidad de marca y el producto digital — con criterio, claridad y carácter."
-          en="Eve is a Multimedia & UX/UI Designer based in Buenos Aires. She works at the intersection of editorial, brand identity and digital product — with judgment, clarity and character."
-        />
-      </p>
-      <a class="ha-link rise rise-delay-1" href={link('/estudio')}>
-        <T es="Conocé el enfoque" en="Read the approach" />
-        <span aria-hidden="true">→</span>
-      </a>
-    </div>
-  </section>
-
   <SiteFooter />
 </Base>
 
-<style>
-  .home-about {
-    padding-top: clamp(64px, 12vh, 150px);
-    padding-bottom: clamp(8px, 3vh, 40px);
+<script>
+  const reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
+  const fine = matchMedia('(hover:hover) and (pointer:fine)').matches;
+  const enhance = fine && !reduce;
+
+  const html = document.documentElement;
+  if (!enhance) {
+    html.classList.remove('fx-on');
+  } else {
+    html.classList.add('fx-on');
+
+    const root = document.querySelector('[data-cursor-root]') as HTMLElement;
+    const ring = document.querySelector('[data-cursor-ring]') as HTMLElement;
+    const dot = document.querySelector('[data-cursor-dot]') as HTMLElement;
+    const works = document.querySelector('[data-works]') as HTMLElement;
+    const fly = document.querySelector('[data-name-fly]') as HTMLElement;
+    const ghost = document.querySelector('[data-name-ghost]') as HTMLElement;
+
+    const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
+    const clampN = (min: number, v: number, max: number) => Math.max(min, Math.min(v, max));
+    // smoothstep con edge0 > edge1 (R_OUT, R_IN): 1 cerca, 0 lejos
+    const smooth = (e0: number, e1: number, x: number) => {
+      let t = clamp01((e0 - x) / (e0 - e1));
+      return t * t * (3 - 2 * t);
+    };
+
+    let vw = innerWidth, vh = innerHeight;
+    let flyCx = 0, flyCy = 0, flyH = 1, nameW = 0;
+    let ghostDocX = 0, ghostDocY = 0, ghostH = 1, scaleFinal = 0.18;
+    let R_IN = 0, R_OUT = 1;
+
+    function measure() {
+      vw = innerWidth; vh = innerHeight;
+      fly.style.opacity = '1';
+      fly.style.transform = 'translate(-50%, -50%)';
+      const fr = fly.getBoundingClientRect();
+      flyCx = fr.left + fr.width / 2; flyCy = fr.top + fr.height / 2;
+      flyH = fr.height || 1; nameW = fr.width;
+      const gr = ghost.getBoundingClientRect();
+      ghostDocX = gr.left + scrollX + gr.width / 2;
+      ghostDocY = gr.top + scrollY + gr.height / 2;
+      ghostH = gr.height || 1;
+      scaleFinal = clampN(0.08, ghostH / flyH, 0.4);
+      const cordon = Math.max(nameW / 2 + clampN(48, 0.07 * vw, 120), 0.20 * vw);
+      R_IN = cordon + 40;
+      R_OUT = R_IN + clampN(200, 0.22 * vw, 460);
+    }
+
+    // ---------- estado del cursor ----------
+    let mx = vw / 2, my = vh / 2, rx = mx, ry = my;
+    let dotScale = 1, ringStateScale = 1, curState = '';
+    const setState = (s: string) => {
+      if (s === curState) return;
+      curState = s;
+      if (s === 'work') { ringStateScale = 1.55; dotScale = 0.85; }
+      else if (s === 'link') { ringStateScale = 1.3; dotScale = 0.6; }
+      else { ringStateScale = 1; dotScale = 1; }
+      dot.style.transform = `translate3d(${mx}px,${my}px,0) scale(${dotScale})`;
+      kick();
+    };
+    const stateFor = (el: Element | null) => {
+      if (!el || !(el as HTMLElement).closest) return '';
+      if ((el as HTMLElement).closest('.lcov, .work, .ph')) return 'work';
+      if ((el as HTMLElement).closest('a, button, .lrow-link')) return 'link';
+      return '';
+    };
+    document.addEventListener('pointerover', (e) => setState(stateFor(e.target as Element)), { passive: true });
+
+    addEventListener('pointermove', (e) => {
+      mx = e.clientX; my = e.clientY;
+      dot.style.transform = `translate3d(${mx}px,${my}px,0) scale(${dotScale})`;
+      kick();
+    }, { passive: true });
+
+    // ---------- loop maestro ----------
+    let prox = 0, proxTarget = 0;
+    let raf = 0, running = false, scrollDirty = true;
+
+    function frame() {
+      // cursor: aro con lerp
+      rx += (mx - rx) * 0.2; ry += (my - ry) * 0.2;
+      // proximidad (solo cerca del top / en el hero)
+      if (scrollY < vh * 0.32) {
+        const d = Math.hypot(mx - flyCx, my - flyCy);
+        proxTarget = d > R_OUT * 1.04 ? 0 : smooth(R_OUT, R_IN, d);
+      } else proxTarget = 0;
+      prox += (proxTarget - prox) * 0.12;
+      if (prox < 0.001 && proxTarget === 0) prox = 0;
+      works.style.setProperty('--p', prox.toFixed(3));
+      root.style.setProperty('--prox', prox.toFixed(3));
+      const ringScale = ringStateScale * (1 + prox * 0.95);
+      ring.style.transform = `translate3d(${rx.toFixed(1)}px,${ry.toFixed(1)}px,0) scale(${ringScale.toFixed(3)})`;
+
+      // morph del nombre con el scroll
+      const scrollEnd = ghostDocY - 0.32 * vh;
+      const p = scrollEnd > 0 ? clamp01(scrollY / scrollEnd) : 0;
+      const e = p >= 1 ? 1 : 1 - Math.pow(2, -10 * p);
+      const dx = (ghostDocX - scrollX) - flyCx;
+      const dy = (ghostDocY - scrollY) - flyCy;
+      const sc = 1 + (scaleFinal - 1) * e;
+      fly.style.transform = `translate(-50%,-50%) translate3d(${(e * dx).toFixed(1)}px,${(e * dy).toFixed(1)}px,0) scale(${sc.toFixed(3)})`;
+      if (p > 0.985) { fly.style.opacity = '0'; ghost.style.visibility = 'visible'; }
+      else { fly.style.opacity = '1'; ghost.style.visibility = 'hidden'; }
+
+      const moving =
+        Math.abs(mx - rx) > 0.3 || Math.abs(my - ry) > 0.3 ||
+        Math.abs(proxTarget - prox) > 0.003 || scrollDirty;
+      scrollDirty = false;
+      if (moving) raf = requestAnimationFrame(frame);
+      else running = false;
+    }
+    function kick() { if (!running) { running = true; raf = requestAnimationFrame(frame); } }
+
+    addEventListener('scroll', () => { scrollDirty = true; kick(); }, { passive: true });
+    let rt = 0;
+    addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { measure(); scrollDirty = true; kick(); }, 150); }, { passive: true });
+    document.addEventListener('visibilitychange', () => { if (document.hidden) { cancelAnimationFrame(raf); running = false; } else kick(); });
+
+    // re-medir cuando cambia el idioma (la frase reflowea y mueve el hueco)
+    const origSetLang = (window as any).__eveSetLang;
+    if (origSetLang) {
+      (window as any).__eveSetLang = (l: string) => {
+        origSetLang(l);
+        requestAnimationFrame(() => requestAnimationFrame(() => { measure(); scrollDirty = true; kick(); }));
+      };
+    }
+
+    // medir tras cargar las fuentes (Spectral display=swap cambia métricas)
+    measure();
+    kick();
+    if ((document as any).fonts && (document as any).fonts.ready) {
+      (document as any).fonts.ready.then(() => { measure(); scrollDirty = true; kick(); });
+    }
+    addEventListener('load', () => { measure(); scrollDirty = true; kick(); }, { once: true });
   }
-  .ha-kicker { color: var(--ink-45); margin-bottom: clamp(22px, 4vh, 40px); }
-  .ha-lead {
-    font-family: var(--serif);
-    font-weight: 300;
-    font-size: clamp(1.5rem, 3.4vw, 2.7rem);
-    line-height: 1.28;
-    letter-spacing: -0.015em;
-    color: var(--ink);
-    max-width: 24ch;
-  }
-  .ha-link {
-    display: inline-flex;
-    align-items: baseline;
-    gap: 12px;
-    margin-top: clamp(26px, 4vh, 46px);
-    font-family: var(--sans);
-    font-size: clamp(14px, 1.1vw, 16px);
-    letter-spacing: 0.02em;
-    border-bottom: 1px solid var(--ink);
-    padding-bottom: 4px;
-    transition: opacity var(--dur-micro) var(--ease-quint);
-  }
-  .ha-link span { transition: transform var(--dur-ui) var(--ease-out); display: inline-block; }
-  .ha-link:hover { opacity: 0.62; }
-  .ha-link:hover span { transform: translateX(6px); }
-</style>
+</script>
