@@ -1,14 +1,15 @@
 ---
 /* ============================================================
-   HeroField — campo 3D de portadas con camara (dolly).
-   · Mucho aire en Z: capas de profundidad bien separadas.
-   · Deriva orientada por el cursor + parallax de perspective-origin
-     (mirar dentro del espacio 3D, "circularidad").
-   · Hover: la CAMARA hace dolly hacia la portada -> se centra y
-     amplia; el fondo tambien se acerca (en menor medida) y se desliza
-     con la circularidad (efecto iman). Ease-in-out.
-   · Hit-testing propio sobre lo que se ve (con hold-radius, sin
-     oscilacion). Las .ph son placeholders.
+   HeroField — "Revelado": contact-sheet de portadas + lente.
+   · Estado base ESTATICO (cero deriva, cero camara) -> no marea.
+   · El cursor es una lente: solo lo que esta debajo se REVELA
+     (gris claro -> tinta, aparece el titulo), se eleva apenas
+     (max 5%, no es un zoom) y se imanta levemente hacia el cursor.
+   · Falloff suave por distancia -> el cambio es LOCAL; el resto
+     del campo queda quieto y calmo.
+   · La portada mas cercana es el objetivo de clic.
+   · Las .fcard-fill son placeholders (al cargar las portadas
+     reales, el "revelado" pasa de gris a la imagen a full).
    ============================================================ */
 import { projects } from '../data/site';
 import { link } from '../lib/link';
@@ -22,19 +23,27 @@ function mulberry32(a: number) {
   };
 }
 const rnd = mulberry32(20260615);
-const ratios = ['4/5', '3/4', '1/1', '3/2', '4/3'];
+const ratios = ['4/5', '3/4', '1/1', '3/2'];
 
-const N = 12;
+const N = 16;
+// reparto de portadas barajado (evita que el mismo proyecto caiga en fila/columna)
+const pool = Array.from({ length: projects.length }, (_, k) => k);
+const shuffled = () => {
+  const a = [...pool];
+  for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+  return a;
+};
+const order: number[] = [];
+let bag: number[] = [];
+for (let i = 0; i < N; i++) { if (!bag.length) bag = shuffled(); order.push(bag.pop()!); }
+
 const cards = Array.from({ length: N }, (_, i) => ({
-  bxf: rnd() * 2 - 1,
-  byf: rnd() * 2 - 1,
-  bz: Math.round(-1200 + rnd() * 1320), // aire en Z [-1200, 120]
-  w: 230 + Math.round(rnd() * 170),
+  jx: rnd() * 2 - 1,           // jitter dentro de la celda
+  jy: rnd() * 2 - 1,
+  sf: rnd(),                   // factor de tamano (variedad)
   ar: ratios[Math.floor(rnd() * ratios.length)],
-  p: i % projects.length,
-  fa: 16 + Math.round(rnd() * 30),
-  fs: 0.25 + rnd() * 0.45,
-  ph: Math.round(rnd() * 628) / 100,
+  p: order[i],
+  d: i,                        // orden de entrada (stagger)
 }));
 ---
 
@@ -46,19 +55,21 @@ const cards = Array.from({ length: N }, (_, i) => ({
         <a
           class="fcard"
           href={link(`/trabajos/${proj.id}`)}
-          style={`width:${c.w}px;aspect-ratio:${c.ar}`}
-          data-bxf={c.bxf} data-byf={c.byf} data-bz={c.bz}
-          data-fa={c.fa} data-fs={c.fs} data-ph={c.ph}
+          style={`--ar:${c.ar};--d:${c.d * 45}ms`}
+          data-jx={c.jx} data-jy={c.jy} data-sf={c.sf} data-ar={c.ar}
           data-title={proj.title} draggable="false"
         >
-          <span class="fcard-img ph" data-label={proj.title}></span>
+          <span class="fcard-fill"></span>
+          <span class="fcard-label">{proj.title}</span>
         </a>
       );
     })}
   </div>
 
+  <div class="lens" data-lens aria-hidden="true"></div>
+
   <p class="field-hint" aria-hidden="true">
-    <span data-es="Pasá el cursor · clic para entrar" data-en="Hover · click to open">Pasá el cursor · clic para entrar</span>
+    <span data-es="Pasá el cursor para revelar · clic para entrar" data-en="Move to reveal · click to open">Pasá el cursor para revelar · clic para entrar</span>
   </p>
 </section>
 
@@ -70,28 +81,69 @@ const cards = Array.from({ length: N }, (_, i) => ({
     min-height: 560px;
     background: #fff;
     overflow: hidden;
-    perspective: 750px;
-    perspective-origin: 50% 48%;
     cursor: default;
   }
   .field.over-card { cursor: pointer; }
-  .stage { position: absolute; inset: 0; transform-style: preserve-3d; }
+  .stage { position: absolute; inset: 0; }
 
   .fcard {
     position: absolute;
     left: 0; top: 0;
     display: block;
     border-radius: 2px;
-    overflow: hidden;
     transform-origin: center center;
+    transform: translate3d(var(--tx, 0px), var(--ty, 0px), 0) scale(calc(1 + var(--r, 0) * 0.05));
+    box-shadow:
+      0 calc(2px + var(--r, 0) * 14px) calc(8px + var(--r, 0) * 30px)
+      rgba(14, 14, 14, calc(var(--r, 0) * 0.16));
     will-change: transform;
-    transition: opacity 0.6s var(--ease);
     -webkit-user-drag: none;
   }
-  .fcard-img { display: block; width: 100%; height: 100%; }
+  .fcard-fill {
+    position: absolute; inset: 0;
+    border-radius: inherit;
+    border: 1px solid color-mix(in oklab, #0d0d0d calc(var(--r, 0) * 90%), #e8e8e8);
+    background-color: color-mix(in oklab, #0d0d0d calc(var(--r, 0) * 100%), #f4f4f4);
+  }
+  /* entrada: revelado de arriba hacia abajo, escalonado */
+  .field:not(.is-still) .fcard-fill {
+    animation: fcardIn 0.8s cubic-bezier(0.22, 0.7, 0.2, 1) both;
+    animation-delay: var(--d, 0ms);
+  }
+  @keyframes fcardIn {
+    from { clip-path: inset(0 0 100% 0); opacity: 0; }
+    to   { clip-path: inset(0 0 0 0); opacity: 1; }
+  }
 
-  /* el fondo acompana, apenas atenuado */
-  .field.has-focus .fcard:not(.is-focus) { opacity: 0.5; }
+  .fcard-label {
+    position: absolute;
+    left: 10px; right: 10px; bottom: 9px;
+    font-family: var(--mono);
+    font-size: 11px; letter-spacing: 0.06em;
+    line-height: 1.25;
+    color: color-mix(in oklab, #ffffff calc(var(--r, 0) * 100%), #b7b7b7);
+    opacity: calc(0.3 + var(--r, 0) * 0.7);
+    pointer-events: none;
+    text-transform: uppercase;
+  }
+
+  .fcard.is-active .fcard-fill {
+    box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.55);
+  }
+
+  /* lente sutil que acompana al cursor (afordancia) */
+  .lens {
+    position: absolute; left: 0; top: 0;
+    width: 520px; height: 520px;
+    margin: -260px 0 0 -260px;
+    border-radius: 50%;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.45s ease;
+    transform: translate3d(var(--lx, 0px), var(--ly, 0px), 0);
+    background: radial-gradient(circle, transparent 36%, rgba(13, 13, 13, 0.05) 39%, transparent 54%);
+  }
+  .field.is-live .lens { opacity: 1; }
 
   .field-hint {
     position: absolute;
@@ -102,8 +154,18 @@ const cards = Array.from({ length: N }, (_, i) => ({
     color: var(--ink-35); pointer-events: none;
     animation: hintpulse 3.2s var(--ease) infinite;
   }
-  @keyframes hintpulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 0.85; } }
-  @media (prefers-reduced-motion: reduce) { .field-hint { animation: none; } }
+  @keyframes hintpulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 0.8; } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .field:not(.is-still) .fcard-fill { animation: none; }
+    .field-hint { animation: none; }
+    .lens { display: none; }
+  }
+  /* tactil: sin lente, contacto legible y tocable */
+  @media (hover: none) {
+    .lens { display: none; }
+    .fcard-label { opacity: 0.7; color: #777; }
+  }
 </style>
 
 <script>
@@ -111,139 +173,129 @@ const cards = Array.from({ length: N }, (_, i) => ({
 
   if (field) {
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const coarse = matchMedia('(hover: none)').matches;
     const still = location.hash === '#freeze';
-    const animate = !reduce && !still;
+    if (still) field.classList.add('is-still');
 
-    const P = 750;
-    const MAXV = 1.7;
-    const DOLLY = 240;       // cuanto se acerca toda la escena al enfocar
-    const FRONT = 250;       // z de la portada enfocada
-    const EMPH = 1.45;       // escala extra de la enfocada
-    const DUR = 0.5;         // ease-in-out del foco
-    const HOLD = 44;         // radio para sostener el foco (anti-oscilacion)
+    const lens = field.querySelector<HTMLElement>('[data-lens]');
 
     type Card = {
-      el: HTMLElement; bxf: number; byf: number; bz: number;
-      fa: number; fs: number; ph: number; w: number; h: number;
-      fp: number; aX: number; aY: number; aZ: number; vz: number;
-      rl: number; rr: number; rt: number; rb: number;
+      el: HTMLElement; fill: HTMLElement;
+      jx: number; jy: number; sf: number; arN: number;
+      cx: number; cy: number; w: number; h: number;
+      r: number; rt: number;
     };
+
+    const arNum = (s: string) => { const [a, b] = s.split('/').map(Number); return a / b; };
 
     const cards: Card[] = Array.from(field.querySelectorAll<HTMLElement>('.fcard')).map((el) => ({
       el,
-      bxf: parseFloat(el.dataset.bxf || '0'), byf: parseFloat(el.dataset.byf || '0'),
-      bz: parseFloat(el.dataset.bz || '0'),
-      fa: parseFloat(el.dataset.fa || '20'), fs: parseFloat(el.dataset.fs || '0.4'),
-      ph: parseFloat(el.dataset.ph || '0'),
-      w: el.offsetWidth, h: el.offsetHeight,
-      fp: 0, aX: 0, aY: 0, aZ: 0, vz: 0, rl: 0, rr: 0, rt: 0, rb: 0,
+      fill: el.querySelector('.fcard-fill') as HTMLElement,
+      jx: parseFloat(el.dataset.jx || '0'), jy: parseFloat(el.dataset.jy || '0'),
+      sf: parseFloat(el.dataset.sf || '0.5'), arN: arNum(el.dataset.ar || '4/5'),
+      cx: 0, cy: 0, w: 0, h: 0, r: 0, rt: 0,
     }));
 
     let cw = field.clientWidth, ch = field.clientHeight;
-    let XR = cw / 2 + 560, YR = ch / 2 + 380;
+    let LENS = 300;
+
     const measure = () => {
       cw = field.clientWidth; ch = field.clientHeight;
-      XR = cw / 2 + 560; YR = ch / 2 + 380;
-      cards.forEach((c) => { c.w = c.el.offsetWidth; c.h = c.el.offsetHeight; });
+      LENS = Math.min(360, Math.max(220, cw * 0.22));
+      const mx = Math.max(40, cw * 0.05);
+      const topPad = Math.max(46, ch * 0.10);
+      const botPad = Math.max(96, ch * 0.16);
+      const gw = cw - mx * 2;
+      const gh = ch - topPad - botPad;
+      const cols = Math.min(5, Math.max(3, Math.round(cw / 340)));
+      const rows = Math.ceil(cards.length / cols);
+      const cellW = gw / cols, cellH = gh / rows;
+
+      cards.forEach((c, idx) => {
+        const i = idx % cols, j = Math.floor(idx / cols);
+        const cx = mx + (i + 0.5) * cellW + c.jx * cellW * 0.15;
+        const cy = topPad + (j + 0.5) * cellH + c.jy * cellH * 0.15;
+        // tamano que cabe en la celda, con variedad
+        const wMax = cellW * 0.82, hMax = cellH * 0.82;
+        let w = Math.min(wMax, hMax * c.arN) * (0.86 + c.sf * 0.14);
+        let h = w / c.arN;
+        c.cx = cx; c.cy = cy; c.w = w; c.h = h;
+        c.el.style.left = (cx - w / 2).toFixed(1) + 'px';
+        c.el.style.top = (cy - h / 2).toFixed(1) + 'px';
+        c.el.style.width = w.toFixed(1) + 'px';
+        c.el.style.height = h.toFixed(1) + 'px';
+      });
     };
+    measure();
     addEventListener('resize', measure, { passive: true });
 
-    let px = -1, py = -1, inside = false;
-    field.addEventListener('pointermove', (e) => { const r = field.getBoundingClientRect(); px = e.clientX - r.left; py = e.clientY - r.top; inside = true; });
-    field.addEventListener('pointerleave', () => { inside = false; });
+    let px = -1e5, py = -1e5, inside = false;
+    let lx = 0, ly = 0;
+    field.addEventListener('pointermove', (e) => {
+      const rct = field.getBoundingClientRect();
+      px = e.clientX - rct.left; py = e.clientY - rct.top;
+      if (!inside) { inside = true; lx = px; ly = py; field.classList.add('is-live'); }
+    });
+    field.addEventListener('pointerleave', () => { inside = false; field.classList.remove('is-live'); });
 
-    let focus: Card | null = null, holdX = 0, holdY = 0;
-    const setFocus = (c: Card | null) => {
-      if (focus === c) return;
-      if (focus) focus.el.classList.remove('is-focus');
-      focus = c; holdX = px; holdY = py;
-      field.classList.toggle('has-focus', !!c);
-      field.classList.toggle('over-card', !!c);
-      if (c) c.el.classList.add('is-focus');
-    };
-
-    const hitAt = (x: number, y: number) => {
-      let hit: Card | null = null, hz = -1e9;
-      for (const c of cards) if (x >= c.rl && x <= c.rr && y >= c.rt && y <= c.rb && c.vz > hz) { hz = c.vz; hit = c; }
+    // clic -> portada mas cercana dentro de la lente
+    const nearest = () => {
+      let hit: Card | null = null, bd = LENS * LENS;
+      for (const c of cards) {
+        const dx = px - c.cx, dy = py - c.cy, d2 = dx * dx + dy * dy;
+        if (d2 < bd) { bd = d2; hit = c; }
+      }
       return hit;
     };
-    field.addEventListener('click', (e) => {
-      const r = field.getBoundingClientRect();
-      const h = hitAt(e.clientX - r.left, e.clientY - r.top);
+    field.addEventListener('click', () => {
+      const h = nearest();
       if (h) location.href = h.el.getAttribute('href') || '#';
     });
 
-    const wrap = (v: number, r: number) => (((v + r) % (2 * r)) + 2 * r) % (2 * r) - r;
-    const clamp = (v: number, a: number, b: number) => (v < a ? a : v > b ? b : v);
-    const se = (x: number) => { x = clamp(x, 0, 1); return x * x * x * (x * (x * 6 - 15) + 10); };
-    const lerp = (a: number, b: number, e: number) => a + (b - a) * e;
+    const smooth = (t: number) => { t = t < 0 ? 0 : t > 1 ? 1 : t; return t * t * (3 - 2 * t); };
 
-    let offX = 0, offY = 0, vx = 0, vy = 0;
-    let ox = 0, oy = 0, gf = 0;
-    let camX = 0, camY = 0, camZ = 0; // camara (dolly+pan), suavizada
-    const t0 = performance.now();
-    let last = t0, raf = 0;
+    // tactil: revelado base tenue y quieto (los <a> ya son tocables)
+    if (coarse || reduce) {
+      cards.forEach((c) => c.el.style.setProperty('--r', '0'));
+    }
 
-    const frame = (now: number) => {
-      const t = (now - t0) / 1000;
-      const dt = Math.min(0.05, (now - last) / 1000); last = now;
+    let active: Card | null = null;
+    let raf = 0;
+    const frame = () => {
+      // lente suavizada
+      lx += (px - lx) * 0.2; ly += (py - ly) * 0.2;
+      if (lens) { lens.style.setProperty('--lx', lx.toFixed(1) + 'px'); lens.style.setProperty('--ly', ly.toFixed(1) + 'px'); }
 
-      // 1) foco por hit-test (rects del frame anterior) + hold-radius
-      if (!inside) setFocus(null);
-      else if (focus) { if (Math.hypot(px - holdX, py - holdY) > HOLD) setFocus(hitAt(px, py)); }
-      else setFocus(hitAt(px, py));
-
-      gf += clamp((focus ? 1 : 0) - gf, -dt / DUR, dt / DUR);
-      const gE = se(gf);
-
-      // 2) perspective-origin sigue al cursor (circularidad); recentra al enfocar
-      const tox = inside && animate ? ((px - cw / 2) / (cw / 2)) * 0.12 * (1 - gE) : 0;
-      const toy = inside && animate ? ((py - ch / 2) / (ch / 2)) * 0.10 * (1 - gE) : 0;
-      ox += (tox - ox) * 0.06; oy += (toy - oy) * 0.06;
-      const Ox = cw * (0.5 + ox), Oy = ch * (0.48 + oy);
-      field.style.perspectiveOrigin = `${((0.5 + ox) * 100).toFixed(2)}% ${((0.48 + oy) * 100).toFixed(2)}%`;
-
-      // 3) deriva orientada por el cursor (se ralentiza al enfocar)
-      let tvx = 0, tvy = 0;
-      if (animate) {
-        if (inside) { tvx = ((px - cw / 2) / (cw / 2)) * MAXV; tvy = ((py - ch / 2) / (ch / 2)) * MAXV; }
-        else { tvx = -0.5; tvy = -0.28; }
-      }
-      vx += (tvx - vx) * 0.05; vy += (tvy - vy) * 0.05;
-      const slow = 1 - 0.82 * gE;
-      offX += vx * slow; offY += vy * slow;
-
-      // pass A: posicion ambiente
+      let best: Card | null = null, bestR = 0.18;
       for (const c of cards) {
-        c.aX = wrap(c.bxf * XR + offX + Math.sin(t * c.fs + c.ph) * c.fa * (animate ? 1 : 0), XR);
-        c.aY = wrap(c.byf * YR + offY + Math.sin(t * c.fs * 0.8 + c.ph) * c.fa * (animate ? 1 : 0), YR);
-        c.aZ = c.bz + Math.sin(t * c.fs * 0.6 + c.ph) * c.fa * 0.5 * (animate ? 1 : 0);
+        let target = 0;
+        if (inside) {
+          const dx = px - c.cx, dy = py - c.cy;
+          const d = Math.hypot(dx, dy);
+          target = smooth(1 - d / LENS);
+        }
+        c.r += (target - c.r) * 0.16;
+        if (c.r < 0.001) c.r = 0;
+        c.el.style.setProperty('--r', c.r.toFixed(3));
+        // imantacion sutil hacia el cursor (max ~12px)
+        if (c.r > 0.002 && inside) {
+          const dx = px - c.cx, dy = py - c.cy, d = Math.hypot(dx, dy) || 1;
+          const pull = c.r * 12;
+          c.el.style.setProperty('--tx', ((dx / d) * pull).toFixed(1) + 'px');
+          c.el.style.setProperty('--ty', ((dy / d) * pull).toFixed(1) + 'px');
+        } else {
+          c.el.style.setProperty('--tx', '0px');
+          c.el.style.setProperty('--ty', '0px');
+        }
+        c.el.style.zIndex = String(1 + Math.round(c.r * 100));
+        if (c.r > bestR) { bestR = c.r; best = c; }
       }
 
-      // 4) camara: dolly hacia adelante + pan para centrar la enfocada
-      const camXt = focus ? -focus.aX : 0;
-      const camYt = focus ? -focus.aY : 0;
-      const camZt = focus ? DOLLY : 0;
-      camX += (camXt - camX) * 0.09;
-      camY += (camYt - camY) * 0.09;
-      camZ += (camZt - camZ) * 0.09;
-
-      // pass B: visual (camara para todos; la enfocada va al frente/centro) + rects
-      for (const c of cards) {
-        c.fp += clamp((focus === c ? 1 : 0) - c.fp, -dt / DUR, dt / DUR);
-        const e = se(c.fp);
-        // escena con camara (dolly+pan): el fondo tambien se acerca y se desliza
-        const sx = c.aX + camX, sy = c.aY + camY, sz = c.aZ + camZ;
-        // mezcla hacia el estado enfocado (centro exacto, frente fijo, enfasis)
-        const X = lerp(sx, 0, e), Y = lerp(sy, 0, e), Z = lerp(sz, FRONT, e), S = lerp(1, EMPH, e);
-        c.vz = Z;
-        const tx = cw / 2 + X - c.w / 2, ty = ch / 2 + Y - c.h / 2;
-        c.el.style.transform = `translate3d(${tx.toFixed(1)}px, ${ty.toFixed(1)}px, ${Z.toFixed(1)}px) scale(${S.toFixed(3)})`;
-        // rect proyectado (para hit-test del proximo frame)
-        const f = P / (P - Z);
-        const pcx = Ox + (cw / 2 + X - Ox) * f, pcy = Oy + (ch / 2 + Y - Oy) * f;
-        const hw = (c.w * S * f) / 2, hh = (c.h * S * f) / 2;
-        c.rl = pcx - hw; c.rr = pcx + hw; c.rt = pcy - hh; c.rb = pcy + hh;
+      if (best !== active) {
+        if (active) active.el.classList.remove('is-active');
+        active = best;
+        if (active) active.el.classList.add('is-active');
+        field.classList.toggle('over-card', !!active);
       }
       raf = requestAnimationFrame(frame);
     };
@@ -251,7 +303,7 @@ const cards = Array.from({ length: N }, (_, i) => ({
 
     document.addEventListener('visibilitychange', () => {
       cancelAnimationFrame(raf);
-      if (!document.hidden) { last = performance.now(); raf = requestAnimationFrame(frame); }
+      if (!document.hidden) raf = requestAnimationFrame(frame);
     });
   }
 </script>
