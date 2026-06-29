@@ -1,0 +1,215 @@
+---
+/* ============================================================
+   HomeBanner — inicio estilo estudio (ref. "Other°").
+   · "Eve°" grande arriba-izq + descripción y redes al lado.
+   · Al hacer scroll, "Eve°" sube y se integra al menú (morph
+     hacia el wordmark del Topbar). FLIP scroll-linked.
+   · Glow naranja radial que sigue al cursor POR DETRÁS del
+     banner (vidrio esmerilado): visible en los huecos, oculto
+     tras las portadas. Abarca de arriba hasta los trabajos.
+   · Fallback (sin home-fx): nombre en flujo, sin glow, estático.
+   Las .ph son placeholders. La lógica vive en index.astro.
+   ============================================================ */
+import { projects, social } from '../data/site';
+import { link } from '../lib/link';
+
+const works = projects.slice(0, 8);
+---
+
+<section class="banner" data-banner>
+  <div class="bn-glow" data-glow aria-hidden="true"></div>
+
+  <div class="bn-inner wrap">
+    <header class="bn-head">
+      <div class="bn-name-wrap">
+        <h1 class="bn-name-slot">Eve<sup class="deg">°</sup></h1>
+        <span class="bn-name-fly" data-name-fly aria-hidden="true">Eve<sup class="deg">°</sup></span>
+      </div>
+
+      <div class="bn-desc">
+        <p class="bn-desc-text"
+          data-es="Eve es diseñadora multimedia y UX/UI. Construye identidades y experiencias con intención, claridad y carácter — entre lo editorial, la marca y el producto digital."
+          data-en="Eve is a multimedia & UX/UI designer. She builds identities and experiences with intent, clarity and character — between editorial, brand and digital product."
+        >Eve es diseñadora multimedia y UX/UI. Construye identidades y experiencias con intención, claridad y carácter — entre lo editorial, la marca y el producto digital.</p>
+        <nav class="bn-social" aria-label="Redes">
+          {social.map((s) => (
+            <a href={s.href} target="_blank" rel="noopener noreferrer" data-cursor="link">{s.label}</a>
+          ))}
+        </nav>
+      </div>
+    </header>
+
+    <div class="bn-works-head">
+      <h2 class="bn-sw">
+        <span data-es="Trabajos seleccionados" data-en="Selected works">Trabajos seleccionados</span>
+        <sup class="bn-count">({works.length})</sup>
+      </h2>
+      <div class="bn-views" aria-hidden="true">
+        <span class="is-on">Grid</span>
+        <span><span data-es="Lista" data-en="List">Lista</span></span>
+        <span>Feed</span>
+        <span>Full</span>
+      </div>
+    </div>
+
+    <div class="bn-grid">
+      {works.map((p) => (
+        <a class="bn-cell" href={link(`/trabajos/${p.id}`)} data-cursor="work">
+          <span class="bn-cell-img ph" data-label={p.title}></span>
+          <span class="bn-cell-cap">
+            <span class="bn-cell-title">{p.title}</span>
+            <span class="bn-cell-disc" data-es={p.disc.es} data-en={p.disc.en}>{p.disc.es}</span>
+          </span>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .banner {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background: var(--paper);
+    padding-top: clamp(84px, 12vh, 128px);
+    padding-bottom: clamp(40px, 7vh, 90px);
+  }
+
+  /* ---------- glow naranja (detrás de todo) ---------- */
+  .bn-glow {
+    position: absolute;
+    left: 0; top: 0;
+    width: 40vmax; height: 40vmax;
+    margin: -20vmax 0 0 -20vmax;
+    border-radius: 50%;
+    background: radial-gradient(circle, color-mix(in oklab, var(--orange) 78%, transparent), transparent 60%);
+    filter: blur(40px);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 0;
+    will-change: transform;
+    transition: opacity 0.6s var(--ease-out);
+  }
+  :global(.banner.glow-on) .bn-glow { opacity: 0.82; }
+
+  .bn-inner { position: relative; z-index: 1; }
+
+  /* ---------- cabecera: nombre + descripción ---------- */
+  .bn-head {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: clamp(24px, 4vw, 72px);
+    align-items: start;
+    padding-bottom: clamp(36px, 7vh, 86px);
+  }
+  .bn-name-wrap { position: relative; }
+  .bn-name-slot,
+  .bn-name-fly {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: clamp(3.4rem, 12vw, 11rem);
+    line-height: 0.86;
+    letter-spacing: -0.035em;
+    color: var(--ink);
+  }
+  .bn-name-slot { display: block; margin: 0; }
+  .deg { font-size: 0.42em; vertical-align: top; font-weight: 500; line-height: 1; }
+
+  .bn-name-fly { position: absolute; left: 0; top: 0; pointer-events: none; }
+  :global(html.home-fx) .bn-name-slot { visibility: hidden; }
+  :global(html:not(.home-fx)) .bn-name-fly { display: none; }
+  :global(html.home-fx) .bn-name-fly {
+    position: fixed;
+    transform-origin: left top;
+    will-change: transform;
+    transition: opacity 0.12s var(--ease-quint);
+  }
+
+  .bn-desc { padding-top: clamp(6px, 2vh, 18px); }
+  .bn-desc-text {
+    font-family: var(--sans);
+    font-size: clamp(0.95rem, 1.15vw, 1.1rem);
+    line-height: 1.5;
+    color: var(--ink-80);
+    max-width: 42ch;
+  }
+  .bn-social {
+    display: flex; flex-wrap: wrap; gap: 18px;
+    margin-top: clamp(18px, 3vh, 30px);
+  }
+  .bn-social a {
+    font-family: var(--sans);
+    font-size: var(--fs-small);
+    color: var(--ink-60);
+    transition: color var(--dur-micro) var(--ease-quint);
+  }
+  .bn-social a:hover { color: var(--ink); }
+
+  /* ---------- header de trabajos ---------- */
+  .bn-works-head {
+    display: flex; flex-wrap: wrap; align-items: baseline;
+    justify-content: space-between; gap: 14px 24px;
+    padding-bottom: clamp(16px, 2.5vh, 26px);
+    border-top: 1px solid var(--line);
+    padding-top: clamp(16px, 2.5vh, 26px);
+  }
+  .bn-sw {
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: clamp(1.1rem, 1.8vw, 1.6rem);
+    letter-spacing: -0.01em;
+  }
+  .bn-count { font-size: 0.55em; font-weight: 500; color: var(--ink-45); vertical-align: super; margin-left: 2px; }
+  .bn-views { display: flex; gap: clamp(18px, 3vw, 44px); }
+  .bn-views span {
+    font-family: var(--sans);
+    font-size: clamp(1rem, 1.5vw, 1.35rem);
+    color: var(--ink-35);
+  }
+  .bn-views .is-on { color: var(--ink); }
+
+  /* ---------- grilla de trabajos ---------- */
+  .bn-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+  }
+  .bn-cell {
+    position: relative;
+    display: block;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+  }
+  .bn-cell-img { width: 100%; height: 100%; transition: transform 0.5s var(--ease-out), opacity 0.4s var(--ease-out); }
+  .bn-cell:hover .bn-cell-img { transform: scale(1.03); }
+  .bn-cell-cap {
+    position: absolute; left: 0; right: 0; bottom: 0;
+    display: flex; flex-direction: column; gap: 2px;
+    padding: 12px 13px;
+    background: linear-gradient(to top, rgba(14,14,14,0.5), transparent);
+    opacity: 0; transform: translateY(6px);
+    transition: opacity var(--dur-ui) var(--ease-out), transform var(--dur-ui) var(--ease-out);
+  }
+  .bn-cell:hover .bn-cell-cap,
+  .bn-cell:focus-visible .bn-cell-cap { opacity: 1; transform: translateY(0); }
+  .bn-cell-title { font-family: var(--serif); font-size: 1.05rem; color: #fff; line-height: 1.1; }
+  .bn-cell-disc {
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase;
+    color: rgba(255,255,255,0.8);
+  }
+
+  /* ---------- responsive ---------- */
+  @media (max-width: 860px) {
+    .bn-head { grid-template-columns: 1fr; gap: clamp(20px, 5vw, 36px); }
+    .bn-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 420px) {
+    .bn-views span:nth-child(n+3) { display: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bn-glow { display: none; }
+  }
+  @media (hover: none) { .bn-glow { display: none; } }
+</style>
