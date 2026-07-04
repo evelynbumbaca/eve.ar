@@ -3,17 +3,19 @@
    HomeBanner — inicio estilo estudio (ref. "Other°").
    · "Eve°" grande arriba-izq + descripción y redes al lado.
    · Al hacer scroll, "Eve°" sube y se integra al menú (morph
-     hacia el wordmark del Topbar). FLIP scroll-linked.
+     hacia el wordmark del Topbar). La lógica vive en index.astro.
    · Glow naranja radial que sigue al cursor POR DETRÁS del
      banner (vidrio esmerilado): visible en los huecos, oculto
-     tras las portadas. Abarca de arriba hasta los trabajos.
+     tras las portadas.
+   · Grilla 3×3 de trabajos con FILTROS por disciplina reales
+     (el contador se actualiza al filtrar).
    · Fallback (sin home-fx): nombre en flujo, sin glow, estático.
-   Las .ph son placeholders. La lógica vive en index.astro.
+   Las .ph son placeholders.
    ============================================================ */
-import { projects, social } from '../data/site';
+import { projects, filters, social } from '../data/site';
 import { link } from '../lib/link';
 
-const works = projects.slice(0, 8);
+const works = projects;
 ---
 
 <section class="banner" data-banner>
@@ -33,7 +35,7 @@ const works = projects.slice(0, 8);
         >Eve es diseñadora multimedia y UX/UI. Construye identidades y experiencias con intención, claridad y carácter — entre lo editorial, la marca y el producto digital.</p>
         <nav class="bn-social" aria-label="Redes">
           {social.map((s) => (
-            <a href={s.href} target="_blank" rel="noopener noreferrer" data-cursor="link">{s.label}</a>
+            <a href={s.href} target="_blank" rel="noopener noreferrer">{s.label}</a>
           ))}
         </nav>
       </div>
@@ -42,19 +44,23 @@ const works = projects.slice(0, 8);
     <div class="bn-works-head">
       <h2 class="bn-sw">
         <span data-es="Trabajos seleccionados" data-en="Selected works">Trabajos seleccionados</span>
-        <sup class="bn-count">({works.length})</sup>
+        <sup class="bn-count">(<span data-grid-count>{works.length}</span>)</sup>
       </h2>
-      <div class="bn-views" aria-hidden="true">
-        <span class="is-on">Grid</span>
-        <span><span data-es="Lista" data-en="List">Lista</span></span>
-        <span>Feed</span>
-        <span>Full</span>
+      <div class="bn-filters" role="group" aria-label="Filtrar por disciplina · Filter by discipline">
+        {filters.map((f, i) => (
+          <button
+            class:list={['bn-filter', { 'is-on': i === 0 }]}
+            type="button"
+            data-filter={f.key}
+            aria-pressed={i === 0 ? 'true' : 'false'}
+          ><span data-es={f.label.es} data-en={f.label.en}>{f.label.es}</span></button>
+        ))}
       </div>
     </div>
 
-    <div class="bn-grid">
-      {works.map((p) => (
-        <a class="bn-cell" href={link(`/trabajos/${p.id}`)} data-cursor="work">
+    <div class="bn-grid" data-grid>
+      {works.map((p, i) => (
+        <a class="bn-cell" href={link(`/trabajos/${p.id}`)} data-cat={p.cat} style={`--i:${i}`}>
           <span class="bn-cell-img ph" data-label={p.title}></span>
           <span class="bn-cell-cap">
             <span class="bn-cell-title">{p.title}</span>
@@ -121,8 +127,10 @@ const works = projects.slice(0, 8);
   :global(html:not(.home-fx)) .bn-name-fly { display: none; }
   :global(html.home-fx) .bn-name-fly {
     position: fixed;
+    left: 0; top: 0;
     transform-origin: left top;
     will-change: transform;
+    z-index: 45; /* sobre el contenido, debajo del chrome (60) y overlay (55) */
     transition: opacity 0.12s var(--ease-quint);
   }
 
@@ -146,13 +154,13 @@ const works = projects.slice(0, 8);
   }
   .bn-social a:hover { color: var(--ink); }
 
-  /* ---------- header de trabajos ---------- */
+  /* ---------- header de trabajos + filtros ---------- */
   .bn-works-head {
     display: flex; flex-wrap: wrap; align-items: baseline;
     justify-content: space-between; gap: 14px 24px;
-    padding-bottom: clamp(16px, 2.5vh, 26px);
     border-top: 1px solid var(--line);
     padding-top: clamp(16px, 2.5vh, 26px);
+    padding-bottom: clamp(16px, 2.5vh, 26px);
   }
   .bn-sw {
     font-family: var(--sans);
@@ -161,27 +169,31 @@ const works = projects.slice(0, 8);
     letter-spacing: -0.01em;
   }
   .bn-count { font-size: 0.55em; font-weight: 500; color: var(--ink-45); vertical-align: super; margin-left: 2px; }
-  .bn-views { display: flex; gap: clamp(18px, 3vw, 44px); }
-  .bn-views span {
-    font-family: var(--sans);
-    font-size: clamp(1rem, 1.5vw, 1.35rem);
-    color: var(--ink-35);
-  }
-  .bn-views .is-on { color: var(--ink); }
 
-  /* ---------- grilla de trabajos ---------- */
+  .bn-filters { display: flex; flex-wrap: wrap; gap: clamp(14px, 2.2vw, 32px); }
+  .bn-filter {
+    font-family: var(--sans);
+    font-size: clamp(0.95rem, 1.3vw, 1.2rem);
+    color: var(--ink-35);
+    transition: color var(--dur-micro) var(--ease-quint);
+  }
+  .bn-filter:hover { color: var(--ink-60); }
+  .bn-filter.is-on { color: var(--ink); }
+
+  /* ---------- grilla 3×3 ---------- */
   .bn-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 6px;
   }
   .bn-cell {
     position: relative;
     display: block;
-    aspect-ratio: 4 / 5;
+    aspect-ratio: 4 / 3;
     overflow: hidden;
   }
-  .bn-cell-img { width: 100%; height: 100%; transition: transform 0.5s var(--ease-out), opacity 0.4s var(--ease-out); }
+  .bn-cell.is-hidden { display: none; }
+  .bn-cell-img { width: 100%; height: 100%; transition: transform 0.5s var(--ease-out); }
   .bn-cell:hover .bn-cell-img { transform: scale(1.03); }
   .bn-cell-cap {
     position: absolute; left: 0; right: 0; bottom: 0;
@@ -199,17 +211,65 @@ const works = projects.slice(0, 8);
     color: rgba(255,255,255,0.8);
   }
 
-  /* ---------- responsive ---------- */
+  /* entrada escalonada (solo si el usuario acepta movimiento) */
+  @media (prefers-reduced-motion: no-preference) {
+    .bn-cell {
+      animation: cellIn 0.55s var(--ease-out) both;
+      animation-delay: calc(0.05s + var(--i, 0) * 45ms);
+    }
+    @keyframes cellIn {
+      from { opacity: 0; transform: translateY(12px); }
+    }
+  }
+
+  /* ---------- responsive / táctil ---------- */
   @media (max-width: 860px) {
     .bn-head { grid-template-columns: 1fr; gap: clamp(20px, 5vw, 36px); }
     .bn-grid { grid-template-columns: repeat(2, 1fr); }
   }
-  @media (max-width: 420px) {
-    .bn-views span:nth-child(n+3) { display: none; }
+  @media (hover: none) {
+    .bn-glow { display: none; }
+    .bn-cell-cap { opacity: 1; transform: none; }
   }
-
   @media (prefers-reduced-motion: reduce) {
     .bn-glow { display: none; }
   }
-  @media (hover: none) { .bn-glow { display: none; } }
 </style>
+
+<script>
+  /* Filtros de la grilla: funcionan en todos los modos (táctil incluido). */
+  const grid = document.querySelector<HTMLElement>('[data-grid]');
+  if (grid) {
+    const cells = Array.from(grid.querySelectorAll<HTMLElement>('.bn-cell'));
+    const btns = Array.from(document.querySelectorAll<HTMLButtonElement>('.bn-filter'));
+    const count = document.querySelector<HTMLElement>('[data-grid-count]');
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    btns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const key = btn.dataset.filter;
+        btns.forEach((b) => {
+          const on = b === btn;
+          b.classList.toggle('is-on', on);
+          b.setAttribute('aria-pressed', String(on));
+        });
+        let shown = 0;
+        cells.forEach((c) => {
+          const show = key === 'all' || c.dataset.cat === key;
+          c.classList.toggle('is-hidden', !show);
+          if (show) c.style.setProperty('--i', String(shown++));
+        });
+        if (count) count.textContent = String(shown);
+        if (!reduce) {
+          // reinicia la entrada escalonada de las visibles
+          cells.forEach((c) => {
+            if (c.classList.contains('is-hidden')) return;
+            c.style.animation = 'none';
+            void c.offsetWidth;
+            c.style.animation = '';
+          });
+        }
+      });
+    });
+  }
+</script>

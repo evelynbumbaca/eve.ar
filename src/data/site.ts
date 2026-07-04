@@ -56,19 +56,11 @@ export const filters: { key: string; label: Bilingual }[] = [
   { key: 'art', label: { es: 'Dirección de Arte', en: 'Art Direction' } },
 ];
 
-/* ---------- disciplinas (palabra rotante del hero) ---------- */
-export const disciplines: Bilingual[] = [
-  { es: 'multimedia', en: 'multimedia' },
-  { es: 'editorial', en: 'editorial' },
-  { es: 'de marca', en: 'of brand' },
-  { es: 'de producto', en: 'of product' },
-  { es: 'con intención', en: 'with intent' },
-];
-
 /* ---------- proyectos (placeholders por ahora) ---------- */
 export const projects: Project[] = [
   { id: 'mercado-norte', cat: 'branding', year: '2025', title: 'Mercado Norte', disc: { es: 'Identidad de Marca', en: 'Brand Identity' }, ratio: '4 / 5' },
   { id: 'lumen', cat: 'uxui', year: '2025', title: 'Lumen App', disc: { es: 'Diseño UX/UI', en: 'UX/UI Design' }, ratio: '4 / 5' },
+  { id: 'catalogo-delta', cat: 'editorial', year: '2025', title: 'Catálogo Delta', disc: { es: 'Editorial · Catálogo', en: 'Editorial · Catalogue' }, ratio: '4 / 5' },
   { id: 'revista-sur', cat: 'editorial', year: '2024', title: 'Revista Sur', disc: { es: 'Editorial', en: 'Editorial' }, ratio: '4 / 5' },
   { id: 'cafe-tostado', cat: 'packaging', year: '2024', title: 'Café Tostado', disc: { es: 'Packaging', en: 'Packaging' }, ratio: '4 / 5' },
   { id: 'bienal-ba', cat: 'art', year: '2024', title: 'Bienal BA', disc: { es: 'Dirección de Arte', en: 'Art Direction' }, ratio: '4 / 5' },

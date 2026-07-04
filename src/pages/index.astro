@@ -32,52 +32,54 @@ import SiteFooter from '../components/SiteFooter.astro';
   const slot = document.querySelector('.bn-name-slot') as HTMLElement | null;
   const target = document.querySelector('[data-name-target]') as HTMLElement | null;
 
-  if (!enhance) {
+  if (!enhance || !banner || !glow || !fly || !slot || !target) {
     html.classList.remove('home-fx');
-  } else if (banner && glow && fly && slot && target) {
+  } else {
     html.classList.add('home-fx');
 
     const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
 
-    // ---------- glow naranja que sigue al cursor ----------
-    let gx = innerWidth / 2, gy = innerHeight * 0.4, glx = gx, gly = gy;
+    // geometría en coordenadas de DOCUMENTO (robusta ante recarga a mitad de scroll)
+    let vh = innerHeight;
+    let bannerDocX = 0, bannerDocY = 0;
+    let slotDocX = 0, slotDocY = 0;
+    let tX = 0, tY = 0, scaleFinal = 0.16, scrollEnd = 1;
 
-    // ---------- morph del nombre hacia el menú ----------
-    let flyX = 0, flyY = 0, dx = 0, dy = 0, scaleFinal = 0.16, scrollEnd = 1, vh = innerHeight;
+    // glow que sigue al cursor
+    let gx = innerWidth / 2, gy = vh * 0.4, glx = gx, gly = gy;
+
+    // una pasada del morph (también usada sincrónicamente tras medir)
+    const applyMorph = () => {
+      const p = clamp01(scrollY / scrollEnd);
+      const e = p >= 1 ? 1 : 1 - Math.pow(2, -10 * p);
+      const bx = slotDocX - scrollX, by = slotDocY - scrollY;
+      const x = bx + e * (tX - bx), y = by + e * (tY - by);
+      const sc = 1 + (scaleFinal - 1) * e;
+      fly.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0) scale(${sc.toFixed(3)})`;
+      if (e > 0.97) { fly.style.opacity = '0'; target.style.opacity = '1'; }
+      else { fly.style.opacity = '1'; target.style.opacity = String(Math.max(0, (e - 0.5) * 2)); }
+    };
 
     function measure() {
       vh = innerHeight;
-      // base del volador = posición del slot (en flujo) con scroll ~0
-      fly.style.transform = 'none';
-      fly.style.left = '0px'; fly.style.top = '0px';
+      const br = banner.getBoundingClientRect();
+      bannerDocX = br.left + scrollX; bannerDocY = br.top + scrollY;
       const sr = slot.getBoundingClientRect();
-      flyX = sr.left; flyY = sr.top;
-      fly.style.left = flyX + 'px';
-      fly.style.top = flyY + 'px';
-      const fr = fly.getBoundingClientRect();
-      const tr = target.getBoundingClientRect();
-      dx = tr.left - fr.left;
-      dy = tr.top - fr.top;
-      scaleFinal = Math.max(0.06, Math.min(0.5, tr.height / (fr.height || 1)));
+      slotDocX = sr.left + scrollX; slotDocY = sr.top + scrollY;
+      const tr = target.getBoundingClientRect(); // topbar fijo -> coords de viewport constantes
+      tX = tr.left; tY = tr.top;
+      scaleFinal = Math.max(0.06, Math.min(0.5, tr.height / (sr.height || 1)));
       scrollEnd = Math.max(120, vh * 0.5);
+      applyMorph(); // aplica sin esperar al próximo frame (evita flash)
     }
 
     let raf = 0, running = false, scrollDirty = true;
     function frame() {
-      // glow (relativo al banner)
-      const br = banner.getBoundingClientRect();
       glx += (gx - glx) * 0.14;
       gly += (gy - gly) * 0.14;
-      glow.style.transform = `translate3d(${(glx - br.left).toFixed(1)}px, ${(gly - br.top).toFixed(1)}px, 0)`;
-
-      // morph
-      const p = clamp01(scrollY / scrollEnd);
-      const e = p >= 1 ? 1 : 1 - Math.pow(2, -10 * p);
-      const sc = 1 + (scaleFinal - 1) * e;
-      fly.style.transform = `translate3d(${(e * dx).toFixed(1)}px, ${(e * dy).toFixed(1)}px, 0) scale(${sc.toFixed(3)})`;
-      if (e > 0.97) { fly.style.opacity = '0'; target.style.opacity = '1'; }
-      else { fly.style.opacity = '1'; target.style.opacity = String(Math.max(0, e - 0.2)); }
-
+      // posición del glow en el espacio del banner, sin leer layout por frame
+      glow.style.transform = `translate3d(${(glx - (bannerDocX - scrollX)).toFixed(1)}px, ${(gly - (bannerDocY - scrollY)).toFixed(1)}px, 0)`;
+      applyMorph();
       const moving = Math.abs(gx - glx) > 0.3 || Math.abs(gy - gly) > 0.3 || scrollDirty;
       scrollDirty = false;
       if (moving) raf = requestAnimationFrame(frame);
@@ -96,6 +98,7 @@ import SiteFooter from '../components/SiteFooter.astro';
     addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { measure(); scrollDirty = true; kick(); }, 150); }, { passive: true });
     document.addEventListener('visibilitychange', () => { if (document.hidden) { cancelAnimationFrame(raf); running = false; } else kick(); });
 
+    // re-medir cuando cambia el idioma (el layout de la cabecera puede reflowear)
     const origSetLang = (window as any).__eveSetLang;
     if (origSetLang) {
       (window as any).__eveSetLang = (l: string) => {
@@ -104,7 +107,9 @@ import SiteFooter from '../components/SiteFooter.astro';
       };
     }
 
-    measure(); kick();
+    measure();
+    kick();
+    // re-medir tras cargar las fuentes (Inter cambia métricas del nombre)
     if ((document as any).fonts && (document as any).fonts.ready) {
       (document as any).fonts.ready.then(() => { measure(); scrollDirty = true; kick(); });
     }

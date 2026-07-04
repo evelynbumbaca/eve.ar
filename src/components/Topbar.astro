@@ -45,6 +45,8 @@ import { link } from '../lib/link';
     color: #fff; /* difference -> legible sobre cualquier fondo */
   }
   .wordmark .deg { font-size: 0.6em; vertical-align: top; font-weight: 500; }
+  /* en el home con fx, el wordmark aparece recién cuando el nombre grande "llega" */
+  :global(html.home-fx) .wordmark span[data-name-target] { opacity: 0; }
 
   .topbar-right {
     display: flex;

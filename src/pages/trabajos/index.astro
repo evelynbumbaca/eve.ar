@@ -27,6 +27,7 @@ import { projects, filters } from '../../data/site';
             data-es={f.label.es}
             data-en={f.label.en}
             type="button"
+            aria-pressed={i === 0 ? 'true' : 'false'}
           >{f.label.es}</button>
         ))}
       </div>
@@ -54,23 +55,21 @@ import { projects, filters } from '../../data/site';
   .page-title .accent { font-style: italic; font-weight: 300; color: var(--ink-80); }
   .page-title .revfill { display: block; }
 
+  /* filtros de texto — mismo lenguaje que el home */
   .filters {
-    display: flex; flex-wrap: wrap; gap: 9px;
-    padding-bottom: clamp(26px, 4vh, 44px);
+    display: flex; flex-wrap: wrap; gap: clamp(14px, 2.2vw, 32px);
+    padding-bottom: clamp(18px, 3vh, 30px);
     border-bottom: 1px solid var(--line);
     margin-bottom: clamp(28px, 4vh, 48px);
   }
   .chip {
     font-family: var(--sans);
-    font-size: clamp(13px, 1vw, 15px);
-    padding: 7px 15px;
-    border: 1px solid var(--ink);
-    border-radius: 40px;
-    color: var(--ink);
-    transition: background var(--dur-micro) var(--ease-quint), color var(--dur-micro) var(--ease-quint);
+    font-size: clamp(0.95rem, 1.3vw, 1.2rem);
+    color: var(--ink-35);
+    transition: color var(--dur-micro) var(--ease-quint);
   }
-  .chip:hover { background: var(--ink-12); }
-  .chip.is-on { background: var(--ink); color: var(--paper); }
+  .chip:hover { color: var(--ink-60); }
+  .chip.is-on { color: var(--ink); }
 
   .grid {
     display: grid;
@@ -92,7 +91,11 @@ import { projects, filters } from '../../data/site';
   chips.forEach((chip) => {
     chip.addEventListener('click', () => {
       const f = chip.dataset.filter;
-      chips.forEach((c) => c.classList.toggle('is-on', c === chip));
+      chips.forEach((c) => {
+        const on = c === chip;
+        c.classList.toggle('is-on', on);
+        c.setAttribute('aria-pressed', String(on));
+      });
       cards.forEach((card) => {
         const show = f === 'all' || card.dataset.cat === f;
         card.classList.toggle('is-hidden', !show);
