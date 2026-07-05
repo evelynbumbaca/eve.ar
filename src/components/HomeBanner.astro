@@ -225,23 +225,27 @@ const works = projects.slice(0, 6);
     justify-content: space-between; gap: 12px 24px;
     padding-top: clamp(16px, 2.5vh, 26px);
   }
+  /* título y "Ver todos" alineados: mismo tamaño y color */
   .bn-sw {
     font-family: var(--sans);
-    font-weight: 600;
-    font-size: clamp(1.1rem, 1.8vw, 1.6rem);
-    letter-spacing: -0.01em;
+    font-weight: 500;
+    font-size: clamp(1rem, 1.3vw, 1.25rem);
+    letter-spacing: -0.005em;
+    color: var(--ink);
   }
   .bn-count { font-size: 0.55em; font-weight: 500; color: var(--ink-45); vertical-align: super; margin-left: 2px; }
   .bn-all {
     display: inline-flex; align-items: baseline; gap: 10px;
     font-family: var(--sans);
-    font-size: clamp(0.95rem, 1.1vw, 1.05rem);
-    color: var(--ink-80);
+    font-weight: 500;
+    font-size: clamp(1rem, 1.3vw, 1.25rem);
+    letter-spacing: -0.005em;
+    color: var(--ink);
     border-bottom: 1px solid var(--ink-35);
     padding-bottom: 3px;
-    transition: color var(--dur-micro) var(--ease-quint), border-color var(--dur-micro) var(--ease-quint);
+    transition: border-color var(--dur-micro) var(--ease-quint), opacity var(--dur-micro) var(--ease-quint);
   }
-  .bn-all:hover { color: var(--ink); border-color: var(--ink); }
+  .bn-all:hover { opacity: 0.7; border-color: var(--ink); }
   .bn-all span[aria-hidden] { transition: transform var(--dur-ui) var(--ease-out); display: inline-block; }
   .bn-all:hover span[aria-hidden] { transform: translateX(5px); }
 
@@ -263,13 +267,11 @@ const works = projects.slice(0, 6);
   /* Filtros de la grilla: funcionan en todos los modos (táctil incluido). */
   const grid = document.querySelector<HTMLElement>('[data-grid]');
   if (grid) {
-    // cascada al entrar en viewport (una sola vez)
+    // cascada al entrar en viewport (se repite en cada pasada de scroll)
     if ('IntersectionObserver' in window) {
       const io = new IntersectionObserver((entries) => {
-        entries.forEach((en) => {
-          if (en.isIntersecting) { grid.classList.add('in'); io.unobserve(grid); }
-        });
-      }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+        entries.forEach((en) => grid.classList.toggle('in', en.isIntersecting));
+      }, { threshold: 0, rootMargin: '0px 0px -7% 0px' });
       io.observe(grid);
     } else {
       grid.classList.add('in');

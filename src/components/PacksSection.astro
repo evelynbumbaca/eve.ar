@@ -92,9 +92,14 @@ const wa = (name: string) => `${site.whatsapp}?text=${encodeURIComponent(`Hola E
       ))}
     </div>
 
-    <p class="pk-custom rise">
-      <T es="¿Buscás algo distinto?" en="Looking for something different?" />
-    </p>
+    <div class="pk-custom rise">
+      <p class="pkc-q"><T es="¿Buscás algo distinto?" en="Looking for something different?" /></p>
+      <p class="pkc-sub"><T es="Escribime y ponemos tu proyecto en marcha." en="Write me and let's get your project moving." /></p>
+      <a class="pkc-btn" href="#contacto" data-open-contact>
+        <T es="Escribime" en="Write me" />
+        <span aria-hidden="true">→</span>
+      </a>
+    </div>
   </div>
 </section>
 
@@ -187,12 +192,35 @@ const wa = (name: string) => `${site.whatsapp}?text=${encodeURIComponent(`Hola E
   .pack.is-featured .pk-wa { background: var(--orange); color: #fff; }
 
   .pk-custom {
-    margin-top: clamp(28px, 4.5vh, 48px);
-    font-family: var(--sans);
-    font-size: clamp(0.95rem, 1.15vw, 1.1rem);
-    color: var(--ink-60);
+    margin-top: clamp(40px, 7vh, 72px);
     text-align: center;
   }
+  .pkc-q {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(1.4rem, 2.6vw, 2.2rem);
+    letter-spacing: -0.015em;
+    color: var(--ink);
+  }
+  .pkc-sub {
+    margin-top: 10px;
+    font-family: var(--sans);
+    font-size: clamp(0.95rem, 1.1vw, 1.05rem);
+    color: var(--ink-60);
+  }
+  .pkc-btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    margin-top: clamp(18px, 3vh, 28px);
+    padding: 13px 30px;
+    border-radius: 40px;
+    border: 1px solid var(--ink);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 14px;
+    letter-spacing: 0.02em;
+    transition: background var(--dur-micro) var(--ease-quint), color var(--dur-micro) var(--ease-quint);
+  }
+  .pkc-btn:hover { background: var(--ink); color: var(--paper); }
 
   @media (max-width: 900px) {
     .pk-grid { grid-template-columns: 1fr; max-width: 520px; }

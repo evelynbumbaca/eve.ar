@@ -112,33 +112,20 @@ const {
           if (e.key === 'Escape') closeMenu();
         });
 
-        /* ---------- reveal on scroll ---------- */
+        /* ---------- reveal on scroll (se repite en CADA entrada) ----------
+           IntersectionObserver con toggle: al entrar en viewport el elemento
+           se revela; al salir del todo, se re-arma y vuelve a revelarse en la
+           próxima pasada (ambas direcciones). Nativo, sin listeners de scroll.
+           Con reduced-motion (o sin IO): todo visible, estático. */
         const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-        function reveal() {
-          const vh = innerHeight;
-          document.querySelectorAll('.reveal, .rise').forEach((el) => {
-            if (el.classList.contains('in')) return;
-            const r = el.getBoundingClientRect();
-            if (r.top < vh * 0.9 && r.bottom > 0) el.classList.add('in');
-          });
-        }
-        if (reduce) {
-          document.querySelectorAll('.reveal, .rise').forEach((el) => el.classList.add('in'));
+        const revEls = document.querySelectorAll('.reveal, .rise');
+        if (reduce || !('IntersectionObserver' in window)) {
+          revEls.forEach((el) => el.classList.add('in'));
         } else {
-          reveal();
-          requestAnimationFrame(reveal);
-          let tick = false;
-          addEventListener('scroll', () => {
-            if (!tick) {
-              tick = true;
-              requestAnimationFrame(() => {
-                reveal();
-                tick = false;
-              });
-            }
-          }, { passive: true });
-          addEventListener('resize', reveal, { passive: true });
-          setTimeout(() => document.querySelectorAll('.reveal, .rise').forEach((el) => el.classList.add('in')), 3500);
+          const io = new IntersectionObserver((entries) => {
+            entries.forEach((en) => en.target.classList.toggle('in', en.isIntersecting));
+          }, { threshold: 0, rootMargin: '0px 0px -7% 0px' });
+          revEls.forEach((el) => io.observe(el));
         }
       })();
     </script>

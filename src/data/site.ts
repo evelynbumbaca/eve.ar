@@ -29,6 +29,9 @@ export const site = {
   email: 'hola@eve.ar',
   gumroad: 'https://gumroad.com/', // TODO: reemplazar por la tienda real
   whatsapp: 'https://wa.me/5491100000000', // TODO: número real (formato internacional, sin + ni espacios)
+  // TODO: pegar la access key de web3forms.com (gratis) para que el formulario
+  // envíe directo al mail; mientras esté vacía, compone un mail en el cliente.
+  formKey: '',
 };
 
 export const social: { label: string; href: string }[] = [

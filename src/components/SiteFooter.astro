@@ -29,26 +29,28 @@ import T from './T.astro';
         </button>
       </div>
 
-      <form class="foot-form" id="foot-form" data-foot-form data-email={site.email} hidden novalidate>
+      <form class="foot-form" id="foot-form" data-foot-form data-email={site.email} data-form-key={site.formKey} hidden novalidate>
         <div class="ff-row">
           <div class="ff-field">
             <label for="ff-name"><T es="Nombre" en="Name" /></label>
-            <input id="ff-name" name="name" type="text" autocomplete="name" required />
+            <input id="ff-name" name="name" type="text" autocomplete="name" placeholder="Tu nombre" required />
           </div>
           <div class="ff-field">
             <label for="ff-email">Email</label>
-            <input id="ff-email" name="email" type="email" autocomplete="email" required />
+            <input id="ff-email" name="email" type="email" autocomplete="email" placeholder="tu@mail.com" required />
           </div>
         </div>
         <div class="ff-field">
-          <label for="ff-msg"><T es="Contame sobre tu proyecto" en="Tell me about your project" /></label>
-          <textarea id="ff-msg" name="message" rows="4" required></textarea>
+          <label for="ff-msg"><T es="Mensaje" en="Message" /></label>
+          <textarea id="ff-msg" name="message" rows="5" placeholder="Contame qué tenés en mente: qué es, para cuándo, y todo lo que sume." required></textarea>
         </div>
-        <button class="ff-send" type="submit">
-          <T es="Enviar mensaje" en="Send message" />
-          <span aria-hidden="true">→</span>
-        </button>
-        <p class="ff-note" data-ff-note hidden></p>
+        <div class="ff-foot">
+          <p class="ff-note" data-ff-note aria-live="polite"></p>
+          <button class="ff-send" type="submit">
+            <T es="Enviar mensaje" en="Send message" />
+            <span aria-hidden="true">→</span>
+          </button>
+        </div>
       </form>
     </div>
 
@@ -108,17 +110,21 @@ import T from './T.astro';
   .fa-open:hover { opacity: 0.85; }
   .fa-open[aria-expanded="true"] { opacity: 0.6; }
 
-  /* formulario desplegable */
+  /* formulario desplegable: tarjeta contenida, campos delimitados */
   .foot-form {
-    max-width: 640px;
+    max-width: 680px;
     margin-top: clamp(26px, 4vh, 44px);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: clamp(20px, 2.6vw, 36px);
+    background: color-mix(in oklab, var(--paper) 60%, #ffffff);
   }
   .foot-form:not([hidden]) { animation: ffIn 0.5s var(--ease-out) both; }
   @keyframes ffIn { from { opacity: 0; transform: translateY(14px); } }
   @media (prefers-reduced-motion: reduce) { .foot-form:not([hidden]) { animation: none; } }
 
-  .ff-row { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(16px, 2vw, 28px); }
-  .ff-field { margin-bottom: clamp(16px, 2.5vh, 24px); }
+  .ff-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0 clamp(14px, 1.8vw, 24px); }
+  .ff-field { margin-bottom: clamp(14px, 2.2vh, 22px); }
   .ff-field label {
     display: block;
     font-family: var(--sans);
@@ -126,37 +132,50 @@ import T from './T.astro';
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--ink-60);
-    margin-bottom: 9px;
+    margin-bottom: 8px;
   }
   .ff-field input,
   .ff-field textarea {
     width: 100%;
-    background: transparent;
-    border: none;
-    border-bottom: 1px solid var(--line);
-    padding: 6px 0 10px;
-    font-family: var(--serif);
-    font-size: clamp(1.05rem, 1.4vw, 1.3rem);
+    background: #fff;
+    border: 1px solid var(--ink-18);
+    border-radius: 5px;
+    padding: 12px 14px;
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.45;
     color: var(--ink);
-    transition: border-color var(--dur-micro) var(--ease-quint);
+    transition: border-color var(--dur-micro) var(--ease-quint), box-shadow var(--dur-micro) var(--ease-quint);
   }
+  .ff-field input::placeholder,
+  .ff-field textarea::placeholder { color: var(--ink-35); }
   .ff-field input:focus,
-  .ff-field textarea:focus { outline: none; border-color: var(--ink); }
-  .ff-field textarea { resize: vertical; line-height: 1.4; }
+  .ff-field textarea:focus {
+    outline: none;
+    border-color: var(--ink);
+    box-shadow: 0 0 0 3px color-mix(in oklab, var(--orange) 18%, transparent);
+  }
+  .ff-field textarea { resize: vertical; }
+
+  .ff-foot {
+    display: flex; flex-wrap: wrap-reverse; align-items: center;
+    justify-content: space-between; gap: 12px 20px;
+    margin-top: 4px;
+  }
   .ff-send {
     display: inline-flex; align-items: center; gap: 10px;
-    margin-top: 6px;
-    padding: 12px 26px;
+    padding: 13px 30px;
     border-radius: 40px;
-    border: 1px solid var(--ink);
-    color: var(--ink);
+    background: var(--ink);
+    color: var(--paper);
     font-family: var(--sans);
     font-size: 14px;
     letter-spacing: 0.02em;
-    transition: background var(--dur-micro) var(--ease-quint), color var(--dur-micro) var(--ease-quint);
+    transition: opacity var(--dur-micro) var(--ease-quint);
   }
-  .ff-send:hover { background: var(--ink); color: var(--paper); }
-  .ff-note { margin-top: 14px; font-size: var(--fs-small); color: var(--ink-60); }
+  .ff-send:hover { opacity: 0.85; }
+  .ff-send[disabled] { opacity: 0.5; cursor: default; }
+  .ff-note { font-size: var(--fs-small); color: var(--ink-60); min-height: 1em; }
 
   .foot-grid {
     display: flex;
@@ -196,35 +215,93 @@ import T from './T.astro';
 <script>
   const toggle = document.querySelector<HTMLButtonElement>('[data-form-toggle]');
   const form = document.querySelector<HTMLFormElement>('[data-foot-form]');
+
+  const openForm = () => {
+    if (!form || !toggle) return;
+    form.hidden = false;
+    toggle.setAttribute('aria-expanded', 'true');
+    const first = form.querySelector<HTMLInputElement>('input');
+    first?.focus({ preventScroll: true });
+  };
+
   if (toggle && form) {
     toggle.addEventListener('click', () => {
       const open = form.hidden;
-      form.hidden = !open;
-      toggle.setAttribute('aria-expanded', String(open));
       if (open) {
-        const first = form.querySelector<HTMLInputElement>('input');
-        first?.focus({ preventScroll: true });
+        openForm();
         form.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'nearest' });
+      } else {
+        form.hidden = true;
+        toggle.setAttribute('aria-expanded', 'false');
       }
     });
 
-    // sin backend todavía: compone un mail prellenado (igual que /contacto)
-    form.addEventListener('submit', (e) => {
+    // CTA de otras secciones ("Escribime" en packs): scrollea y abre el formulario
+    document.addEventListener('click', (e) => {
+      const t = (e.target as HTMLElement).closest('[data-open-contact]');
+      if (!t) return;
+      e.preventDefault();
+      openForm();
+      document.getElementById('contacto')?.scrollIntoView({
+        behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+        block: 'start',
+      });
+      history.pushState(null, '', '#contacto');
+    });
+
+    // envío: con formKey (web3forms) manda directo al mail de Eve;
+    // sin clave, compone un mail en el cliente (fallback).
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const data = new FormData(form);
       const name = (data.get('name') || '').toString().trim();
       const from = (data.get('email') || '').toString().trim();
       const msg = (data.get('message') || '').toString().trim();
       const note = form.querySelector<HTMLElement>('[data-ff-note]');
+      const send = form.querySelector<HTMLButtonElement>('.ff-send');
+      const say = (t: string) => { if (note) note.textContent = t; };
+
       if (!name || !from || !msg) {
-        if (note) { note.hidden = false; note.textContent = 'Completá todos los campos · Please fill in all fields'; }
+        say('Completá todos los campos · Please fill in all fields');
         return;
       }
+
+      const key = form.dataset.formKey || '';
+      if (key) {
+        try {
+          send?.setAttribute('disabled', '');
+          say('Enviando… · Sending…');
+          const res = await fetch('https://api.web3forms.com/submit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+            body: JSON.stringify({
+              access_key: key,
+              subject: `Proyecto — ${name}`,
+              name,
+              email: from,
+              message: msg,
+            }),
+          });
+          const out = await res.json();
+          if (out.success) {
+            form.reset();
+            say('¡Mensaje enviado! Te respondo pronto · Message sent!');
+          } else {
+            say('No se pudo enviar; probá de nuevo · Could not send, try again');
+          }
+        } catch {
+          say('No se pudo enviar; probá de nuevo · Could not send, try again');
+        } finally {
+          send?.removeAttribute('disabled');
+        }
+        return;
+      }
+
       const email = form.dataset.email || '';
       const subject = encodeURIComponent(`Proyecto — ${name}`);
       const body = encodeURIComponent(`${msg}\n\n— ${name} (${from})`);
       location.href = `mailto:${email}?subject=${subject}&body=${body}`;
-      if (note) { note.hidden = false; note.textContent = 'Abriendo tu cliente de correo… · Opening your email client…'; }
+      say('Abriendo tu cliente de correo… · Opening your email client…');
     });
   }
 </script>
