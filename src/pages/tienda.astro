@@ -32,7 +32,7 @@ const products = [
       <div class="shop-grid">
         {products.map((p) => (
           <a class="product" href={site.gumroad} target="_blank" rel="noopener noreferrer">
-            <div class="product-frame reveal">
+            <div class="product-frame reveal" data-glow-dock>
               <span class="ph revfill" data-label={`${p.name} — preview`}></span>
             </div>
             <div class="product-meta rise">
@@ -47,7 +47,7 @@ const products = [
       </div>
 
       <div class="shop-cta rise">
-        <a class="btn" href={site.gumroad} target="_blank" rel="noopener noreferrer">
+        <a class="btn" href={site.gumroad} target="_blank" rel="noopener noreferrer" data-glow-dock>
           <T es="Ver todo en Gumroad" en="See all on Gumroad" />
           <span aria-hidden="true">→</span>
         </a>

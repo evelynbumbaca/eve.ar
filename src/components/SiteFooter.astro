@@ -23,7 +23,7 @@ import T from './T.astro';
         />
       </p>
       <div class="foot-actions rise rise-delay-3">
-        <button class="fa-open" type="button" data-form-toggle aria-expanded="false" aria-controls="foot-form">
+        <button class="fa-open" type="button" data-form-toggle data-glow-dock aria-expanded="false" aria-controls="foot-form">
           <T es="Contactame" en="Contact me" />
           <span aria-hidden="true">→</span>
         </button>
@@ -46,7 +46,7 @@ import T from './T.astro';
         </div>
         <div class="ff-foot">
           <p class="ff-note" data-ff-note aria-live="polite"></p>
-          <button class="ff-send" type="submit">
+          <button class="ff-send" type="submit" data-glow-dock>
             <T es="Enviar mensaje" en="Send message" />
             <span aria-hidden="true">→</span>
           </button>
@@ -117,7 +117,8 @@ import T from './T.astro';
     border: 1px solid var(--line);
     border-radius: 8px;
     padding: clamp(20px, 2.6vw, 36px);
-    background: color-mix(in oklab, var(--paper) 60%, #ffffff);
+    /* translúcido: deja pasar el halo de la luz detrás del botón */
+    background: color-mix(in srgb, #ffffff 55%, transparent);
   }
   .foot-form:not([hidden]) { animation: ffIn 0.5s var(--ease-out) both; }
   @keyframes ffIn { from { opacity: 0; transform: translateY(14px); } }

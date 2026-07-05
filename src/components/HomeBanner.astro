@@ -55,7 +55,7 @@ const works = projects.slice(0, 6);
 
     <div class="bn-grid" data-grid>
       {works.map((p, i) => (
-        <a class="bn-cell" href={link(`/trabajos/${p.id}`)} data-cat={p.cat} style={`--i:${i}`}>
+        <a class="bn-cell" href={link(`/trabajos/${p.id}`)} data-cat={p.cat} data-glow-dock style={`--i:${i}`}>
           <span class="bn-cell-img ph" data-label={`${p.title} — cover`}></span>
           <span class="bn-cell-alt ph" data-label={`${p.title} — detalle`} aria-hidden="true"></span>
           <span class="bn-cell-cap">

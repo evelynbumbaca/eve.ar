@@ -83,7 +83,7 @@ const wa = (name: string) => `${site.whatsapp}?text=${encodeURIComponent(`Hola E
           </ul>
           <p class="pk-time mono"><span data-es={p.time.es} data-en={p.time.en}>{p.time.es}</span></p>
           <div class="pk-ctas">
-            <a class="pk-wa" href={wa(p.name)} target="_blank" rel="noopener noreferrer">
+            <a class="pk-wa" href={wa(p.name)} target="_blank" rel="noopener noreferrer" data-glow-dock>
               <T es="Contratar" en="Book" />
               <span aria-hidden="true">↗</span>
             </a>
@@ -95,7 +95,7 @@ const wa = (name: string) => `${site.whatsapp}?text=${encodeURIComponent(`Hola E
     <div class="pk-custom rise">
       <p class="pkc-q"><T es="¿Buscás algo distinto?" en="Looking for something different?" /></p>
       <p class="pkc-sub"><T es="Escribime y ponemos tu proyecto en marcha." en="Write me and let's get your project moving." /></p>
-      <a class="pkc-btn" href="#contacto" data-open-contact>
+      <a class="pkc-btn" href="#contacto" data-open-contact data-glow-dock>
         <T es="Escribime" en="Write me" />
         <span aria-hidden="true">→</span>
       </a>

@@ -9,7 +9,7 @@ const { project: p } = Astro.props;
 ---
 
 <a class="card" href={link(`/trabajos/${p.id}`)} data-cat={p.cat}>
-  <div class="card-frame reveal" style={`aspect-ratio:${p.ratio}`}>
+  <div class="card-frame reveal" data-glow-dock style={`aspect-ratio:${p.ratio}`}>
     <span class="card-img ph revfill" data-label={`${p.title} — cover`}></span>
     <span class="card-alt ph" data-label={`${p.title} — detalle`} aria-hidden="true"></span>
   </div>

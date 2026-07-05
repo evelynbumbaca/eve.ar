@@ -1,9 +1,15 @@
 ---
 /* ============================================================
-   GlowLayer — la "bola" naranja que sigue al cursor, detrás
-   de TODO el sitio (capa fija bajo el contenido; los bloques
-   opacos como las portadas la ocluyen -> vidrio esmerilado).
-   Solo puntero fino sin reduced-motion; en táctil no existe.
+   GlowLayer — la luz naranja que sigue al cursor, detrás de
+   TODO el sitio. Dos estados, con morph fluido entre ambos:
+   · LIBRE: bola blanda que acompaña al puntero.
+   · DOCK: al pasar sobre un elemento interactivo con borde
+     ([data-glow-dock]) la luz se AMOLDA a su forma (tamaño +
+     esquinas del elemento) como halo perimetral, invitando a
+     la interacción. Al salir, vuelve a ser bola.
+   Todo se interpola (x, y, ancho, alto, radio, blur, opacidad)
+   con un mismo lerp -> movimiento orgánico. El loop se apaga al
+   converger; en táctil/reduced-motion la capa no existe.
    ============================================================ */
 ---
 
@@ -22,16 +28,12 @@
   .glow-ball {
     position: absolute;
     left: 0; top: 0;
-    width: 40vmax; height: 40vmax;
-    margin: -20vmax 0 0 -20vmax;
-    border-radius: 50%;
-    background: radial-gradient(circle, color-mix(in oklab, var(--orange) 78%, transparent), transparent 60%);
-    filter: blur(40px);
+    /* tamaño/forma/blur/opacidad los maneja el script (morph) */
+    background: radial-gradient(closest-side, color-mix(in oklab, var(--orange) 82%, transparent), transparent);
     opacity: 0;
-    will-change: transform;
-    transition: opacity 0.6s var(--ease-out);
+    will-change: transform, filter;
+    pointer-events: none;
   }
-  .glow-layer.on .glow-ball { opacity: 0.82; }
 
   @media (hover: none), (pointer: coarse) { .glow-layer { display: none; } }
   @media (prefers-reduced-motion: reduce) { .glow-layer { display: none; } }
@@ -44,28 +46,80 @@
   const reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
 
   if (layer && ball && fine && !reduce) {
-    let gx = innerWidth / 2, gy = innerHeight * 0.4, x = gx, y = gy;
+    const freeD = () => Math.max(innerWidth, innerHeight) * 0.4;
+
+    let mx = innerWidth / 2, my = innerHeight * 0.4;
+    let vis = false;
+    let dock: HTMLElement | null = null;
+    let dockR = 0;
+
+    const d0 = freeD();
+    const st = { x: mx, y: my, w: d0, h: d0, r: d0 / 2, b: 40, o: 0 };
+    const ap = { w: -1, h: -1, r: -1, b: -1, o: -1 }; // últimos valores aplicados
     let raf = 0, running = false;
 
     const frame = () => {
-      x += (gx - x) * 0.14;
-      y += (gy - y) * 0.14;
-      ball.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0)`;
-      if (Math.abs(gx - x) > 0.3 || Math.abs(gy - y) > 0.3) raf = requestAnimationFrame(frame);
+      // objetivos según estado
+      let tx = mx, ty = my, tw = freeD(), th = tw, tr = tw / 2, tb = 40, to = vis ? 0.82 : 0;
+      if (dock && dock.isConnected) {
+        const rc = dock.getBoundingClientRect();
+        if (rc.width > 0 && rc.bottom > 0 && rc.top < innerHeight) {
+          const pad = 16;
+          tx = rc.left + rc.width / 2;
+          ty = rc.top + rc.height / 2;
+          tw = rc.width + pad * 2;
+          th = rc.height + pad * 2;
+          tr = Math.min((dockR || 2) + pad, Math.min(tw, th) / 2);
+          tb = 24;
+          to = vis ? 0.92 : 0;
+        }
+      }
+
+      // morph orgánico: un solo lerp para todo
+      const k = 0.14;
+      st.x += (tx - st.x) * k; st.y += (ty - st.y) * k;
+      st.w += (tw - st.w) * k; st.h += (th - st.h) * k;
+      st.r += (tr - st.r) * k; st.b += (tb - st.b) * k;
+      st.o += (to - st.o) * k;
+
+      ball.style.transform = `translate3d(${(st.x - st.w / 2).toFixed(1)}px, ${(st.y - st.h / 2).toFixed(1)}px, 0)`;
+      if (Math.abs(st.w - ap.w) > 0.5) { ball.style.width = st.w.toFixed(1) + 'px'; ap.w = st.w; }
+      if (Math.abs(st.h - ap.h) > 0.5) { ball.style.height = st.h.toFixed(1) + 'px'; ap.h = st.h; }
+      if (Math.abs(st.r - ap.r) > 0.5) { ball.style.borderRadius = st.r.toFixed(1) + 'px'; ap.r = st.r; }
+      if (Math.abs(st.b - ap.b) > 0.3) { ball.style.filter = `blur(${st.b.toFixed(1)}px)`; ap.b = st.b; }
+      if (Math.abs(st.o - ap.o) > 0.008) { ball.style.opacity = st.o.toFixed(3); ap.o = st.o; }
+
+      const still =
+        Math.abs(tx - st.x) < 0.3 && Math.abs(ty - st.y) < 0.3 &&
+        Math.abs(tw - st.w) < 0.5 && Math.abs(th - st.h) < 0.5 &&
+        Math.abs(tr - st.r) < 0.5 && Math.abs(to - st.o) < 0.008;
+      if (!still) raf = requestAnimationFrame(frame);
       else running = false;
     };
     const kick = () => { if (!running) { running = true; raf = requestAnimationFrame(frame); } };
 
     addEventListener('pointermove', (e) => {
-      gx = e.clientX; gy = e.clientY;
-      if (!layer.classList.contains('on')) layer.classList.add('on');
+      mx = e.clientX; my = e.clientY;
+      if (!vis) vis = true;
       kick();
     }, { passive: true });
+
+    // dock: el cursor entra/sale de elementos interactivos con borde
+    document.addEventListener('pointerover', (e) => {
+      const d = (e.target as Element).closest?.('[data-glow-dock]') as HTMLElement | null;
+      if (d !== dock) {
+        dock = d;
+        dockR = d ? parseFloat(getComputedStyle(d).borderTopLeftRadius) || 0 : 0;
+        kick();
+      }
+    }, { passive: true });
+
     document.addEventListener('pointerout', (e: PointerEvent) => {
-      if (!e.relatedTarget) layer.classList.remove('on'); // salió de la ventana
+      if (!e.relatedTarget) { vis = false; dock = null; kick(); } // salió de la ventana
     });
+    addEventListener('scroll', () => { if (dock) kick(); }, { passive: true });
     document.addEventListener('visibilitychange', () => {
-      if (document.hidden) { cancelAnimationFrame(raf); running = false; }
+      if (document.hidden) { cancelAnimationFrame(raf); running = false; } else kick();
     });
   }
 </script>
