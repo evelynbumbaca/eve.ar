@@ -68,21 +68,24 @@
     const st = { x: mx, y: my, w: d0, h: d0, r: d0 / 2, b: 40, o: 0, bw: 0, f: 1 };
     const ap = { w: -1, h: -1, r: -1, b: -1, o: -1, bw: -1, f: -1 }; // últimos aplicados
     let raf = 0, running = false;
+    let form = 0, lastForm = 0; // fase de "respiración": expansión desde atrás del elemento
 
     const frame = () => {
       // objetivos según estado (libre = bola blanda / dock = ANILLO al borde)
       const fw = freeD();
       let tx = mx, ty = my, tw = fw, th = tw, tr = tw / 2, tb = 40, to = vis ? 0.82 : 0, tbw = 0, tf = 1;
       let k = 0.14;
+      let docked = false;
       if (dock && dock.isConnected) {
         const rc = dock.getBoundingClientRect();
         if (rc.width > 0 && rc.bottom > 0 && rc.top < innerHeight) {
+          docked = true;
           // la luz viaja al centro del elemento (un poco más rápida)
           tx = rc.left + rc.width / 2;
           ty = rc.top + rc.height / 2;
           k = 0.18;
-          // el anillo se forma según la CERCANÍA REAL de la luz al elemento:
-          // lejos sigue siendo bola; recién detrás del elemento "crece" el borde
+          // FASE 1 (aproximación): la bola viaja LLENA y se CONTRAE como
+          // círculo hacia atrás del elemento, según su cercanía real
           const dist = Math.hypot(st.x - tx, st.y - ty);
           const D = Math.max(rc.width, rc.height) / 2 + 80;
           let e = 1 - Math.min(1, dist / D);
@@ -90,15 +93,23 @@
           const pad = 12;
           const rw = rc.width + pad * 2, rh = rc.height + pad * 2;
           const rr = Math.min((dockR || 3) + pad, Math.min(rw, rh) / 2);
-          tw = fw + (rw - fw) * e;
-          th = fw + (rh - fw) * e;
-          tr = fw / 2 + (rr - fw / 2) * e;
-          tb = 40 + (13 - 40) * e;
-          tbw = 10 * e;
-          tf = 1 + (0.3 - 1) * e;
-          to = vis ? 0.82 + (1 - 0.82) * e : 0;
+          const cd = Math.min(rw, rh) * 0.92; // diámetro contraído (detrás)
+          const aw = fw + (cd - fw) * e;      // círculo que se contrae
+          const ar = aw / 2;
+          // FASE 2 (respiración): ya llegada, se EXPANDE desde atrás
+          // hasta el borde del elemento (form crece recién al arribar)
+          const arrived = dist < Math.max(28, Math.min(rc.width, rc.height) * 0.2);
+          form += ((arrived ? 1 : 0) - form) * (arrived ? 0.12 : 0.2);
+          tw = aw + (rw - aw) * form;
+          th = aw + (rh - aw) * form;
+          tr = ar + (rr - ar) * form;
+          tbw = 10 * form;
+          tf = 1 + (0.55 - 1) * form;         // el interior queda con luz (no hueco)
+          tb = 40 + (18 - 40) * e + (13 - 18) * form;
+          to = vis ? 0.82 + 0.18 * form : 0;
         }
       }
+      if (!docked) form += (0 - form) * 0.2;
       st.x += (tx - st.x) * k; st.y += (ty - st.y) * k;
       st.w += (tw - st.w) * k; st.h += (th - st.h) * k;
       st.r += (tr - st.r) * k; st.b += (tb - st.b) * k;
