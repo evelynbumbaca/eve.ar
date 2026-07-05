@@ -4,8 +4,8 @@ import { link } from '../lib/link';
 ---
 
 <header class="topbar">
-  <a class="wordmark" href={link('/')} aria-label="Eve — inicio" data-wordmark>
-    <span data-name-target>Eve<sup class="deg">°</sup></span>
+  <a class="wordmark" href={link('/')} aria-label="EVE — inicio" data-wordmark>
+    <span data-name-target>EVE</span>
   </a>
 
   <div class="topbar-right">
@@ -37,14 +37,13 @@ import { link } from '../lib/link';
   .topbar button { pointer-events: auto; }
 
   .wordmark {
-    font-family: var(--sans);
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-weight: 700;
-    letter-spacing: -0.01em;
-    font-size: 17px;
+    letter-spacing: 0.04em;
+    font-size: 16px;
     line-height: 1;
     color: #fff; /* difference -> legible sobre cualquier fondo */
   }
-  .wordmark .deg { font-size: 0.6em; vertical-align: top; font-weight: 500; }
   /* en el home con fx, el wordmark aparece recién cuando el nombre grande "llega" */
   :global(html.home-fx) .wordmark span[data-name-target] { opacity: 0; }
 

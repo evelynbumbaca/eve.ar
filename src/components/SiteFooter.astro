@@ -1,14 +1,12 @@
 ---
 /* ============================================================
    SiteFooter — cierre del one-page = sección CONTACTO (#contacto).
-   CTA claro para proyectos A MEDIDA (distinto de los packs):
-   mail prellenado + WhatsApp + redes. Luego la base legal.
+   Un solo CTA "Contactame" que DESPLIEGA el formulario inline
+   (sin backend: compone un mail prellenado, igual que /contacto).
+   Luego redes y base legal.
    ============================================================ */
 import { social, site } from '../data/site';
 import T from './T.astro';
-
-const mailHref = `mailto:${site.email}?subject=${encodeURIComponent('Proyecto a medida')}`;
-const waHref = `${site.whatsapp}?text=${encodeURIComponent('Hola Eve! Tengo un proyecto para contarte.')}`;
 ---
 
 <footer class="site-foot" id="contacto">
@@ -16,28 +14,45 @@ const waHref = `${site.whatsapp}?text=${encodeURIComponent('Hola Eve! Tengo un p
     <div class="foot-cta">
       <p class="foot-kicker mono cap rise"><T es="Contacto" en="Contact" /></p>
       <p class="foot-line rise rise-delay-1">
-        <T es="¿Otro proyecto, una idea, una colaboración?" en="Another project, an idea, a collaboration?" />
+        <T es="Contame el proyecto que tenés en mente." en="Tell me about the project on your mind." />
       </p>
       <p class="foot-sub rise rise-delay-2">
         <T
-          es="No hace falta que sea un pack: contame qué necesitás — identidad, editorial, UX/UI, packaging o algo que todavía no tiene nombre — y lo armamos a medida."
-          en="It doesn't have to be a pack: tell me what you need — identity, editorial, UX/UI, packaging or something that doesn't have a name yet — and we'll shape it together."
+          es="Identidad, editorial, UX/UI, packaging o algo completamente nuevo — cada proyecto empieza con una buena conversación."
+          en="Identity, editorial, UX/UI, packaging or something entirely new — every project starts with a good conversation."
         />
       </p>
       <div class="foot-actions rise rise-delay-3">
-        <a class="fa-mail" href={mailHref}>
-          <T es="Escribime" en="Email me" />
+        <button class="fa-open" type="button" data-form-toggle aria-expanded="false" aria-controls="foot-form">
+          <T es="Contactame" en="Contact me" />
           <span aria-hidden="true">→</span>
-        </a>
-        <a class="fa-wa" href={waHref} target="_blank" rel="noopener noreferrer">
-          WhatsApp <span aria-hidden="true">↗</span>
-        </a>
-        <span class="fa-addr mono">{site.email}</span>
+        </button>
       </div>
+
+      <form class="foot-form" id="foot-form" data-foot-form data-email={site.email} hidden novalidate>
+        <div class="ff-row">
+          <div class="ff-field">
+            <label for="ff-name"><T es="Nombre" en="Name" /></label>
+            <input id="ff-name" name="name" type="text" autocomplete="name" required />
+          </div>
+          <div class="ff-field">
+            <label for="ff-email">Email</label>
+            <input id="ff-email" name="email" type="email" autocomplete="email" required />
+          </div>
+        </div>
+        <div class="ff-field">
+          <label for="ff-msg"><T es="Contame sobre tu proyecto" en="Tell me about your project" /></label>
+          <textarea id="ff-msg" name="message" rows="4" required></textarea>
+        </div>
+        <button class="ff-send" type="submit">
+          <T es="Enviar mensaje" en="Send message" />
+          <span aria-hidden="true">→</span>
+        </button>
+        <p class="ff-note" data-ff-note hidden></p>
+      </form>
     </div>
 
     <div class="foot-grid">
-      <span class="mono cap"><T k="footer.work" /></span>
       <nav class="foot-social" aria-label="Redes">
         {social.map((s) => (
           <a href={s.href} target="_blank" rel="noopener noreferrer">{s.label}</a>
@@ -78,14 +93,10 @@ const waHref = `${site.whatsapp}?text=${encodeURIComponent('Hola Eve! Tengo un p
     color: var(--ink-80);
     max-width: 56ch;
   }
-  .foot-actions {
-    display: flex; flex-wrap: wrap; align-items: center;
-    gap: 14px 22px;
-    margin-top: clamp(24px, 4vh, 40px);
-  }
-  .fa-mail {
+  .foot-actions { margin-top: clamp(24px, 4vh, 40px); }
+  .fa-open {
     display: inline-flex; align-items: center; gap: 10px;
-    padding: 14px 28px;
+    padding: 14px 30px;
     border-radius: 40px;
     background: var(--ink);
     color: var(--paper);
@@ -94,10 +105,48 @@ const waHref = `${site.whatsapp}?text=${encodeURIComponent('Hola Eve! Tengo un p
     letter-spacing: 0.02em;
     transition: opacity var(--dur-micro) var(--ease-quint);
   }
-  .fa-mail:hover { opacity: 0.85; }
-  .fa-wa {
-    display: inline-flex; align-items: center; gap: 9px;
-    padding: 13px 24px;
+  .fa-open:hover { opacity: 0.85; }
+  .fa-open[aria-expanded="true"] { opacity: 0.6; }
+
+  /* formulario desplegable */
+  .foot-form {
+    max-width: 640px;
+    margin-top: clamp(26px, 4vh, 44px);
+  }
+  .foot-form:not([hidden]) { animation: ffIn 0.5s var(--ease-out) both; }
+  @keyframes ffIn { from { opacity: 0; transform: translateY(14px); } }
+  @media (prefers-reduced-motion: reduce) { .foot-form:not([hidden]) { animation: none; } }
+
+  .ff-row { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(16px, 2vw, 28px); }
+  .ff-field { margin-bottom: clamp(16px, 2.5vh, 24px); }
+  .ff-field label {
+    display: block;
+    font-family: var(--sans);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-60);
+    margin-bottom: 9px;
+  }
+  .ff-field input,
+  .ff-field textarea {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--line);
+    padding: 6px 0 10px;
+    font-family: var(--serif);
+    font-size: clamp(1.05rem, 1.4vw, 1.3rem);
+    color: var(--ink);
+    transition: border-color var(--dur-micro) var(--ease-quint);
+  }
+  .ff-field input:focus,
+  .ff-field textarea:focus { outline: none; border-color: var(--ink); }
+  .ff-field textarea { resize: vertical; line-height: 1.4; }
+  .ff-send {
+    display: inline-flex; align-items: center; gap: 10px;
+    margin-top: 6px;
+    padding: 12px 26px;
     border-radius: 40px;
     border: 1px solid var(--ink);
     color: var(--ink);
@@ -106,13 +155,13 @@ const waHref = `${site.whatsapp}?text=${encodeURIComponent('Hola Eve! Tengo un p
     letter-spacing: 0.02em;
     transition: background var(--dur-micro) var(--ease-quint), color var(--dur-micro) var(--ease-quint);
   }
-  .fa-wa:hover { background: var(--ink); color: var(--paper); }
-  .fa-addr { color: var(--ink-45); }
+  .ff-send:hover { background: var(--ink); color: var(--paper); }
+  .ff-note { margin-top: 14px; font-size: var(--fs-small); color: var(--ink-60); }
 
   .foot-grid {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
+    justify-content: flex-end;
     gap: 16px 24px;
     padding: 22px 0;
     border-top: 1px solid var(--line);
@@ -138,4 +187,44 @@ const waHref = `${site.whatsapp}?text=${encodeURIComponent('Hola Eve! Tengo un p
     letter-spacing: 0.04em;
     color: var(--ink-35);
   }
+
+  @media (max-width: 560px) {
+    .ff-row { grid-template-columns: 1fr; gap: 0; }
+  }
 </style>
+
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>('[data-form-toggle]');
+  const form = document.querySelector<HTMLFormElement>('[data-foot-form]');
+  if (toggle && form) {
+    toggle.addEventListener('click', () => {
+      const open = form.hidden;
+      form.hidden = !open;
+      toggle.setAttribute('aria-expanded', String(open));
+      if (open) {
+        const first = form.querySelector<HTMLInputElement>('input');
+        first?.focus({ preventScroll: true });
+        form.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'nearest' });
+      }
+    });
+
+    // sin backend todavía: compone un mail prellenado (igual que /contacto)
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const data = new FormData(form);
+      const name = (data.get('name') || '').toString().trim();
+      const from = (data.get('email') || '').toString().trim();
+      const msg = (data.get('message') || '').toString().trim();
+      const note = form.querySelector<HTMLElement>('[data-ff-note]');
+      if (!name || !from || !msg) {
+        if (note) { note.hidden = false; note.textContent = 'Completá todos los campos · Please fill in all fields'; }
+        return;
+      }
+      const email = form.dataset.email || '';
+      const subject = encodeURIComponent(`Proyecto — ${name}`);
+      const body = encodeURIComponent(`${msg}\n\n— ${name} (${from})`);
+      location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+      if (note) { note.hidden = false; note.textContent = 'Abriendo tu cliente de correo… · Opening your email client…'; }
+    });
+  }
+</script>

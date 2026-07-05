@@ -23,16 +23,16 @@ const works = projects.slice(0, 6);
   <div class="bn-inner wrap">
     <header class="bn-head">
       <div class="bn-name-wrap">
-        <h1 class="bn-name-slot">Eve<sup class="deg">°</sup></h1>
-        <span class="bn-name-fly" data-name-fly aria-hidden="true">Eve<sup class="deg">°</sup></span>
+        <p class="bn-name-slot" aria-hidden="true">EVE</p>
+        <span class="bn-name-fly" data-name-fly aria-hidden="true">EVE</span>
       </div>
 
       <div class="bn-desc">
-        <p class="bn-desc-text"
+        <p class="bn-desc-text rise"
           data-es="Eve es diseñadora multimedia y UX/UI. Construye identidades y experiencias con intención, claridad y carácter — entre lo editorial, la marca y el producto digital."
           data-en="Eve is a multimedia & UX/UI designer. She builds identities and experiences with intent, clarity and character — between editorial, brand and digital product."
         >Eve es diseñadora multimedia y UX/UI. Construye identidades y experiencias con intención, claridad y carácter — entre lo editorial, la marca y el producto digital.</p>
-        <nav class="bn-social" aria-label="Redes">
+        <nav class="bn-social rise rise-delay-1" aria-label="Redes">
           {social.map((s) => (
             <a href={s.href} target="_blank" rel="noopener noreferrer">{s.label}</a>
           ))}
@@ -41,10 +41,6 @@ const works = projects.slice(0, 6);
     </header>
 
     <div class="bn-works-head" id="trabajos">
-      <h2 class="bn-sw">
-        <span data-es="Trabajos seleccionados" data-en="Selected works">Trabajos seleccionados</span>
-        <sup class="bn-count">(<span data-grid-count>{works.length}</span>)</sup>
-      </h2>
       <div class="bn-filters" role="group" aria-label="Filtrar por disciplina · Filter by discipline">
         {filters.map((f, i) => (
           <button
@@ -70,9 +66,13 @@ const works = projects.slice(0, 6);
       ))}
     </div>
 
-    <div class="bn-more rise">
-      <a href={link('/trabajos')}>
-        <span data-es={`Ver el archivo completo (${projects.length})`} data-en={`See the full archive (${projects.length})`}>Ver el archivo completo ({projects.length})</span>
+    <div class="bn-below">
+      <h2 class="bn-sw rise">
+        <span data-es="Trabajos seleccionados" data-en="Selected works">Trabajos seleccionados</span>
+        <sup class="bn-count">(<span data-grid-count>{works.length}</span>)</sup>
+      </h2>
+      <a class="bn-all rise rise-delay-1" href={link('/trabajos')}>
+        <span data-es="Ver todos los trabajos" data-en="See all works">Ver todos los trabajos</span>
         <span aria-hidden="true">→</span>
       </a>
     </div>
@@ -99,15 +99,14 @@ const works = projects.slice(0, 6);
   .bn-name-wrap { position: relative; }
   .bn-name-slot,
   .bn-name-fly {
-    font-family: var(--sans);
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-weight: 700;
     font-size: clamp(3.4rem, 12vw, 11rem);
     line-height: 0.86;
-    letter-spacing: -0.035em;
+    letter-spacing: -0.02em;
     color: var(--ink);
   }
   .bn-name-slot { display: block; margin: 0; }
-  .deg { font-size: 0.42em; vertical-align: top; font-weight: 500; line-height: 1; }
 
   .bn-name-fly { position: absolute; left: 0; top: 0; pointer-events: none; }
   :global(html.home-fx) .bn-name-slot { visibility: hidden; }
@@ -141,21 +140,14 @@ const works = projects.slice(0, 6);
   }
   .bn-social a:hover { color: var(--ink); }
 
-  /* ---------- header de trabajos + filtros ---------- */
+  /* ---------- filtros (arriba de la grilla, a la derecha) ---------- */
   .bn-works-head {
-    display: flex; flex-wrap: wrap; align-items: baseline;
-    justify-content: space-between; gap: 14px 24px;
+    display: flex; flex-wrap: wrap;
+    justify-content: flex-end;
     border-top: 1px solid var(--line);
     padding-top: clamp(16px, 2.5vh, 26px);
     padding-bottom: clamp(16px, 2.5vh, 26px);
   }
-  .bn-sw {
-    font-family: var(--sans);
-    font-weight: 600;
-    font-size: clamp(1.1rem, 1.8vw, 1.6rem);
-    letter-spacing: -0.01em;
-  }
-  .bn-count { font-size: 0.55em; font-weight: 500; color: var(--ink-45); vertical-align: super; margin-left: 2px; }
 
   .bn-filters { display: flex; flex-wrap: wrap; gap: clamp(14px, 2.2vw, 32px); }
   .bn-filter {
@@ -227,12 +219,20 @@ const works = projects.slice(0, 6);
     }
   }
 
-  /* ---------- link al archivo ---------- */
-  .bn-more {
-    display: flex; justify-content: flex-end;
-    padding-top: clamp(14px, 2vh, 22px);
+  /* ---------- debajo de la grilla: título izq + ver todos der ---------- */
+  .bn-below {
+    display: flex; flex-wrap: wrap; align-items: baseline;
+    justify-content: space-between; gap: 12px 24px;
+    padding-top: clamp(16px, 2.5vh, 26px);
   }
-  .bn-more a {
+  .bn-sw {
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: clamp(1.1rem, 1.8vw, 1.6rem);
+    letter-spacing: -0.01em;
+  }
+  .bn-count { font-size: 0.55em; font-weight: 500; color: var(--ink-45); vertical-align: super; margin-left: 2px; }
+  .bn-all {
     display: inline-flex; align-items: baseline; gap: 10px;
     font-family: var(--sans);
     font-size: clamp(0.95rem, 1.1vw, 1.05rem);
@@ -241,9 +241,9 @@ const works = projects.slice(0, 6);
     padding-bottom: 3px;
     transition: color var(--dur-micro) var(--ease-quint), border-color var(--dur-micro) var(--ease-quint);
   }
-  .bn-more a:hover { color: var(--ink); border-color: var(--ink); }
-  .bn-more a span[aria-hidden] { transition: transform var(--dur-ui) var(--ease-out); display: inline-block; }
-  .bn-more a:hover span[aria-hidden] { transform: translateX(5px); }
+  .bn-all:hover { color: var(--ink); border-color: var(--ink); }
+  .bn-all span[aria-hidden] { transition: transform var(--dur-ui) var(--ease-out); display: inline-block; }
+  .bn-all:hover span[aria-hidden] { transform: translateX(5px); }
 
   /* ---------- responsive / táctil ---------- */
   @media (max-width: 860px) {

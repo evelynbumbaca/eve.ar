@@ -89,7 +89,24 @@ const {
             document.body.classList.toggle('menu-open');
             return;
           }
-          if (e.target.closest('.overlay nav a')) closeMenu();
+          var navA = e.target.closest('.overlay nav a');
+          if (navA) {
+            closeMenu();
+            // ancla en la misma página: scroll manual (el clic repetido con el
+            // hash ya presente en la URL no dispara navegación sola)
+            try {
+              var u = new URL(navA.href, location.href);
+              if (u.pathname === location.pathname && u.hash) {
+                e.preventDefault();
+                var el = document.querySelector(u.hash);
+                if (el) {
+                  var smooth = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+                  el.scrollIntoView({ behavior: smooth ? 'smooth' : 'auto', block: 'start' });
+                  history.pushState(null, '', u.hash);
+                }
+              }
+            } catch (err) {}
+          }
         });
         document.addEventListener('keydown', (e) => {
           if (e.key === 'Escape') closeMenu();

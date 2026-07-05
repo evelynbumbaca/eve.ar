@@ -49,8 +49,7 @@ const packs = [
   },
 ];
 
-const wa = (name: string) => `${site.whatsapp}?text=${encodeURIComponent(`Hola Eve! Me interesa el Pack ${name}.`)}`;
-const mail = (name: string) => `mailto:${site.email}?subject=${encodeURIComponent(`Pack ${name}`)}`;
+const wa = (name: string) => `${site.whatsapp}?text=${encodeURIComponent(`Hola Eve! Quiero contratar el Pack ${name}.`)}`;
 ---
 
 <section class="packs" id="packs" aria-label="Packs de branding">
@@ -85,11 +84,8 @@ const mail = (name: string) => `mailto:${site.email}?subject=${encodeURIComponen
           <p class="pk-time mono"><span data-es={p.time.es} data-en={p.time.en}>{p.time.es}</span></p>
           <div class="pk-ctas">
             <a class="pk-wa" href={wa(p.name)} target="_blank" rel="noopener noreferrer">
-              <T es="Consultar por WhatsApp" en="Ask on WhatsApp" />
+              <T es="Contratar" en="Book" />
               <span aria-hidden="true">↗</span>
-            </a>
-            <a class="pk-mail" href={mail(p.name)}>
-              <T es="o por mail" en="or by email" />
             </a>
           </div>
         </article>
@@ -97,8 +93,7 @@ const mail = (name: string) => `mailto:${site.email}?subject=${encodeURIComponen
     </div>
 
     <p class="pk-custom rise">
-      <T es="¿Buscás algo distinto o más grande?" en="Looking for something different or bigger?" />
-      <a href="#contacto"><T es="Hablemos de tu proyecto" en="Let's talk about your project" /> <span aria-hidden="true">↓</span></a>
+      <T es="¿Buscás algo distinto?" en="Looking for something different?" />
     </p>
   </div>
 </section>
@@ -175,44 +170,29 @@ const mail = (name: string) => `mailto:${site.email}?subject=${encodeURIComponen
   .pk-items li::before { content: '·'; color: var(--ink-35); }
   .pk-time { color: var(--ink-45); margin-bottom: clamp(18px, 3vh, 28px); }
 
-  .pk-ctas { margin-top: auto; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; }
+  .pk-ctas { margin-top: auto; display: flex; justify-content: center; }
   .pk-wa {
-    display: inline-flex; align-items: center; gap: 9px;
-    padding: 11px 20px;
+    display: inline-flex; align-items: center; justify-content: center; gap: 9px;
+    padding: 12px 34px;
     border-radius: 40px;
     background: var(--ink);
     color: var(--paper);
     font-family: var(--sans);
     font-size: 13.5px;
-    letter-spacing: 0.02em;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
     transition: opacity var(--dur-micro) var(--ease-quint);
   }
   .pk-wa:hover { opacity: 0.85; }
   .pack.is-featured .pk-wa { background: var(--orange); color: #fff; }
-  .pk-mail {
-    font-family: var(--sans);
-    font-size: 13px;
-    color: var(--ink-60);
-    border-bottom: 1px solid var(--ink-35);
-    padding-bottom: 2px;
-    transition: color var(--dur-micro) var(--ease-quint);
-  }
-  .pk-mail:hover { color: var(--ink); }
 
   .pk-custom {
     margin-top: clamp(28px, 4.5vh, 48px);
     font-family: var(--sans);
     font-size: clamp(0.95rem, 1.15vw, 1.1rem);
     color: var(--ink-60);
-    display: flex; flex-wrap: wrap; gap: 8px 12px;
+    text-align: center;
   }
-  .pk-custom a {
-    color: var(--ink);
-    border-bottom: 1px solid var(--ink);
-    padding-bottom: 2px;
-    transition: opacity var(--dur-micro) var(--ease-quint);
-  }
-  .pk-custom a:hover { opacity: 0.65; }
 
   @media (max-width: 900px) {
     .pk-grid { grid-template-columns: 1fr; max-width: 520px; }

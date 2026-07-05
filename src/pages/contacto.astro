@@ -22,7 +22,7 @@ import { site, social } from '../data/site';
       </header>
 
       <div class="contacto-grid">
-        <form class="contact-form" id="contact-form" novalidate>
+        <form class="contact-form rise" id="contact-form" novalidate>
           <div class="field">
             <label for="cf-name"><T es="Nombre" en="Name" /></label>
             <input id="cf-name" name="name" type="text" autocomplete="name" required />
@@ -42,7 +42,7 @@ import { site, social } from '../data/site';
           <p class="form-note" id="cf-note" hidden></p>
         </form>
 
-        <aside class="contact-direct">
+        <aside class="contact-direct rise rise-delay-1">
           <div class="direct-row">
             <span class="mono cap"><T es="Escribime" en="Email" /></span>
             <a href={`mailto:${site.email}`}>{site.email}</a>

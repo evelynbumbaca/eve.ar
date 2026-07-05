@@ -45,7 +45,7 @@ export const nav: NavItem[] = [
   { es: 'Inicio', en: 'Index', href: '/' },
   { es: 'Trabajos', en: 'Work', href: '/#trabajos' },
   { es: 'Packs', en: 'Packs', href: '/#packs' },
-  { es: 'Estudio', en: 'About', href: '/#estudio' },
+  { es: 'Estudio', en: 'About', href: '/estudio' },
   { es: 'Tienda', en: 'Shop', href: '/tienda' },
   { es: 'Contacto', en: 'Contact', href: '/#contacto' },
 ];
