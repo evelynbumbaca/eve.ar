@@ -71,25 +71,34 @@
 
     const frame = () => {
       // objetivos según estado (libre = bola blanda / dock = ANILLO al borde)
-      let tx = mx, ty = my, tw = freeD(), th = tw, tr = tw / 2, tb = 40, to = vis ? 0.82 : 0, tbw = 0, tf = 1;
+      const fw = freeD();
+      let tx = mx, ty = my, tw = fw, th = tw, tr = tw / 2, tb = 40, to = vis ? 0.82 : 0, tbw = 0, tf = 1;
+      let k = 0.14;
       if (dock && dock.isConnected) {
         const rc = dock.getBoundingClientRect();
         if (rc.width > 0 && rc.bottom > 0 && rc.top < innerHeight) {
-          const pad = 12;
+          // la luz viaja al centro del elemento (un poco más rápida)
           tx = rc.left + rc.width / 2;
           ty = rc.top + rc.height / 2;
-          tw = rc.width + pad * 2;
-          th = rc.height + pad * 2;
-          tr = Math.min((dockR || 3) + pad, Math.min(tw, th) / 2);
-          tb = 13;          // más nítido: banda notoria
-          tbw = 10;         // grosor del anillo
-          tf = 0.3;         // el relleno casi se apaga; queda el borde
-          to = vis ? 1 : 0;
+          k = 0.18;
+          // el anillo se forma según la CERCANÍA REAL de la luz al elemento:
+          // lejos sigue siendo bola; recién detrás del elemento "crece" el borde
+          const dist = Math.hypot(st.x - tx, st.y - ty);
+          const D = Math.max(rc.width, rc.height) / 2 + 80;
+          let e = 1 - Math.min(1, dist / D);
+          e = e * e * (3 - 2 * e); // smoothstep
+          const pad = 12;
+          const rw = rc.width + pad * 2, rh = rc.height + pad * 2;
+          const rr = Math.min((dockR || 3) + pad, Math.min(rw, rh) / 2);
+          tw = fw + (rw - fw) * e;
+          th = fw + (rh - fw) * e;
+          tr = fw / 2 + (rr - fw / 2) * e;
+          tb = 40 + (13 - 40) * e;
+          tbw = 10 * e;
+          tf = 1 + (0.3 - 1) * e;
+          to = vis ? 0.82 + (1 - 0.82) * e : 0;
         }
       }
-
-      // morph orgánico: un solo lerp para todo
-      const k = 0.14;
       st.x += (tx - st.x) * k; st.y += (ty - st.y) * k;
       st.w += (tw - st.w) * k; st.h += (th - st.h) * k;
       st.r += (tr - st.r) * k; st.b += (tb - st.b) * k;
