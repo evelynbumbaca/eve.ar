@@ -1,17 +1,39 @@
 ---
+/* ============================================================
+   SiteFooter — cierre del one-page = sección CONTACTO (#contacto).
+   CTA claro para proyectos A MEDIDA (distinto de los packs):
+   mail prellenado + WhatsApp + redes. Luego la base legal.
+   ============================================================ */
 import { social, site } from '../data/site';
 import T from './T.astro';
-import { link } from '../lib/link';
+
+const mailHref = `mailto:${site.email}?subject=${encodeURIComponent('Proyecto a medida')}`;
+const waHref = `${site.whatsapp}?text=${encodeURIComponent('Hola Eve! Tengo un proyecto para contarte.')}`;
 ---
 
-<footer class="site-foot">
+<footer class="site-foot" id="contacto">
   <div class="wrap">
     <div class="foot-cta">
-      <T as="p" class="foot-cta-line" k="footer.cta" />
-      <a class="foot-cta-link" href={link('/contacto')}>
-        <T k="footer.cta.link" />
-        <span aria-hidden="true">→</span>
-      </a>
+      <p class="foot-kicker mono cap rise"><T es="Contacto" en="Contact" /></p>
+      <p class="foot-line rise rise-delay-1">
+        <T es="¿Otro proyecto, una idea, una colaboración?" en="Another project, an idea, a collaboration?" />
+      </p>
+      <p class="foot-sub rise rise-delay-2">
+        <T
+          es="No hace falta que sea un pack: contame qué necesitás — identidad, editorial, UX/UI, packaging o algo que todavía no tiene nombre — y lo armamos a medida."
+          en="It doesn't have to be a pack: tell me what you need — identity, editorial, UX/UI, packaging or something that doesn't have a name yet — and we'll shape it together."
+        />
+      </p>
+      <div class="foot-actions rise rise-delay-3">
+        <a class="fa-mail" href={mailHref}>
+          <T es="Escribime" en="Email me" />
+          <span aria-hidden="true">→</span>
+        </a>
+        <a class="fa-wa" href={waHref} target="_blank" rel="noopener noreferrer">
+          WhatsApp <span aria-hidden="true">↗</span>
+        </a>
+        <span class="fa-addr mono">{site.email}</span>
+      </div>
     </div>
 
     <div class="foot-grid">
@@ -33,37 +55,59 @@ import { link } from '../lib/link';
 <style>
   .site-foot {
     border-top: 1px solid var(--line);
-    margin-top: var(--section);
-    padding-block: clamp(48px, 8vh, 96px) clamp(28px, 4vh, 44px);
+    margin-top: clamp(40px, 8vh, 100px);
+    padding-block: clamp(56px, 10vh, 120px) clamp(28px, 4vh, 44px);
   }
 
-  .foot-cta {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 16px 32px;
-    padding-bottom: clamp(40px, 7vh, 80px);
-  }
-  .foot-cta-line {
+  .foot-cta { padding-bottom: clamp(44px, 8vh, 90px); }
+  .foot-kicker { color: var(--ink-45); margin-bottom: clamp(16px, 2.5vh, 26px); display: block; }
+  .foot-line {
     font-family: var(--serif);
     font-weight: 300;
-    font-size: var(--fs-h2);
-    letter-spacing: -0.015em;
-    color: var(--ink-60);
+    font-size: clamp(1.9rem, 4.6vw, 3.8rem);
+    line-height: 1.04;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    max-width: 22ch;
   }
-  .foot-cta-link {
-    font-family: var(--serif);
-    font-size: var(--fs-h2);
-    letter-spacing: -0.015em;
-    display: inline-flex;
-    gap: 14px;
-    align-items: baseline;
-    transition: opacity 0.25s var(--ease);
+  .foot-sub {
+    margin-top: 18px;
+    font-family: var(--sans);
+    font-size: clamp(0.95rem, 1.15vw, 1.1rem);
+    line-height: 1.55;
+    color: var(--ink-80);
+    max-width: 56ch;
   }
-  .foot-cta-link span { transition: transform 0.3s var(--ease); display: inline-block; }
-  .foot-cta-link:hover { opacity: 0.6; }
-  .foot-cta-link:hover span { transform: translateX(6px); }
+  .foot-actions {
+    display: flex; flex-wrap: wrap; align-items: center;
+    gap: 14px 22px;
+    margin-top: clamp(24px, 4vh, 40px);
+  }
+  .fa-mail {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 14px 28px;
+    border-radius: 40px;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: var(--sans);
+    font-size: 14.5px;
+    letter-spacing: 0.02em;
+    transition: opacity var(--dur-micro) var(--ease-quint);
+  }
+  .fa-mail:hover { opacity: 0.85; }
+  .fa-wa {
+    display: inline-flex; align-items: center; gap: 9px;
+    padding: 13px 24px;
+    border-radius: 40px;
+    border: 1px solid var(--ink);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 14px;
+    letter-spacing: 0.02em;
+    transition: background var(--dur-micro) var(--ease-quint), color var(--dur-micro) var(--ease-quint);
+  }
+  .fa-wa:hover { background: var(--ink); color: var(--paper); }
+  .fa-addr { color: var(--ink-45); }
 
   .foot-grid {
     display: flex;

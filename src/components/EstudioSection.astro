@@ -1,0 +1,85 @@
+---
+/* ============================================================
+   EstudioSection — versión compacta del estudio en el one-page.
+   La bio completa (retrato, herramientas, enfoque) sigue
+   viviendo en /estudio, linkeada desde acá.
+   ============================================================ */
+import T from './T.astro';
+import { link } from '../lib/link';
+
+const services = [
+  { es: 'Identidad de marca', en: 'Brand identity' },
+  { es: 'Diseño UX/UI', en: 'UX/UI design' },
+  { es: 'Editorial', en: 'Editorial' },
+  { es: 'Packaging', en: 'Packaging' },
+  { es: 'Dirección de arte', en: 'Art direction' },
+  { es: 'Diseño web', en: 'Web design' },
+];
+---
+
+<section class="est" id="estudio" aria-label="Estudio">
+  <div class="wrap">
+    <p class="est-kicker mono cap rise"><T es="Estudio" en="About" /></p>
+    <p class="est-lead rise rise-delay-1">
+      <T
+        es="Me interesa el diseño que ordena: tomar lo disperso y volverlo legible, memorable y útil. Criterio editorial, sensibilidad tipográfica y pensamiento de producto."
+        en="I care about design that brings order: taking the scattered and making it legible, memorable and useful. Editorial judgment, typographic sensibility and product thinking."
+      />
+    </p>
+
+    <p class="est-services mono rise rise-delay-2" aria-label="Servicios">
+      {services.map((s, i) => (
+        <>
+          <span data-es={s.es} data-en={s.en}>{s.es}</span>
+          {i < services.length - 1 && <span class="dot" aria-hidden="true"> · </span>}
+        </>
+      ))}
+    </p>
+
+    <a class="est-link rise rise-delay-3" href={link('/estudio')}>
+      <T es="Más sobre el estudio" en="More about the studio" />
+      <span aria-hidden="true">→</span>
+    </a>
+  </div>
+</section>
+
+<style>
+  .est {
+    padding-block: clamp(72px, 13vh, 160px) clamp(40px, 7vh, 90px);
+    border-top: 1px solid var(--line);
+  }
+  .est-kicker { color: var(--ink-45); margin-bottom: clamp(18px, 3vh, 32px); display: block; }
+  .est-lead {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: clamp(1.5rem, 3.2vw, 2.6rem);
+    line-height: 1.26;
+    letter-spacing: -0.015em;
+    color: var(--ink);
+    max-width: 30ch;
+  }
+  .est-services {
+    margin-top: clamp(22px, 3.5vh, 36px);
+    font-size: clamp(11px, 0.95vw, 13px);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-60);
+    line-height: 2;
+    max-width: 70ch;
+  }
+  .est-services .dot { color: var(--ink-35); }
+  .est-link {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-top: clamp(22px, 3.5vh, 36px);
+    font-family: var(--sans);
+    font-size: clamp(14px, 1.1vw, 16px);
+    border-bottom: 1px solid var(--ink);
+    padding-bottom: 3px;
+    transition: opacity var(--dur-micro) var(--ease-quint);
+  }
+  .est-link span[aria-hidden] { transition: transform var(--dur-ui) var(--ease-out); display: inline-block; }
+  .est-link:hover { opacity: 0.65; }
+  .est-link:hover span[aria-hidden] { transform: translateX(5px); }
+</style>

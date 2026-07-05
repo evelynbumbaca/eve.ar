@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import Topbar from '../components/Topbar.astro';
 import MenuOverlay from '../components/MenuOverlay.astro';
+import GlowLayer from '../components/GlowLayer.astro';
 import { ui } from '../i18n/ui';
 
 interface Props {
@@ -38,6 +39,7 @@ const {
     <meta property="og:locale" content="es_AR" />
   </head>
   <body>
+    <GlowLayer />
     <Topbar />
     <MenuOverlay />
 

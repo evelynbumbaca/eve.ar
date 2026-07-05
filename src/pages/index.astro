@@ -1,6 +1,8 @@
 ---
 import Base from '../layouts/Base.astro';
 import HomeBanner from '../components/HomeBanner.astro';
+import PacksSection from '../components/PacksSection.astro';
+import EstudioSection from '../components/EstudioSection.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 ---
 
@@ -17,6 +19,8 @@ import SiteFooter from '../components/SiteFooter.astro';
   <h1 class="visually-hidden">Eve — Diseñadora Multimedia & UX/UI · Buenos Aires, Argentina</h1>
 
   <HomeBanner />
+  <PacksSection />
+  <EstudioSection />
   <SiteFooter />
 </Base>
 
@@ -27,12 +31,11 @@ import SiteFooter from '../components/SiteFooter.astro';
   const html = document.documentElement;
 
   const banner = document.querySelector('[data-banner]') as HTMLElement | null;
-  const glow = document.querySelector('[data-glow]') as HTMLElement | null;
   const fly = document.querySelector('[data-name-fly]') as HTMLElement | null;
   const slot = document.querySelector('.bn-name-slot') as HTMLElement | null;
   const target = document.querySelector('[data-name-target]') as HTMLElement | null;
 
-  if (!enhance || !banner || !glow || !fly || !slot || !target) {
+  if (!enhance || !banner || !fly || !slot || !target) {
     html.classList.remove('home-fx');
   } else {
     html.classList.add('home-fx');
@@ -41,12 +44,8 @@ import SiteFooter from '../components/SiteFooter.astro';
 
     // geometría en coordenadas de DOCUMENTO (robusta ante recarga a mitad de scroll)
     let vh = innerHeight;
-    let bannerDocX = 0, bannerDocY = 0;
     let slotDocX = 0, slotDocY = 0;
     let tX = 0, tY = 0, scaleFinal = 0.16, scrollEnd = 1;
-
-    // glow que sigue al cursor
-    let gx = innerWidth / 2, gy = vh * 0.4, glx = gx, gly = gy;
 
     // una pasada del morph (también usada sincrónicamente tras medir)
     const applyMorph = () => {
@@ -62,8 +61,6 @@ import SiteFooter from '../components/SiteFooter.astro';
 
     function measure() {
       vh = innerHeight;
-      const br = banner.getBoundingClientRect();
-      bannerDocX = br.left + scrollX; bannerDocY = br.top + scrollY;
       const sr = slot.getBoundingClientRect();
       slotDocX = sr.left + scrollX; slotDocY = sr.top + scrollY;
       const tr = target.getBoundingClientRect(); // topbar fijo -> coords de viewport constantes
@@ -75,24 +72,14 @@ import SiteFooter from '../components/SiteFooter.astro';
 
     let raf = 0, running = false, scrollDirty = true;
     function frame() {
-      glx += (gx - glx) * 0.14;
-      gly += (gy - gly) * 0.14;
-      // posición del glow en el espacio del banner, sin leer layout por frame
-      glow.style.transform = `translate3d(${(glx - (bannerDocX - scrollX)).toFixed(1)}px, ${(gly - (bannerDocY - scrollY)).toFixed(1)}px, 0)`;
       applyMorph();
-      const moving = Math.abs(gx - glx) > 0.3 || Math.abs(gy - gly) > 0.3 || scrollDirty;
+      const moving = scrollDirty;
       scrollDirty = false;
       if (moving) raf = requestAnimationFrame(frame);
       else running = false;
     }
     function kick() { if (!running) { running = true; raf = requestAnimationFrame(frame); } }
 
-    banner.addEventListener('pointermove', (e) => {
-      gx = e.clientX; gy = e.clientY;
-      if (!banner.classList.contains('glow-on')) banner.classList.add('glow-on');
-      kick();
-    }, { passive: true });
-    banner.addEventListener('pointerleave', () => banner.classList.remove('glow-on'));
     addEventListener('scroll', () => { scrollDirty = true; kick(); }, { passive: true });
     let rt = 0;
     addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { measure(); scrollDirty = true; kick(); }, 150); }, { passive: true });

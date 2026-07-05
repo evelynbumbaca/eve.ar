@@ -1,0 +1,221 @@
+---
+/* ============================================================
+   PacksSection — 3 packs de branding preestablecidos.
+   CTA primario: WhatsApp con mensaje prellenado por pack.
+   CTA secundario: mail con asunto prellenado.
+   Cierre: puente a #contacto para proyectos a medida.
+   Contenido placeholder: alcances/tiempos se ajustan con Eve.
+   ============================================================ */
+import { site } from '../data/site';
+import T from './T.astro';
+
+const packs = [
+  {
+    num: '01',
+    name: 'Esencial',
+    who: { es: 'Para arrancar con una base sólida.', en: 'To start with a solid base.' },
+    items: [
+      { es: 'Logo + variantes', en: 'Logo + variants' },
+      { es: 'Paleta y tipografías', en: 'Palette & type pairing' },
+      { es: 'Mini guía de uso (PDF)', en: 'Mini usage guide (PDF)' },
+      { es: 'Kit básico para redes', en: 'Basic social kit' },
+    ],
+    time: { es: 'Entrega estimada: 2 semanas', en: 'Estimated delivery: 2 weeks' },
+  },
+  {
+    num: '02',
+    name: 'Identidad',
+    featured: true,
+    who: { es: 'La marca completa, coherente en todos lados.', en: 'The full brand, coherent everywhere.' },
+    items: [
+      { es: 'Todo lo del Esencial', en: 'Everything in Esencial' },
+      { es: 'Sistema visual extendido', en: 'Extended visual system' },
+      { es: 'Papelería + plantillas de redes', en: 'Stationery + social templates' },
+      { es: 'Brandbook completo', en: 'Full brandbook' },
+    ],
+    time: { es: 'Entrega estimada: 3–4 semanas', en: 'Estimated delivery: 3–4 weeks' },
+  },
+  {
+    num: '03',
+    name: 'Integral',
+    who: { es: 'Identidad + su aterrizaje al mundo real.', en: 'Identity + its landing in the real world.' },
+    items: [
+      { es: 'Todo lo del Identidad', en: 'Everything in Identidad' },
+      { es: 'Packaging o diseño web', en: 'Packaging or web design' },
+      { es: 'Piezas de lanzamiento', en: 'Launch pieces' },
+      { es: 'Acompañamiento 30 días', en: '30-day follow-up' },
+    ],
+    time: { es: 'Alcance y tiempos a medida', en: 'Scope & timing tailored' },
+  },
+];
+
+const wa = (name: string) => `${site.whatsapp}?text=${encodeURIComponent(`Hola Eve! Me interesa el Pack ${name}.`)}`;
+const mail = (name: string) => `mailto:${site.email}?subject=${encodeURIComponent(`Pack ${name}`)}`;
+---
+
+<section class="packs" id="packs" aria-label="Packs de branding">
+  <div class="wrap">
+    <header class="pk-head">
+      <p class="pk-kicker mono cap rise"><T es="Packs de branding" en="Branding packs" /></p>
+      <h2 class="pk-title rise rise-delay-1">
+        <T es="Tu marca, lista para despegar." en="Your brand, ready for take-off." />
+      </h2>
+      <p class="pk-sub rise rise-delay-2">
+        <T
+          es="Tres alcances claros, pensados para emprendimientos y estudios que necesitan identidad profesional sin vueltas."
+          en="Three clear scopes, made for ventures and studios that need professional identity without the runaround."
+        />
+      </p>
+    </header>
+
+    <div class="pk-grid">
+      {packs.map((p, i) => (
+        <article class:list={['pack', 'rise', `rise-delay-${i + 1}`, { 'is-featured': p.featured }]}>
+          {p.featured && (
+            <span class="pk-tag mono cap"><T es="El más elegido" en="Most chosen" /></span>
+          )}
+          <span class="pk-num mono">{p.num}</span>
+          <h3 class="pk-name">Pack {p.name}</h3>
+          <p class="pk-who"><span data-es={p.who.es} data-en={p.who.en}>{p.who.es}</span></p>
+          <ul class="pk-items">
+            {p.items.map((it) => (
+              <li><span data-es={it.es} data-en={it.en}>{it.es}</span></li>
+            ))}
+          </ul>
+          <p class="pk-time mono"><span data-es={p.time.es} data-en={p.time.en}>{p.time.es}</span></p>
+          <div class="pk-ctas">
+            <a class="pk-wa" href={wa(p.name)} target="_blank" rel="noopener noreferrer">
+              <T es="Consultar por WhatsApp" en="Ask on WhatsApp" />
+              <span aria-hidden="true">↗</span>
+            </a>
+            <a class="pk-mail" href={mail(p.name)}>
+              <T es="o por mail" en="or by email" />
+            </a>
+          </div>
+        </article>
+      ))}
+    </div>
+
+    <p class="pk-custom rise">
+      <T es="¿Buscás algo distinto o más grande?" en="Looking for something different or bigger?" />
+      <a href="#contacto"><T es="Hablemos de tu proyecto" en="Let's talk about your project" /> <span aria-hidden="true">↓</span></a>
+    </p>
+  </div>
+</section>
+
+<style>
+  .packs { padding-block: clamp(72px, 13vh, 160px) clamp(24px, 4vh, 56px); }
+
+  .pk-head { max-width: 60ch; margin-bottom: clamp(36px, 6vh, 64px); }
+  .pk-kicker { color: var(--ink-45); margin-bottom: clamp(16px, 2.5vh, 26px); display: block; }
+  .pk-title {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(1.9rem, 4.2vw, 3.4rem);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+  }
+  .pk-sub {
+    margin-top: 16px;
+    font-family: var(--sans);
+    font-size: clamp(0.95rem, 1.15vw, 1.1rem);
+    line-height: 1.5;
+    color: var(--ink-80);
+    max-width: 52ch;
+  }
+
+  .pk-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(14px, 1.6vw, 24px);
+    align-items: stretch;
+  }
+  .pack {
+    position: relative;
+    display: flex; flex-direction: column;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: clamp(20px, 2.2vw, 32px);
+    background: color-mix(in oklab, var(--paper) 72%, transparent);
+    transition: border-color var(--dur-ui) var(--ease-quint), transform var(--dur-ui) var(--ease-out);
+  }
+  .pack:hover { border-color: var(--ink-45); transform: translateY(-3px); }
+  .pack.is-featured { border-color: var(--ink); }
+
+  .pk-tag {
+    position: absolute; top: -11px; left: clamp(18px, 2vw, 30px);
+    background: var(--ink); color: var(--paper);
+    padding: 4px 12px; border-radius: 20px;
+    font-size: 10px !important;
+  }
+  .pk-num { color: var(--ink-35); margin-bottom: clamp(18px, 3vh, 30px); }
+  .pk-name {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(1.4rem, 2vw, 1.9rem);
+    letter-spacing: -0.015em;
+    margin-bottom: 8px;
+  }
+  .pk-who {
+    font-family: var(--sans);
+    font-size: clamp(0.9rem, 1vw, 1rem);
+    color: var(--ink-60);
+    margin-bottom: clamp(16px, 2.5vh, 24px);
+    min-height: 2.6em;
+  }
+  .pk-items { list-style: none; margin-bottom: clamp(16px, 2.5vh, 24px); }
+  .pk-items li {
+    font-family: var(--sans);
+    font-size: clamp(0.88rem, 1vw, 0.98rem);
+    color: var(--ink-80);
+    padding-block: 9px;
+    border-top: 1px solid var(--ink-12);
+    display: flex; gap: 10px;
+  }
+  .pk-items li::before { content: '·'; color: var(--ink-35); }
+  .pk-time { color: var(--ink-45); margin-bottom: clamp(18px, 3vh, 28px); }
+
+  .pk-ctas { margin-top: auto; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; }
+  .pk-wa {
+    display: inline-flex; align-items: center; gap: 9px;
+    padding: 11px 20px;
+    border-radius: 40px;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: var(--sans);
+    font-size: 13.5px;
+    letter-spacing: 0.02em;
+    transition: opacity var(--dur-micro) var(--ease-quint);
+  }
+  .pk-wa:hover { opacity: 0.85; }
+  .pack.is-featured .pk-wa { background: var(--orange); color: #fff; }
+  .pk-mail {
+    font-family: var(--sans);
+    font-size: 13px;
+    color: var(--ink-60);
+    border-bottom: 1px solid var(--ink-35);
+    padding-bottom: 2px;
+    transition: color var(--dur-micro) var(--ease-quint);
+  }
+  .pk-mail:hover { color: var(--ink); }
+
+  .pk-custom {
+    margin-top: clamp(28px, 4.5vh, 48px);
+    font-family: var(--sans);
+    font-size: clamp(0.95rem, 1.15vw, 1.1rem);
+    color: var(--ink-60);
+    display: flex; flex-wrap: wrap; gap: 8px 12px;
+  }
+  .pk-custom a {
+    color: var(--ink);
+    border-bottom: 1px solid var(--ink);
+    padding-bottom: 2px;
+    transition: opacity var(--dur-micro) var(--ease-quint);
+  }
+  .pk-custom a:hover { opacity: 0.65; }
+
+  @media (max-width: 900px) {
+    .pk-grid { grid-template-columns: 1fr; max-width: 520px; }
+    .pk-who { min-height: 0; }
+  }
+</style>

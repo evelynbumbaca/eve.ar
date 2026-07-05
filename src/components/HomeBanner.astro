@@ -4,23 +4,22 @@
    · "Eve°" grande arriba-izq + descripción y redes al lado.
    · Al hacer scroll, "Eve°" sube y se integra al menú (morph
      hacia el wordmark del Topbar). La lógica vive en index.astro.
-   · Glow naranja radial que sigue al cursor POR DETRÁS del
-     banner (vidrio esmerilado): visible en los huecos, oculto
-     tras las portadas.
-   · Grilla 3×3 de trabajos con FILTROS por disciplina reales
-     (el contador se actualiza al filtrar).
-   · Fallback (sin home-fx): nombre en flujo, sin glow, estático.
+   · Grilla 3×2 (6 seleccionados) con FILTROS por disciplina
+     reales (contador vivo) + link al archivo completo.
+   · Hover en una tarjeta: alterna a una SEGUNDA TOMA del
+     proyecto (con contenido real será otra imagen o un video).
+   · La entrada de la grilla se dispara al entrar en viewport.
+   · El glow naranja global vive en GlowLayer (Base).
+   · Fallback (sin home-fx): nombre en flujo, estático.
    Las .ph son placeholders.
    ============================================================ */
 import { projects, filters, social } from '../data/site';
 import { link } from '../lib/link';
 
-const works = projects;
+const works = projects.slice(0, 6);
 ---
 
 <section class="banner" data-banner>
-  <div class="bn-glow" data-glow aria-hidden="true"></div>
-
   <div class="bn-inner wrap">
     <header class="bn-head">
       <div class="bn-name-wrap">
@@ -41,7 +40,7 @@ const works = projects;
       </div>
     </header>
 
-    <div class="bn-works-head">
+    <div class="bn-works-head" id="trabajos">
       <h2 class="bn-sw">
         <span data-es="Trabajos seleccionados" data-en="Selected works">Trabajos seleccionados</span>
         <sup class="bn-count">(<span data-grid-count>{works.length}</span>)</sup>
@@ -61,7 +60,8 @@ const works = projects;
     <div class="bn-grid" data-grid>
       {works.map((p, i) => (
         <a class="bn-cell" href={link(`/trabajos/${p.id}`)} data-cat={p.cat} style={`--i:${i}`}>
-          <span class="bn-cell-img ph" data-label={p.title}></span>
+          <span class="bn-cell-img ph" data-label={`${p.title} — cover`}></span>
+          <span class="bn-cell-alt ph" data-label={`${p.title} — detalle`} aria-hidden="true"></span>
           <span class="bn-cell-cap">
             <span class="bn-cell-title">{p.title}</span>
             <span class="bn-cell-disc" data-es={p.disc.es} data-en={p.disc.en}>{p.disc.es}</span>
@@ -69,37 +69,24 @@ const works = projects;
         </a>
       ))}
     </div>
+
+    <div class="bn-more rise">
+      <a href={link('/trabajos')}>
+        <span data-es={`Ver el archivo completo (${projects.length})`} data-en={`See the full archive (${projects.length})`}>Ver el archivo completo ({projects.length})</span>
+        <span aria-hidden="true">→</span>
+      </a>
+    </div>
   </div>
 </section>
 
 <style>
   .banner {
     position: relative;
-    isolation: isolate;
-    overflow: hidden;
-    background: var(--paper);
+    /* sin fondo propio: el glow global (GlowLayer) se ve a través */
     padding-top: clamp(84px, 12vh, 128px);
     padding-bottom: clamp(40px, 7vh, 90px);
   }
-
-  /* ---------- glow naranja (detrás de todo) ---------- */
-  .bn-glow {
-    position: absolute;
-    left: 0; top: 0;
-    width: 40vmax; height: 40vmax;
-    margin: -20vmax 0 0 -20vmax;
-    border-radius: 50%;
-    background: radial-gradient(circle, color-mix(in oklab, var(--orange) 78%, transparent), transparent 60%);
-    filter: blur(40px);
-    opacity: 0;
-    pointer-events: none;
-    z-index: 0;
-    will-change: transform;
-    transition: opacity 0.6s var(--ease-out);
-  }
-  :global(.banner.glow-on) .bn-glow { opacity: 0.82; }
-
-  .bn-inner { position: relative; z-index: 1; }
+  .bn-inner { position: relative; }
 
   /* ---------- cabecera: nombre + descripción ---------- */
   .bn-head {
@@ -180,7 +167,7 @@ const works = projects;
   .bn-filter:hover { color: var(--ink-60); }
   .bn-filter.is-on { color: var(--ink); }
 
-  /* ---------- grilla 3×3 ---------- */
+  /* ---------- grilla 3×2 ---------- */
   .bn-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -195,6 +182,23 @@ const works = projects;
   .bn-cell.is-hidden { display: none; }
   .bn-cell-img { width: 100%; height: 100%; transition: transform 0.5s var(--ease-out); }
   .bn-cell:hover .bn-cell-img { transform: scale(1.03); }
+
+  /* segunda toma del proyecto (con contenido real: otra imagen o video) */
+  .bn-cell-alt {
+    position: absolute; inset: 0;
+    opacity: 0;
+    /* placeholder distinguible: rayado a 45° apenas más oscuro */
+    background:
+      repeating-linear-gradient(45deg, var(--ink-12) 0 10px, transparent 10px 20px),
+      #dcd8ce;
+  }
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .bn-cell:hover .bn-cell-alt { animation: frameSwap 1.5s steps(1) infinite 0.15s; }
+    @keyframes frameSwap { 0%, 100% { opacity: 0; } 50% { opacity: 1; } }
+  }
+  @media (hover: hover) and (prefers-reduced-motion: reduce) {
+    .bn-cell:hover .bn-cell-alt { opacity: 1; }
+  }
   .bn-cell-cap {
     position: absolute; left: 0; right: 0; bottom: 0;
     display: flex; flex-direction: column; gap: 2px;
@@ -211,16 +215,35 @@ const works = projects;
     color: rgba(255,255,255,0.8);
   }
 
-  /* entrada escalonada (solo si el usuario acepta movimiento) */
+  /* entrada en cascada, disparada al ENTRAR EN VIEWPORT (scroll) */
   @media (prefers-reduced-motion: no-preference) {
-    .bn-cell {
+    .bn-grid:not(.in) .bn-cell { opacity: 0; }
+    .bn-grid.in .bn-cell {
       animation: cellIn 0.55s var(--ease-out) both;
-      animation-delay: calc(0.05s + var(--i, 0) * 45ms);
+      animation-delay: calc(0.05s + var(--i, 0) * 60ms);
     }
     @keyframes cellIn {
-      from { opacity: 0; transform: translateY(12px); }
+      from { opacity: 0; transform: translateY(14px); }
     }
   }
+
+  /* ---------- link al archivo ---------- */
+  .bn-more {
+    display: flex; justify-content: flex-end;
+    padding-top: clamp(14px, 2vh, 22px);
+  }
+  .bn-more a {
+    display: inline-flex; align-items: baseline; gap: 10px;
+    font-family: var(--sans);
+    font-size: clamp(0.95rem, 1.1vw, 1.05rem);
+    color: var(--ink-80);
+    border-bottom: 1px solid var(--ink-35);
+    padding-bottom: 3px;
+    transition: color var(--dur-micro) var(--ease-quint), border-color var(--dur-micro) var(--ease-quint);
+  }
+  .bn-more a:hover { color: var(--ink); border-color: var(--ink); }
+  .bn-more a span[aria-hidden] { transition: transform var(--dur-ui) var(--ease-out); display: inline-block; }
+  .bn-more a:hover span[aria-hidden] { transform: translateX(5px); }
 
   /* ---------- responsive / táctil ---------- */
   @media (max-width: 860px) {
@@ -240,6 +263,18 @@ const works = projects;
   /* Filtros de la grilla: funcionan en todos los modos (táctil incluido). */
   const grid = document.querySelector<HTMLElement>('[data-grid]');
   if (grid) {
+    // cascada al entrar en viewport (una sola vez)
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((en) => {
+          if (en.isIntersecting) { grid.classList.add('in'); io.unobserve(grid); }
+        });
+      }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+      io.observe(grid);
+    } else {
+      grid.classList.add('in');
+    }
+
     const cells = Array.from(grid.querySelectorAll<HTMLElement>('.bn-cell'));
     const btns = Array.from(document.querySelectorAll<HTMLButtonElement>('.bn-filter'));
     const count = document.querySelector<HTMLElement>('[data-grid-count]');

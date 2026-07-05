@@ -28,6 +28,7 @@ export const site = {
   location: { es: 'Buenos Aires, Argentina', en: 'Buenos Aires, Argentina' },
   email: 'hola@eve.ar',
   gumroad: 'https://gumroad.com/', // TODO: reemplazar por la tienda real
+  whatsapp: 'https://wa.me/5491100000000', // TODO: número real (formato internacional, sin + ni espacios)
 };
 
 export const social: { label: string; href: string }[] = [
@@ -38,12 +39,15 @@ export const social: { label: string; href: string }[] = [
 ];
 
 /* ---------- navegacion ---------- */
+/* one-page: el menú ancla a las secciones del inicio;
+   las páginas de detalle (archivo, casos, tienda) siguen debajo */
 export const nav: NavItem[] = [
   { es: 'Inicio', en: 'Index', href: '/' },
-  { es: 'Trabajos', en: 'Work', href: '/trabajos' },
-  { es: 'Estudio', en: 'About', href: '/estudio' },
+  { es: 'Trabajos', en: 'Work', href: '/#trabajos' },
+  { es: 'Packs', en: 'Packs', href: '/#packs' },
+  { es: 'Estudio', en: 'About', href: '/#estudio' },
   { es: 'Tienda', en: 'Shop', href: '/tienda' },
-  { es: 'Contacto', en: 'Contact', href: '/contacto' },
+  { es: 'Contacto', en: 'Contact', href: '/#contacto' },
 ];
 
 /* ---------- filtros de la grilla ---------- */

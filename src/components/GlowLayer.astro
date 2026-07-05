@@ -1,0 +1,71 @@
+---
+/* ============================================================
+   GlowLayer — la "bola" naranja que sigue al cursor, detrás
+   de TODO el sitio (capa fija bajo el contenido; los bloques
+   opacos como las portadas la ocluyen -> vidrio esmerilado).
+   Solo puntero fino sin reduced-motion; en táctil no existe.
+   ============================================================ */
+---
+
+<div class="glow-layer" data-glow-layer aria-hidden="true">
+  <div class="glow-ball" data-glow-ball></div>
+</div>
+
+<style>
+  .glow-layer {
+    position: fixed;
+    inset: 0;
+    z-index: 0; /* bajo <main> (z:1), sobre el fondo del body */
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .glow-ball {
+    position: absolute;
+    left: 0; top: 0;
+    width: 40vmax; height: 40vmax;
+    margin: -20vmax 0 0 -20vmax;
+    border-radius: 50%;
+    background: radial-gradient(circle, color-mix(in oklab, var(--orange) 78%, transparent), transparent 60%);
+    filter: blur(40px);
+    opacity: 0;
+    will-change: transform;
+    transition: opacity 0.6s var(--ease-out);
+  }
+  .glow-layer.on .glow-ball { opacity: 0.82; }
+
+  @media (hover: none), (pointer: coarse) { .glow-layer { display: none; } }
+  @media (prefers-reduced-motion: reduce) { .glow-layer { display: none; } }
+</style>
+
+<script>
+  const layer = document.querySelector('[data-glow-layer]') as HTMLElement | null;
+  const ball = document.querySelector('[data-glow-ball]') as HTMLElement | null;
+  const fine = matchMedia('(hover:hover) and (pointer:fine)').matches;
+  const reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+  if (layer && ball && fine && !reduce) {
+    let gx = innerWidth / 2, gy = innerHeight * 0.4, x = gx, y = gy;
+    let raf = 0, running = false;
+
+    const frame = () => {
+      x += (gx - x) * 0.14;
+      y += (gy - y) * 0.14;
+      ball.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0)`;
+      if (Math.abs(gx - x) > 0.3 || Math.abs(gy - y) > 0.3) raf = requestAnimationFrame(frame);
+      else running = false;
+    };
+    const kick = () => { if (!running) { running = true; raf = requestAnimationFrame(frame); } };
+
+    addEventListener('pointermove', (e) => {
+      gx = e.clientX; gy = e.clientY;
+      if (!layer.classList.contains('on')) layer.classList.add('on');
+      kick();
+    }, { passive: true });
+    document.addEventListener('pointerout', (e: PointerEvent) => {
+      if (!e.relatedTarget) layer.classList.remove('on'); // salió de la ventana
+    });
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) { cancelAnimationFrame(raf); running = false; }
+    });
+  }
+</script>

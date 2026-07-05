@@ -24,6 +24,11 @@ body {
 }
 
 a { color: inherit; text-decoration: none; }
+
+/* el contenido vive sobre la capa de glow global (GlowLayer, z:0) */
+main { position: relative; z-index: 1; }
+/* anclas del one-page: aire para el menú fijo al navegar por secciones */
+[id] { scroll-margin-top: clamp(72px, 10vh, 110px); }
 img, svg, canvas { display: block; max-width: 100%; }
 button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
 ::selection { background: var(--ink); color: var(--paper); }
