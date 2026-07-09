@@ -1,15 +1,16 @@
 ---
 /* ============================================================
-   GlowLayer — la luz naranja que sigue al cursor, detrás de
-   TODO el sitio. Dos estados, con morph fluido entre ambos:
-   · LIBRE: bola blanda que acompaña al puntero.
-   · DOCK: al pasar sobre un elemento interactivo con borde
-     ([data-glow-dock]) la luz se AMOLDA a su forma (tamaño +
-     esquinas del elemento) como halo perimetral, invitando a
-     la interacción. Al salir, vuelve a ser bola.
-   Todo se interpola (x, y, ancho, alto, radio, blur, opacidad)
-   con un mismo lerp -> movimiento orgánico. El loop se apaga al
-   converger; en táctil/reduced-motion la capa no existe.
+   GlowLayer — la luz naranja que sigue al cursor.
+   Modelo de DOS capas con hand-off (patrón "glow border"):
+   · Subterránea (esta capa, z:0): la bola llena viaja y, al
+     acercarse a un [data-glow-dock], se CONTRAE detrás del
+     elemento (respiración, fase 1) y se atenúa.
+   · Halo del elemento: al llegar, el borde iluminado lo dibuja
+     el PROPIO elemento (box-shadow animado por JS) -> queda por
+     encima de tarjetas/fondos y nunca lo tapa nada (fase 2).
+   Halo fino en piezas grandes (fotos), más presente en botones.
+   Todo lerp-eado; el loop converge y se apaga. En táctil /
+   reduced-motion la capa no existe y no se tocan sombras.
    ============================================================ */
 ---
 
@@ -30,13 +31,10 @@
   .glow-ball {
     position: absolute;
     left: 0; top: 0;
-    /* tamaño/forma/blur/opacidad/borde los maneja el script (morph) */
-    border: 0 solid color-mix(in oklab, var(--orange) 92%, transparent);
     opacity: 0;
     will-change: transform, filter;
     pointer-events: none;
   }
-  /* relleno blando (estado libre); al dockear se apaga y queda el ANILLO */
   .glow-fill {
     position: absolute;
     inset: 0;
@@ -54,66 +52,85 @@
   const fine = matchMedia('(hover:hover) and (pointer:fine)').matches;
   const reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
 
-  const fill = document.querySelector('[data-glow-fill]') as HTMLElement | null;
-
-  if (layer && ball && fill && fine && !reduce) {
+  if (layer && ball && fine && !reduce) {
     const freeD = () => Math.max(innerWidth, innerHeight) * 0.4;
 
     let mx = innerWidth / 2, my = innerHeight * 0.4;
     let vis = false;
     let dock: HTMLElement | null = null;
-    let dockR = 0;
 
     const d0 = freeD();
-    const st = { x: mx, y: my, w: d0, h: d0, r: d0 / 2, b: 40, o: 0, bw: 0, f: 1 };
-    const ap = { w: -1, h: -1, r: -1, b: -1, o: -1, bw: -1, f: -1 }; // últimos aplicados
+    const st = { x: mx, y: my, w: d0, h: d0, r: d0 / 2, b: 40, o: 0 };
+    const ap = { w: -1, h: -1, r: -1, b: -1, o: -1 };
     let raf = 0, running = false;
-    let form = 0, lastForm = 0; // fase de "respiración": expansión desde atrás del elemento
+
+    // halo del elemento (fase 2) + slot de fade para el elemento anterior
+    let form = 0;
+    let haloEl: HTMLElement | null = null, haloBlur = 14, haloSpread = 2;
+    let fadeEl: HTMLElement | null = null, fadeVal = 0, fadeBlur = 14, fadeSpread = 2;
+
+    const applyHalo = (el: HTMLElement, v: number, bl: number, sp: number) => {
+      if (v <= 0.015) { el.style.boxShadow = ''; return; }
+      el.style.boxShadow = `0 0 ${(bl * v).toFixed(1)}px ${(sp * v).toFixed(1)}px color-mix(in oklab, var(--orange) ${Math.round(90 * v)}%, transparent)`;
+    };
 
     const frame = () => {
-      // objetivos según estado (libre = bola blanda / dock = ANILLO al borde)
       const fw = freeD();
-      let tx = mx, ty = my, tw = fw, th = tw, tr = tw / 2, tb = 40, to = vis ? 0.82 : 0, tbw = 0, tf = 1;
-      let k = 0.14;
+      let tx = mx, ty = my, tw = fw, th = tw, tr = tw / 2, tb = 40, to = vis ? 0.82 : 0;
+      let k = 0.16;
       let docked = false;
+
       if (dock && dock.isConnected) {
         const rc = dock.getBoundingClientRect();
         if (rc.width > 0 && rc.bottom > 0 && rc.top < innerHeight) {
           docked = true;
-          // la luz viaja al centro del elemento (un poco más rápida)
           tx = rc.left + rc.width / 2;
           ty = rc.top + rc.height / 2;
-          k = 0.18;
-          // FASE 1 (aproximación): la bola viaja LLENA y se CONTRAE como
-          // círculo hacia atrás del elemento, según su cercanía real
+          k = 0.22; // viaje con destino: más ágil
+          // FASE 1: la bola LLENA se contrae detrás del elemento según cercanía real
           const dist = Math.hypot(st.x - tx, st.y - ty);
-          const D = Math.max(rc.width, rc.height) / 2 + 80;
+          const D = Math.max(rc.width, rc.height) / 2 + 70;
           let e = 1 - Math.min(1, dist / D);
-          e = e * e * (3 - 2 * e); // smoothstep
-          const pad = 12;
-          const rw = rc.width + pad * 2, rh = rc.height + pad * 2;
-          const rr = Math.min((dockR || 3) + pad, Math.min(rw, rh) / 2);
-          const cd = Math.min(rw, rh) * 0.92; // diámetro contraído (detrás)
-          const aw = fw + (cd - fw) * e;      // círculo que se contrae
-          const ar = aw / 2;
-          // FASE 2 (respiración): ya llegada, se EXPANDE desde atrás
-          // hasta el borde del elemento (form crece recién al arribar)
-          const arrived = dist < Math.max(28, Math.min(rc.width, rc.height) * 0.2);
-          form += ((arrived ? 1 : 0) - form) * (arrived ? 0.12 : 0.2);
-          tw = aw + (rw - aw) * form;
-          th = aw + (rh - aw) * form;
-          tr = ar + (rr - ar) * form;
-          tbw = 10 * form;
-          tf = 1 + (0.55 - 1) * form;         // el interior queda con luz (no hueco)
-          tb = 40 + (18 - 40) * e + (13 - 18) * form;
-          to = vis ? 0.82 + 0.18 * form : 0;
+          e = e * e * (3 - 2 * e);
+          const cd = Math.min(rc.width, rc.height) * 0.9;
+          tw = fw + (cd - fw) * e;
+          th = tw; tr = tw / 2;                 // siempre círculo, siempre llena
+          tb = 40 + (26 - 40) * e;
+          // FASE 2: llegó -> el halo lo toma el elemento; la bola se atenúa
+          const arrived = dist < Math.max(26, Math.min(rc.width, rc.height) * 0.2);
+          form += ((arrived ? 1 : 0) - form) * (arrived ? 0.16 : 0.22);
+          to = vis ? 0.82 - 0.4 * form : 0;
+
+          if (haloEl !== dock) {
+            if (haloEl) { fadeEl = haloEl; fadeVal = form; fadeBlur = haloBlur; fadeSpread = haloSpread; }
+            haloEl = dock;
+            // halo fino en piezas grandes (fotos), más presente en botones
+            const small = Math.min(rc.width, rc.height) < 120;
+            haloBlur = small ? 20 : 13;
+            haloSpread = small ? 4 : 1.5;
+            form = 0;
+          }
+          applyHalo(haloEl, form, haloBlur, haloSpread);
         }
       }
-      if (!docked) form += (0 - form) * 0.2;
+      if (!docked) {
+        form += (0 - form) * 0.22;
+        if (haloEl) {
+          if (form > 0.015) applyHalo(haloEl, form, haloBlur, haloSpread);
+          else { applyHalo(haloEl, 0, 0, 0); haloEl = null; form = 0; }
+        }
+      }
+      // fade del elemento anterior (cambio de dock sin saltos)
+      if (fadeEl) {
+        fadeVal += (0 - fadeVal) * 0.24;
+        if (fadeVal > 0.015 && fadeEl.isConnected) applyHalo(fadeEl, fadeVal, fadeBlur, fadeSpread);
+        else { if (fadeEl.isConnected) applyHalo(fadeEl, 0, 0, 0); fadeEl = null; fadeVal = 0; }
+      }
+
       st.x += (tx - st.x) * k; st.y += (ty - st.y) * k;
       st.w += (tw - st.w) * k; st.h += (th - st.h) * k;
       st.r += (tr - st.r) * k; st.b += (tb - st.b) * k;
-      st.o += (to - st.o) * k; st.bw += (tbw - st.bw) * k; st.f += (tf - st.f) * k;
+      st.o += (to - st.o) * k;
 
       ball.style.transform = `translate3d(${(st.x - st.w / 2).toFixed(1)}px, ${(st.y - st.h / 2).toFixed(1)}px, 0)`;
       if (Math.abs(st.w - ap.w) > 0.5) { ball.style.width = st.w.toFixed(1) + 'px'; ap.w = st.w; }
@@ -121,14 +138,13 @@
       if (Math.abs(st.r - ap.r) > 0.5) { ball.style.borderRadius = st.r.toFixed(1) + 'px'; ap.r = st.r; }
       if (Math.abs(st.b - ap.b) > 0.3) { ball.style.filter = `blur(${st.b.toFixed(1)}px)`; ap.b = st.b; }
       if (Math.abs(st.o - ap.o) > 0.008) { ball.style.opacity = st.o.toFixed(3); ap.o = st.o; }
-      if (Math.abs(st.bw - ap.bw) > 0.3) { ball.style.borderWidth = st.bw.toFixed(1) + 'px'; ap.bw = st.bw; }
-      if (Math.abs(st.f - ap.f) > 0.01) { fill.style.opacity = st.f.toFixed(3); ap.f = st.f; }
 
+      const formTarget = docked && dock ? 1 : 0;
       const still =
         Math.abs(tx - st.x) < 0.3 && Math.abs(ty - st.y) < 0.3 &&
         Math.abs(tw - st.w) < 0.5 && Math.abs(th - st.h) < 0.5 &&
-        Math.abs(tr - st.r) < 0.5 && Math.abs(to - st.o) < 0.008 &&
-        Math.abs(tbw - st.bw) < 0.3 && Math.abs(tf - st.f) < 0.01;
+        Math.abs(to - st.o) < 0.008 &&
+        Math.abs(formTarget - form) < 0.012 && fadeVal < 0.015;
       if (!still) raf = requestAnimationFrame(frame);
       else running = false;
     };
@@ -140,20 +156,15 @@
       kick();
     }, { passive: true });
 
-    // dock: el cursor entra/sale de elementos interactivos con borde
     document.addEventListener('pointerover', (e) => {
       const d = (e.target as Element).closest?.('[data-glow-dock]') as HTMLElement | null;
-      if (d !== dock) {
-        dock = d;
-        dockR = d ? parseFloat(getComputedStyle(d).borderTopLeftRadius) || 0 : 0;
-        kick();
-      }
+      if (d !== dock) { dock = d; kick(); }
     }, { passive: true });
 
     document.addEventListener('pointerout', (e: PointerEvent) => {
-      if (!e.relatedTarget) { vis = false; dock = null; kick(); } // salió de la ventana
+      if (!e.relatedTarget) { vis = false; dock = null; kick(); }
     });
-    addEventListener('scroll', () => { if (dock) kick(); }, { passive: true });
+    addEventListener('scroll', () => { if (dock || haloEl) kick(); }, { passive: true });
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) { cancelAnimationFrame(raf); running = false; } else kick();
     });
