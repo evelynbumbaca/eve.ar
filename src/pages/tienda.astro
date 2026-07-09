@@ -2,18 +2,20 @@
 import Base from '../layouts/Base.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import T from '../components/T.astro';
-import { site } from '../data/site';
+import { link } from '../lib/link';
 
-// Productos placeholder — se reemplazan por los reales de Gumroad.
+// La tienda está EN PREPARACIÓN: se muestra grisada, sin enlaces.
+// Cuando Eve la tenga lista, se quita .is-soon y vuelven los links
+// a Gumroad (ver git history para la versión activa).
 const products = [
-  { name: 'Editorial Grid Kit', tag: { es: 'Plantilla · InDesign', en: 'Template · InDesign' }, price: 'US$ 18' },
-  { name: 'Ink Texture Pack', tag: { es: 'Texturas · 30 piezas', en: 'Textures · 30 pieces' }, price: 'US$ 12' },
-  { name: 'UI Starter — Figma', tag: { es: 'UI Kit · Figma', en: 'UI Kit · Figma' }, price: 'US$ 24' },
-  { name: 'Type Specimen Set', tag: { es: 'Mockups · 12 piezas', en: 'Mockups · 12 pieces' }, price: 'US$ 9' },
+  { name: 'Editorial Grid Kit', tag: { es: 'Plantilla · InDesign', en: 'Template · InDesign' } },
+  { name: 'Ink Texture Pack', tag: { es: 'Texturas · 30 piezas', en: 'Textures · 30 pieces' } },
+  { name: 'UI Starter — Figma', tag: { es: 'UI Kit · Figma', en: 'UI Kit · Figma' } },
+  { name: 'Type Specimen Set', tag: { es: 'Mockups · 12 piezas', en: 'Mockups · 12 pieces' } },
 ];
 ---
 
-<Base title="Tienda — EVE" description="Recursos digitales de Eve: plantillas, texturas y kits — en Gumroad.">
+<Base title="Tienda — EVE" description="La tienda de recursos digitales de Eve está en preparación: plantillas, texturas y kits, muy pronto.">
   <article class="page tienda">
     <div class="wrap">
       <header class="page-head">
@@ -24,31 +26,38 @@ const products = [
         <h1 class="page-title reveal">
           <span class="revfill accent"><T es="diseñar mejor." en="design better." /></span>
         </h1>
-        <p class="page-sub rise">
-          <T es="Plantillas, texturas y kits digitales — listos para descargar en Gumroad." en="Templates, textures and digital kits — ready to download on Gumroad." />
+        <p class="soon-line rise">
+          <span class="soon-badge mono cap"><T es="Próximamente" en="Coming soon" /></span>
+          <T
+            es="Estoy preparando plantillas, texturas y kits digitales. Esto es un adelanto de lo que viene."
+            en="I'm preparing templates, textures and digital kits. This is a preview of what's coming."
+          />
         </p>
       </header>
 
-      <div class="shop-grid">
+      <div class="shop-grid is-soon" aria-hidden="true">
         {products.map((p) => (
-          <a class="product" href={site.gumroad} target="_blank" rel="noopener noreferrer">
-            <div class="product-frame reveal" data-glow-dock>
+          <div class="product">
+            <div class="product-frame reveal">
               <span class="ph revfill" data-label={`${p.name} — preview`}></span>
             </div>
             <div class="product-meta rise">
               <h3>{p.name}</h3>
               <p>
                 <span data-es={p.tag.es} data-en={p.tag.en}>{p.tag.es}</span>
-                <span class="price">{p.price}</span>
+                <span class="price mono"><T es="Pronto" en="Soon" /></span>
               </p>
             </div>
-          </a>
+          </div>
         ))}
       </div>
 
       <div class="shop-cta rise">
-        <a class="btn" href={site.gumroad} target="_blank" rel="noopener noreferrer" data-glow-dock>
-          <T es="Ver todo en Gumroad" en="See all on Gumroad" />
+        <p class="notify-line">
+          <T es="¿Querés que te avise cuando abra?" en="Want a heads-up when it opens?" />
+        </p>
+        <a class="btn" href={link('/#contacto')} data-glow-dock>
+          <T es="Escribime" en="Write me" />
           <span aria-hidden="true">→</span>
         </a>
       </div>
@@ -71,22 +80,39 @@ const products = [
   }
   .page-title .accent { font-style: italic; font-weight: 300; color: var(--ink-80); }
   .page-title .revfill { display: block; }
-  .page-sub {
+
+  .soon-line {
     margin-top: 22px;
-    max-width: 40ch;
+    max-width: 46ch;
     color: var(--ink-80);
     font-size: clamp(1rem, 1.3vw, 1.15rem);
     line-height: 1.5;
   }
+  .soon-badge {
+    display: inline-block;
+    background: var(--orange);
+    color: #fff;
+    font-size: 10px !important;
+    padding: 5px 12px;
+    border-radius: 20px;
+    margin-right: 12px;
+    vertical-align: middle;
+  }
 
+  /* grilla en preparación: grisada, sin interacción */
   .shop-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: clamp(20px, 2.4vw, 36px) clamp(16px, 1.8vw, 26px);
   }
+  .shop-grid.is-soon .product {
+    opacity: 0.45;
+    filter: grayscale(0.7);
+    pointer-events: none;
+    user-select: none;
+  }
   .product-frame { width: 100%; aspect-ratio: 1 / 1; }
-  .product-frame .ph { width: 100%; height: 100%; transition: opacity 0.4s var(--ease); }
-  .product:hover .product-frame .ph { opacity: 0.82; }
+  .product-frame .ph { width: 100%; height: 100%; }
   .product-meta { padding-top: 12px; }
   .product-meta h3 {
     font-family: var(--serif);
@@ -105,14 +131,25 @@ const products = [
     text-transform: uppercase;
     color: var(--ink-60);
   }
-  .product-meta .price { color: var(--ink); }
+  .product-meta .price { color: var(--ink-45); }
 
-  .shop-cta { margin-top: clamp(48px, 8vh, 96px); display: flex; justify-content: center; }
+  .shop-cta {
+    margin-top: clamp(48px, 8vh, 96px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+  .notify-line {
+    font-family: var(--sans);
+    font-size: clamp(0.95rem, 1.15vw, 1.1rem);
+    color: var(--ink-60);
+  }
   .btn {
     display: inline-flex;
     align-items: center;
     gap: 12px;
-    padding: 15px 30px;
+    padding: 14px 30px;
     border: 1px solid var(--ink);
     border-radius: 40px;
     font-family: var(--sans);

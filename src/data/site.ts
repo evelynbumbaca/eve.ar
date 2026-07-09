@@ -8,8 +8,13 @@ export type ProjectCat = 'branding' | 'uxui' | 'editorial' | 'packaging' | 'art'
 
 export interface Bilingual { es: string; en: string; }
 
-export interface NavItem extends Record<'es' | 'en', string> {
+export interface NavItem {
+  es: string;
+  en: string;
   href: string;
+  /* etiqueta chica opcional (p.ej. "Pronto" para la tienda) */
+  tagEs?: string;
+  tagEn?: string;
 }
 
 export interface Project {
@@ -46,10 +51,10 @@ export const social: { label: string; href: string }[] = [
    las páginas de detalle (archivo, casos, tienda) siguen debajo */
 export const nav: NavItem[] = [
   { es: 'Inicio', en: 'Index', href: '/' },
-  { es: 'Trabajos', en: 'Work', href: '/#trabajos' },
+  { es: 'Trabajos', en: 'Work', href: '/trabajos' },
   { es: 'Packs', en: 'Packs', href: '/#packs' },
-  { es: 'Estudio', en: 'About', href: '/estudio' },
-  { es: 'Tienda', en: 'Shop', href: '/tienda' },
+  { es: 'Sobre mí', en: 'About', href: '/estudio' },
+  { es: 'Tienda', en: 'Shop', href: '/tienda', tagEs: 'Pronto', tagEn: 'Soon' },
   { es: 'Contacto', en: 'Contact', href: '/#contacto' },
 ];
 
