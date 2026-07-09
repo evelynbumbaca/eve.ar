@@ -47,10 +47,17 @@ import SiteFooter from '../components/SiteFooter.astro';
     let slotDocX = 0, slotDocY = 0;
     let tX = 0, tY = 0, scaleFinal = 0.16, scrollEnd = 1;
 
+    // letras del nombre: se estiran horizontalmente cerca del cursor
+    const letters = Array.from(fly.querySelectorAll<HTMLElement>('.ltr'));
+    const lcx: number[] = [], lcy: number[] = [];
+    const lsx = letters.map(() => 1); // escala actual por letra
+    let lastE = 0, mx = -1e5, my = -1e5;
+
     // una pasada del morph (también usada sincrónicamente tras medir)
     const applyMorph = () => {
       const p = clamp01(scrollY / scrollEnd);
       const e = p >= 1 ? 1 : 1 - Math.pow(2, -10 * p);
+      lastE = e;
       const bx = slotDocX - scrollX, by = slotDocY - scrollY;
       const x = bx + e * (tX - bx), y = by + e * (tY - by);
       const sc = 1 + (scaleFinal - 1) * e;
@@ -68,18 +75,43 @@ import SiteFooter from '../components/SiteFooter.astro';
       scaleFinal = Math.max(0.06, Math.min(0.5, tr.height / (sr.height || 1)));
       scrollEnd = Math.max(120, vh * 0.5);
       applyMorph(); // aplica sin esperar al próximo frame (evita flash)
+      // centros de cada letra (en reposo, para el estiramiento por cercanía)
+      if (scrollY < 40) {
+        letters.forEach((l, i) => {
+          const r = l.getBoundingClientRect();
+          lcx[i] = r.left + r.width / 2;
+          lcy[i] = r.top + r.height / 2;
+        });
+      }
     }
 
     let raf = 0, running = false, scrollDirty = true;
+    const smooth = (t: number) => { t = t < 0 ? 0 : t > 1 ? 1 : t; return t * t * (3 - 2 * t); };
     function frame() {
       applyMorph();
-      const moving = scrollDirty;
+
+      // estiramiento de letras (solo con el nombre en reposo, no durante el morph)
+      let lettersMoving = false;
+      const active = lastE < 0.12 && lcx.length === letters.length;
+      letters.forEach((l, i) => {
+        let target = 1;
+        if (active) {
+          const d = Math.hypot(mx - lcx[i], my - lcy[i]);
+          target = 1 + 0.12 * smooth(1 - d / 300);
+        }
+        lsx[i] += (target - lsx[i]) * 0.16;
+        if (Math.abs(target - lsx[i]) > 0.002) lettersMoving = true;
+        l.style.transform = `scaleX(${lsx[i].toFixed(4)})`;
+      });
+
+      const moving = scrollDirty || lettersMoving;
       scrollDirty = false;
       if (moving) raf = requestAnimationFrame(frame);
       else running = false;
     }
     function kick() { if (!running) { running = true; raf = requestAnimationFrame(frame); } }
 
+    addEventListener('pointermove', (e) => { mx = e.clientX; my = e.clientY; kick(); }, { passive: true });
     addEventListener('scroll', () => { scrollDirty = true; kick(); }, { passive: true });
     let rt = 0;
     addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { measure(); scrollDirty = true; kick(); }, 150); }, { passive: true });

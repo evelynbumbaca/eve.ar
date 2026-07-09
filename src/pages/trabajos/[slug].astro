@@ -17,6 +17,11 @@ const { project: P, next: NEXT } = Astro.props;
 
 <Base title={`${P.title} — EVE`} description={`${P.title} — caso de estudio. ${P.disc.es}.`}>
   <article class="case">
+    {/* la obra primero: impacto visual; los datos vienen después */}
+    <div class="c-open wrap">
+      <div class="c-hero-img reveal"><span class="ph revfill" data-label={`${P.title} — hero`}></span></div>
+    </div>
+
     <header class="c-hero wrap">
       <div class="c-kicker rise">
         <span data-es={P.disc.es} data-en={P.disc.en}>{P.disc.es}</span>
@@ -27,10 +32,6 @@ const { project: P, next: NEXT } = Astro.props;
       </div>
       <h1 class="c-title reveal"><span class="revfill">{P.title}</span></h1>
     </header>
-
-    <div class="wrap">
-      <div class="c-hero-img reveal"><span class="ph revfill" data-label={`${P.title} — hero`}></span></div>
-    </div>
 
     <div class="wrap">
       <dl class="c-meta">
@@ -90,7 +91,9 @@ const { project: P, next: NEXT } = Astro.props;
 <style>
   .case { padding-bottom: clamp(40px, 8vh, 96px); }
 
-  .c-hero { padding-block: clamp(120px, 18vh, 200px) clamp(26px, 4vh, 44px); max-width: 980px; }
+  /* apertura: la pieza entra apenas debajo del menú */
+  .c-open { padding-top: clamp(96px, 13vh, 150px); }
+  .c-hero { padding-block: clamp(40px, 8vh, 96px) clamp(26px, 4vh, 44px); max-width: 980px; }
   .c-kicker {
     display: flex; gap: 14px;
     font-family: var(--sans); font-size: 12px; letter-spacing: 0.12em;
@@ -99,11 +102,11 @@ const { project: P, next: NEXT } = Astro.props;
   .c-kicker .dot { color: var(--ink-35); }
   .c-title {
     font-family: var(--serif); font-weight: 400;
-    font-size: clamp(2.4rem, 7vw, 5.5rem); line-height: 1.0; letter-spacing: -0.02em;
+    font-size: clamp(2rem, 5vw, 4.2rem); line-height: 1.0; letter-spacing: -0.02em;
   }
   .c-title .revfill { display: block; }
 
-  .c-hero-img { margin-top: clamp(20px, 3vh, 36px); width: 100%; aspect-ratio: 16 / 9; border-radius: 3px; }
+  .c-hero-img { width: 100%; aspect-ratio: 16 / 9; border-radius: 3px; }
   .c-hero-img .ph { width: 100%; height: 100%; }
 
   .c-meta {
@@ -119,7 +122,7 @@ const { project: P, next: NEXT } = Astro.props;
   .c-intro {
     font-family: var(--serif); font-weight: 300;
     font-size: clamp(20px, 2.5vw, 30px); line-height: 1.32; letter-spacing: -0.01em;
-    max-width: 24ch; margin: clamp(34px, 5vh, 60px) 0 0;
+    max-width: 24ch; margin: clamp(48px, 9vh, 110px) 0 0;
   }
 
   .c-os { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(16px, 2vw, 26px); margin-top: clamp(34px, 5vh, 56px); }
@@ -132,28 +135,36 @@ const { project: P, next: NEXT } = Astro.props;
   .os-box.solucion h4::before { background: transparent; box-shadow: inset 0 0 0 1.5px var(--ink); }
   .os-box p { font-family: var(--serif); font-size: clamp(16px, 1.5vw, 20px); line-height: 1.4; }
 
-  .c-figure { margin-top: clamp(40px, 7vh, 90px); }
+  /* ritmo de museo: cada pieza respira */
+  .c-figure { margin-top: clamp(72px, 14vh, 180px); }
   .c-figure .frame { width: 100%; aspect-ratio: 3 / 2; border-radius: 3px; }
   .c-figure.tall .frame { aspect-ratio: 4 / 5; max-width: 620px; margin: 0 auto; }
   .c-figure .ph { width: 100%; height: 100%; }
   .c-figure figcaption {
     font-family: var(--sans); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
-    color: var(--ink-60); margin-top: 13px; display: flex; justify-content: space-between;
+    color: var(--ink-60); margin-top: 18px; display: flex; justify-content: space-between;
   }
 
   .c-quote {
     font-family: var(--serif); font-weight: 300; font-style: italic;
     font-size: clamp(26px, 4vw, 48px); line-height: 1.16; letter-spacing: -0.015em;
-    text-wrap: balance; padding: clamp(50px, 9vh, 110px) 0; max-width: 20ch; margin: 0 auto; text-align: center;
+    text-wrap: balance; padding: clamp(72px, 13vh, 160px) 0; max-width: 20ch; margin: 0 auto; text-align: center;
   }
 
+  /* siguiente proyecto: sutil, de galería */
   .c-next {
     display: flex; align-items: baseline; justify-content: space-between; gap: 20px;
-    border-top: 1px solid var(--ink); padding-top: 24px; margin-top: clamp(30px, 5vh, 60px);
+    border-top: 1px solid var(--line); padding-top: 22px; margin-top: clamp(30px, 5vh, 60px);
   }
-  .c-next .lab { font-family: var(--sans); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-60); }
-  .c-next a { font-family: var(--serif); font-size: clamp(26px, 4.4vw, 56px); line-height: 1; letter-spacing: -0.015em; transition: opacity 0.25s var(--ease); }
-  .c-next a:hover { opacity: 0.55; }
+  .c-next .lab { font-family: var(--sans); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-45); }
+  .c-next a {
+    display: inline-flex; align-items: baseline; gap: 10px;
+    font-family: var(--serif); font-size: clamp(1.1rem, 1.7vw, 1.5rem);
+    line-height: 1; letter-spacing: -0.01em;
+    border-bottom: 1px solid var(--ink-35); padding-bottom: 3px;
+    transition: opacity 0.25s var(--ease), border-color 0.25s var(--ease);
+  }
+  .c-next a:hover { opacity: 0.65; border-color: var(--ink); }
 
   @media (max-width: 860px) {
     .c-meta { grid-template-columns: 1fr 1fr; gap: 18px 24px; }

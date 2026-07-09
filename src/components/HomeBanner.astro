@@ -24,7 +24,7 @@ const works = projects.slice(0, 6);
     <header class="bn-head">
       <div class="bn-name-wrap">
         <p class="bn-name-slot" aria-hidden="true">EVE</p>
-        <span class="bn-name-fly" data-name-fly aria-hidden="true">EVE</span>
+        <span class="bn-name-fly" data-name-fly aria-hidden="true"><span class="ltr">E</span><span class="ltr">V</span><span class="ltr">E</span></span>
       </div>
 
       <div class="bn-desc">
@@ -109,6 +109,12 @@ const works = projects.slice(0, 6);
   .bn-name-slot { display: block; margin: 0; }
 
   .bn-name-fly { position: absolute; left: 0; top: 0; pointer-events: none; }
+  /* letras que se estiran cerca del cursor (solo en fx) */
+  .bn-name-fly .ltr {
+    display: inline-block;
+    transform-origin: 50% 62%;
+    will-change: transform;
+  }
   :global(html.home-fx) .bn-name-slot { visibility: hidden; }
   :global(html:not(.home-fx)) .bn-name-fly { display: none; }
   :global(html.home-fx) .bn-name-fly {
