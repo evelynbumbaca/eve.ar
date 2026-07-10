@@ -8,18 +8,10 @@ import { site, social } from '../data/site';
 <Base title="Contacto — EVE" description="Hablemos. Contacto de Eve — diseñadora multimedia y UX/UI en Buenos Aires.">
   <article class="page contacto">
     <div class="wrap">
-      <header class="page-head">
-        <span class="kicker mono cap"><T es="Contacto" en="Contact" /></span>
-        <h1 class="page-title reveal">
-          <span class="revfill"><T es="Hagamos algo" en="Let's make something" /></span>
-        </h1>
-        <h1 class="page-title reveal">
-          <span class="revfill accent"><T es="memorable." en="memorable." /></span>
-        </h1>
-        <p class="page-sub rise">
-          <T es="Contame sobre tu proyecto y te respondo a la brevedad." en="Tell me about your project and I'll get back to you shortly." />
-        </p>
-      </header>
+      <h1 class="visually-hidden">Contacto — Eve · Diseñadora Multimedia & UX/UI</h1>
+      <p class="page-sub rise">
+        <T es="Contame sobre tu proyecto y te respondo a la brevedad." en="Tell me about your project and I'll get back to you shortly." />
+      </p>
 
       <div class="contacto-grid">
         <form class="contact-form rise" id="contact-form" novalidate>
@@ -68,24 +60,15 @@ import { site, social } from '../data/site';
 </Base>
 
 <style>
-  .page { padding-top: clamp(120px, 18vh, 200px); }
-  .page-head { margin-bottom: clamp(40px, 7vh, 90px); }
-  .kicker { display: block; color: var(--ink-60); margin-bottom: clamp(20px, 3vh, 34px); }
-  .page-title {
-    font-family: var(--serif);
-    font-weight: 400;
-    font-size: var(--fs-h1);
-    line-height: 1.0;
-    letter-spacing: -0.02em;
-  }
-  .page-title .accent { font-style: italic; font-weight: 300; color: var(--ink-80); }
-  .page-title .revfill { display: block; }
+  .page { padding-top: clamp(110px, 16vh, 170px); }
   .page-sub {
-    margin-top: 22px;
-    max-width: 34ch;
+    max-width: 40ch;
+    margin-bottom: clamp(28px, 4vh, 44px);
     color: var(--ink-80);
-    font-size: clamp(1rem, 1.3vw, 1.15rem);
-    line-height: 1.5;
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: clamp(1.3rem, 2vw, 1.7rem);
+    line-height: 1.4;
   }
 
   .contacto-grid {

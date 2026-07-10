@@ -9,15 +9,7 @@ import { projects, filters } from '../../data/site';
 <Base title="Trabajos — EVE" description="Trabajos seleccionados de Eve: identidad, editorial, UX/UI, packaging y dirección de arte.">
   <article class="page trabajos">
     <div class="wrap">
-      <header class="page-head">
-        <span class="kicker mono cap"><T es="Trabajos" en="Work" /></span>
-        <h1 class="page-title reveal">
-          <span class="revfill"><T es="Trabajos" en="Selected" /></span>
-        </h1>
-        <h1 class="page-title reveal">
-          <span class="revfill accent"><T es="seleccionados." en="work." /></span>
-        </h1>
-      </header>
+      <h1 class="visually-hidden">Trabajos — EVE · Diseñadora Multimedia & UX/UI</h1>
 
       <div class="works-bar">
         <p class="works-legend mono cap"><T k="footer.work" /></p>
@@ -45,18 +37,7 @@ import { projects, filters } from '../../data/site';
 </Base>
 
 <style>
-  .page { padding-top: clamp(120px, 18vh, 200px); }
-  .page-head { margin-bottom: clamp(36px, 6vh, 72px); }
-  .kicker { display: block; color: var(--ink-60); margin-bottom: clamp(20px, 3vh, 34px); }
-  .page-title {
-    font-family: var(--serif);
-    font-weight: 400;
-    font-size: var(--fs-h1);
-    line-height: 1.0;
-    letter-spacing: -0.02em;
-  }
-  .page-title .accent { font-style: italic; font-weight: 300; color: var(--ink-80); }
-  .page-title .revfill { display: block; }
+  .page { padding-top: clamp(110px, 16vh, 170px); }
 
   /* barra: leyenda a la izquierda + filtros a la derecha */
   .works-bar {

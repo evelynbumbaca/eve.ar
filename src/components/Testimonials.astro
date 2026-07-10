@@ -1,0 +1,97 @@
+---
+/* ============================================================
+   Testimonials — comentarios de clientes con estrellas.
+   Registro editorial: cita en serif, 5 estrellas naranjas
+   discretas (el único color, como el glow), autoría en mono.
+   CONTENIDO PLACEHOLDER: reemplazar por testimonios reales.
+   ============================================================ */
+import T from './T.astro';
+
+const items = [
+  {
+    quote: {
+      es: 'Eve ordenó años de ideas sueltas en una identidad que por fin nos representa. El proceso fue tan claro como el resultado.',
+      en: 'Eve turned years of loose ideas into an identity that finally represents us. The process was as clear as the result.',
+    },
+    who: 'Martina G.',
+    role: { es: 'Fundadora — Café Tostado', en: 'Founder — Café Tostado' },
+  },
+  {
+    quote: {
+      es: 'Entendió el negocio antes que el brief. La web nueva duplicó las consultas en dos meses.',
+      en: 'She understood the business before the brief. The new site doubled our inquiries in two months.',
+    },
+    who: 'J. Pereyra',
+    role: { es: 'Director — Estudio Pampa', en: 'Director — Estudio Pampa' },
+  },
+  {
+    quote: {
+      es: 'Criterio impecable, entregas puntuales y un ojo obsesivo por el detalle. Trabajar con ella es fácil y el resultado, elegante.',
+      en: 'Impeccable judgment, on-time delivery and an obsessive eye for detail. Working with her is easy and the result, elegant.',
+    },
+    who: 'L. Sosa',
+    role: { es: 'Coordinadora — Bienal BA', en: 'Coordinator — Bienal BA' },
+  },
+];
+---
+
+<section class="testi" id="testimonios" aria-label="Testimonios">
+  <div class="wrap">
+    <p class="ts-kicker mono cap rise"><T es="Lo que dicen" en="What they say" /></p>
+
+    <div class="ts-grid">
+      {items.map((t, i) => (
+        <figure class:list={['ts-card', 'rise', `rise-delay-${i + 1}`]}>
+          <p class="ts-stars" aria-label="5 de 5 estrellas · 5 out of 5 stars">★★★★★</p>
+          <blockquote class="ts-quote">
+            <span data-es={`“${t.quote.es}”`} data-en={`“${t.quote.en}”`}>“{t.quote.es}”</span>
+          </blockquote>
+          <figcaption class="ts-who mono">
+            {t.who} · <span data-es={t.role.es} data-en={t.role.en}>{t.role.es}</span>
+          </figcaption>
+        </figure>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .testi {
+    padding-block: clamp(64px, 12vh, 150px) clamp(24px, 4vh, 56px);
+    border-top: 1px solid var(--line);
+  }
+  .ts-kicker { color: var(--ink-45); margin-bottom: clamp(28px, 5vh, 52px); display: block; }
+
+  .ts-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(28px, 4vw, 64px);
+    align-items: start;
+  }
+  .ts-card { display: flex; flex-direction: column; gap: 14px; }
+  .ts-stars {
+    color: var(--orange);
+    font-size: 13px;
+    letter-spacing: 5px;
+    line-height: 1;
+  }
+  .ts-quote {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: clamp(1.1rem, 1.5vw, 1.35rem);
+    line-height: 1.42;
+    letter-spacing: -0.005em;
+    color: var(--ink);
+    text-wrap: pretty;
+  }
+  .ts-who {
+    color: var(--ink-45);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 860px) {
+    .ts-grid { grid-template-columns: 1fr; gap: clamp(32px, 6vh, 48px); max-width: 560px; }
+  }
+</style>
