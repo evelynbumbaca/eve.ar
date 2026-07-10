@@ -31,19 +31,18 @@ export const site = {
   name: 'EVE',
   domain: 'eve.ar',
   location: { es: 'Buenos Aires, Argentina', en: 'Buenos Aires, Argentina' },
-  email: 'hola@eve.ar',
-  gumroad: 'https://gumroad.com/', // TODO: reemplazar por la tienda real
-  whatsapp: 'https://wa.me/5491100000000', // TODO: número real (formato internacional, sin + ni espacios)
+  email: 'bumbacaevelyn@gmail.com',
+  whatsapp: 'https://wa.me/5491141666617',
   // TODO: pegar la access key de web3forms.com (gratis) para que el formulario
   // envíe directo al mail; mientras esté vacía, compone un mail en el cliente.
   formKey: '',
 };
 
 export const social: { label: string; href: string }[] = [
-  { label: 'Instagram', href: 'https://instagram.com/' },
-  { label: 'Behance', href: 'https://behance.net/' },
-  { label: 'LinkedIn', href: 'https://linkedin.com/' },
-  { label: 'Gumroad', href: site.gumroad },
+  { label: 'Instagram', href: 'https://instagram.com/evebumbaca' },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/evelyn-macarena-bumbaca-36a431140/' },
+  // TODO: sumar Behance cuando Eve pase el link real (llegó el de LinkedIn
+  // repetido) y Gumroad cuando exista la tienda.
 ];
 
 /* ---------- navegacion ---------- */

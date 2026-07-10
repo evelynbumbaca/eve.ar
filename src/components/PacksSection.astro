@@ -9,47 +9,56 @@
 import { site } from '../data/site';
 import T from './T.astro';
 
+/* Paquetes reales de Eve (doc "Servicios de diseño", feb 2026),
+   condensados para la web. Los precios se suman cuando Eve los confirme. */
 const packs = [
   {
     num: '01',
     name: 'Esencial',
-    who: { es: 'Para arrancar con una base sólida.', en: 'To start with a solid base.' },
+    fullName: 'Identidad Visual Esencial',
+    who: { es: 'Para emprendedores y marcas que arrancan.', en: 'For founders and brands just starting out.' },
     items: [
-      { es: 'Logo + variantes', en: 'Logo + variants' },
-      { es: 'Paleta y tipografías', en: 'Palette & type pairing' },
-      { es: 'Mini guía de uso (PDF)', en: 'Mini usage guide (PDF)' },
-      { es: 'Kit básico para redes', en: 'Basic social kit' },
+      { es: 'Logotipo principal + variante', en: 'Primary logo + variant' },
+      { es: 'Paleta de color y sistema tipográfico', en: 'Color palette & type system' },
+      { es: 'Kit para redes (perfil, highlights, posteo base)', en: 'Social kit (avatar, highlights, base post)' },
+      { es: '2 patterns de marca + brand board', en: '2 brand patterns + brand board' },
+      { es: 'Guía de estilo esencial (PDF) + editables', en: 'Essential style guide (PDF) + source files' },
+      { es: 'Presentación final con asesoría', en: 'Final walkthrough & guidance' },
     ],
-    time: { es: 'Entrega estimada: 2 semanas', en: 'Estimated delivery: 2 weeks' },
+    time: { es: 'Duración: 4 semanas · 2 rondas de revisión', en: 'Timeline: 4 weeks · 2 revision rounds' },
   },
   {
     num: '02',
-    name: 'Identidad',
+    name: 'Profesional',
+    fullName: 'Identidad Visual Profesional',
     featured: true,
-    who: { es: 'La marca completa, coherente en todos lados.', en: 'The full brand, coherent everywhere.' },
+    who: { es: 'Para marcas en crecimiento y profesionales establecidos.', en: 'For growing brands and established professionals.' },
     items: [
-      { es: 'Todo lo del Esencial', en: 'Everything in Esencial' },
-      { es: 'Sistema visual extendido', en: 'Extended visual system' },
-      { es: 'Papelería + plantillas de redes', en: 'Stationery + social templates' },
-      { es: 'Brandbook completo', en: 'Full brandbook' },
+      { es: 'Estrategia: brief profundo, competencia y concepto', en: 'Strategy: deep brief, competitors & concept' },
+      { es: 'Sistema visual completo (logos, color, tipografía)', en: 'Full visual system (logos, color, type)' },
+      { es: 'Brandbook + definición de estilo de marca', en: 'Brandbook + brand style definition' },
+      { es: 'Aplicaciones: redes, firma de mail, tarjeta, plantillas', en: 'Applications: social, email signature, card, templates' },
+      { es: 'Animación de logo incluida (MP4)', en: 'Logo animation included (MP4)' },
     ],
-    time: { es: 'Entrega estimada: 3–4 semanas', en: 'Estimated delivery: 3–4 weeks' },
+    time: { es: 'Duración: 6–8 semanas · 2 rondas por etapa', en: 'Timeline: 6–8 weeks · 2 rounds per stage' },
   },
   {
     num: '03',
-    name: 'Integral',
-    who: { es: 'Identidad + su aterrizaje al mundo real.', en: 'Identity + its landing in the real world.' },
+    name: 'Corporativa',
+    fullName: 'Identidad Visual Corporativa',
+    who: { es: 'Para PyMEs, empresas y organizaciones con estructura.', en: 'For SMEs, companies and structured organizations.' },
     items: [
-      { es: 'Todo lo del Identidad', en: 'Everything in Identidad' },
-      { es: 'Packaging o diseño web', en: 'Packaging or web design' },
-      { es: 'Piezas de lanzamiento', en: 'Launch pieces' },
-      { es: 'Acompañamiento 30 días', en: '30-day follow-up' },
+      { es: 'Diagnóstico y estrategia con tu equipo', en: 'Diagnosis & strategy with your team' },
+      { es: 'Sistema visual + manual corporativo interactivo', en: 'Visual system + interactive corporate manual' },
+      { es: 'Papelería, presentación corporativa y kit digital', en: 'Stationery, corporate deck & digital kit' },
+      { es: 'Animación de logo incluida (MP4)', en: 'Logo animation included (MP4)' },
+      { es: '30 días de acompañamiento post entrega', en: '30 days of post-delivery support' },
     ],
-    time: { es: 'Alcance y tiempos a medida', en: 'Scope & timing tailored' },
+    time: { es: 'Duración: 8–12 semanas · cotización a medida', en: 'Timeline: 8–12 weeks · tailored quote' },
   },
 ];
 
-const wa = (name: string) => `${site.whatsapp}?text=${encodeURIComponent(`Hola Eve! Quiero contratar el Pack ${name}.`)}`;
+const wa = (p: { fullName: string }) => `${site.whatsapp}?text=${encodeURIComponent(`Hola Eve! Quiero contratar el pack ${p.fullName}.`)}`;
 ---
 
 <section class="packs" id="packs" aria-label="Packs de branding">
@@ -74,7 +83,10 @@ const wa = (name: string) => `${site.whatsapp}?text=${encodeURIComponent(`Hola E
             <span class="pk-tag mono cap"><T es="El más elegido" en="Most chosen" /></span>
           )}
           <span class="pk-num mono">{p.num}</span>
-          <h3 class="pk-name">Pack {p.name}</h3>
+          <h3 class="pk-name">
+            <span class="pk-name-pre mono cap"><T es="Identidad Visual" en="Visual Identity" /></span>
+            {p.name}
+          </h3>
           <p class="pk-who"><span data-es={p.who.es} data-en={p.who.en}>{p.who.es}</span></p>
           <ul class="pk-items">
             {p.items.map((it) => (
@@ -83,7 +95,7 @@ const wa = (name: string) => `${site.whatsapp}?text=${encodeURIComponent(`Hola E
           </ul>
           <p class="pk-time mono"><span data-es={p.time.es} data-en={p.time.en}>{p.time.es}</span></p>
           <div class="pk-ctas">
-            <a class="pk-wa" href={wa(p.name)} target="_blank" rel="noopener noreferrer" data-glow-dock>
+            <a class="pk-wa" href={wa(p)} target="_blank" rel="noopener noreferrer" data-glow-dock>
               <T es="Contratar" en="Book" />
               <span aria-hidden="true">↗</span>
             </a>
@@ -91,6 +103,13 @@ const wa = (name: string) => `${site.whatsapp}?text=${encodeURIComponent(`Hola E
         </article>
       ))}
     </div>
+
+    <p class="pk-audit mono rise">
+      <T
+        es="Servicio adicional — Auditoría de Identidad Visual · diagnóstico profesional en 7–10 días · el mejor primer paso"
+        en="Add-on service — Visual Identity Audit · professional diagnosis in 7–10 days · the best first step"
+      />
+    </p>
 
     <div class="pk-custom rise">
       <p class="pkc-q"><T es="¿Buscás algo distinto?" en="Looking for something different?" /></p>
@@ -155,7 +174,9 @@ const wa = (name: string) => `${site.whatsapp}?text=${encodeURIComponent(`Hola E
     font-size: clamp(1.4rem, 2vw, 1.9rem);
     letter-spacing: -0.015em;
     margin-bottom: 8px;
+    display: flex; flex-direction: column; gap: 6px;
   }
+  .pk-name-pre { color: var(--ink-45); font-size: 10px !important; letter-spacing: 0.14em; }
   .pk-who {
     font-family: var(--sans);
     font-size: clamp(0.9rem, 1vw, 1rem);
@@ -190,6 +211,15 @@ const wa = (name: string) => `${site.whatsapp}?text=${encodeURIComponent(`Hola E
   }
   .pk-wa:hover { opacity: 0.85; }
   .pack.is-featured .pk-wa { background: var(--orange); color: #fff; }
+
+  .pk-audit {
+    margin-top: clamp(24px, 4vh, 40px);
+    text-align: center;
+    color: var(--ink-45);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
 
   .pk-custom {
     margin-top: clamp(40px, 7vh, 72px);

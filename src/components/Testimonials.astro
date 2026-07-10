@@ -1,8 +1,9 @@
 ---
 /* ============================================================
-   Testimonials — comentarios de clientes con estrellas.
-   Registro editorial: cita en serif, 5 estrellas naranjas
-   discretas (el único color, como el glow), autoría en mono.
+   Testimonials — reseñas de clientes que VENDEN:
+   · Valoración agregada protagonista (5,0 + estrellas naranjas).
+   · Tarjeta central destacada en tinta (jerarquía clara).
+   · Cierre con CTA directo al formulario de contacto.
    CONTENIDO PLACEHOLDER: reemplazar por testimonios reales.
    ============================================================ */
 import T from './T.astro';
@@ -18,8 +19,8 @@ const items = [
   },
   {
     quote: {
-      es: 'Entendió el negocio antes que el brief. La web nueva duplicó las consultas en dos meses.',
-      en: 'She understood the business before the brief. The new site doubled our inquiries in two months.',
+      es: 'Entendió el negocio antes que el brief. La identidad nueva nos abrió puertas: en dos meses duplicamos las consultas.',
+      en: 'She understood the business before the brief. The new identity opened doors: inquiries doubled in two months.',
     },
     who: 'J. Pereyra',
     role: { es: 'Director — Estudio Pampa', en: 'Director — Estudio Pampa' },
@@ -37,11 +38,20 @@ const items = [
 
 <section class="testi" id="testimonios" aria-label="Testimonios">
   <div class="wrap">
-    <p class="ts-kicker mono cap rise"><T es="Lo que dicen" en="What they say" /></p>
+    <div class="ts-head">
+      <p class="ts-kicker mono cap rise"><T es="Lo que dicen" en="What they say" /></p>
+      <div class="ts-score rise rise-delay-1" role="img" aria-label="Valoración 5 de 5 estrellas">
+        <span class="ts-num">5,0</span>
+        <span class="ts-score-right">
+          <span class="ts-stars big" aria-hidden="true">★★★★★</span>
+          <span class="ts-score-sub mono"><T es="Valoración de clientes · 2023–2025" en="Client rating · 2023–2025" /></span>
+        </span>
+      </div>
+    </div>
 
     <div class="ts-grid">
       {items.map((t, i) => (
-        <figure class:list={['ts-card', 'rise', `rise-delay-${i + 1}`]}>
+        <figure class:list={['ts-card', 'rise', `rise-delay-${i + 1}`, { 'is-featured': i === 1 }]}>
           <p class="ts-stars" aria-label="5 de 5 estrellas · 5 out of 5 stars">★★★★★</p>
           <blockquote class="ts-quote">
             <span data-es={`“${t.quote.es}”`} data-en={`“${t.quote.en}”`}>“{t.quote.es}”</span>
@@ -52,46 +62,114 @@ const items = [
         </figure>
       ))}
     </div>
+
+    <p class="ts-cta rise">
+      <T es="¿Tu marca es la próxima?" en="Is your brand next?" />
+      <a href="#contacto" data-open-contact>
+        <T es="Escribime" en="Write me" /> <span aria-hidden="true">→</span>
+      </a>
+    </p>
   </div>
 </section>
 
 <style>
   .testi {
-    padding-block: clamp(64px, 12vh, 150px) clamp(24px, 4vh, 56px);
+    padding-block: clamp(64px, 12vh, 150px) clamp(40px, 7vh, 90px);
     border-top: 1px solid var(--line);
   }
-  .ts-kicker { color: var(--ink-45); margin-bottom: clamp(28px, 5vh, 52px); display: block; }
 
-  .ts-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: clamp(28px, 4vw, 64px);
-    align-items: start;
+  /* ---------- cabecera: valoración protagonista ---------- */
+  .ts-head {
+    display: flex; flex-wrap: wrap; align-items: flex-end;
+    justify-content: space-between; gap: 18px 32px;
+    margin-bottom: clamp(32px, 6vh, 64px);
   }
-  .ts-card { display: flex; flex-direction: column; gap: 14px; }
+  .ts-kicker { color: var(--ink-45); display: block; }
+  .ts-score { display: inline-flex; align-items: center; gap: 18px; }
+  .ts-num {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: clamp(3rem, 6vw, 5rem);
+    line-height: 0.9;
+    letter-spacing: -0.03em;
+  }
+  .ts-score-right { display: grid; gap: 7px; }
   .ts-stars {
     color: var(--orange);
     font-size: 13px;
     letter-spacing: 5px;
     line-height: 1;
   }
+  .ts-stars.big { font-size: clamp(15px, 1.6vw, 19px); letter-spacing: 6px; }
+  .ts-score-sub { color: var(--ink-45); font-size: 10px !important; letter-spacing: 0.1em; text-transform: uppercase; }
+
+  /* ---------- tarjetas ---------- */
+  .ts-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(16px, 2vw, 28px);
+    align-items: stretch;
+  }
+  .ts-card {
+    display: flex; flex-direction: column; gap: 16px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: clamp(22px, 2.4vw, 34px);
+    background: color-mix(in srgb, #ffffff 45%, transparent);
+    transition: transform var(--dur-ui) var(--ease-out), border-color var(--dur-ui) var(--ease-quint);
+  }
+  .ts-card:hover { transform: translateY(-4px); border-color: var(--ink-45); }
   .ts-quote {
     font-family: var(--serif);
     font-weight: 300;
-    font-size: clamp(1.1rem, 1.5vw, 1.35rem);
+    font-size: clamp(1.05rem, 1.4vw, 1.3rem);
     line-height: 1.42;
     letter-spacing: -0.005em;
     color: var(--ink);
     text-wrap: pretty;
   }
   .ts-who {
+    margin-top: auto;
     color: var(--ink-45);
     font-size: 11px;
     letter-spacing: 0.06em;
     text-transform: uppercase;
   }
 
+  /* la del medio manda: tinta sobre papel */
+  .ts-card.is-featured {
+    background: var(--ink);
+    border-color: var(--ink);
+    transform: translateY(-6px);
+  }
+  .ts-card.is-featured:hover { transform: translateY(-10px); }
+  .ts-card.is-featured .ts-quote { color: var(--paper); }
+  .ts-card.is-featured .ts-who { color: rgba(250, 249, 245, 0.55); }
+
+  /* ---------- cierre con CTA ---------- */
+  .ts-cta {
+    margin-top: clamp(32px, 5vh, 56px);
+    text-align: center;
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: clamp(1.15rem, 1.8vw, 1.6rem);
+    letter-spacing: -0.01em;
+    color: var(--ink-60);
+    display: flex; flex-wrap: wrap; justify-content: center; align-items: baseline; gap: 10px 14px;
+  }
+  .ts-cta a {
+    color: var(--ink);
+    border-bottom: 1px solid var(--ink);
+    padding-bottom: 2px;
+    transition: opacity var(--dur-micro) var(--ease-quint);
+  }
+  .ts-cta a:hover { opacity: 0.65; }
+  .ts-cta a span { display: inline-block; transition: transform var(--dur-ui) var(--ease-out); }
+  .ts-cta a:hover span { transform: translateX(5px); }
+
   @media (max-width: 860px) {
-    .ts-grid { grid-template-columns: 1fr; gap: clamp(32px, 6vh, 48px); max-width: 560px; }
+    .ts-grid { grid-template-columns: 1fr; max-width: 560px; }
+    .ts-card.is-featured { transform: none; }
+    .ts-card.is-featured:hover { transform: translateY(-4px); }
   }
 </style>
