@@ -40,9 +40,9 @@ export const site = {
 
 export const social: { label: string; href: string }[] = [
   { label: 'Instagram', href: 'https://instagram.com/evebumbaca' },
+  { label: 'Behance', href: 'https://www.behance.net/evelynbumbaca' },
   { label: 'LinkedIn', href: 'https://www.linkedin.com/in/evelyn-macarena-bumbaca-36a431140/' },
-  // TODO: sumar Behance cuando Eve pase el link real (llegó el de LinkedIn
-  // repetido) y Gumroad cuando exista la tienda.
+  // TODO: sumar Gumroad cuando exista la tienda.
 ];
 
 /* ---------- navegacion ---------- */
