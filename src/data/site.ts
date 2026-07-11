@@ -4,7 +4,7 @@
    ============================================================ */
 
 export type Lang = 'es' | 'en';
-export type ProjectCat = 'branding' | 'uxui' | 'editorial' | 'packaging' | 'art';
+export type ProjectCat = 'branding' | 'uxui' | 'motion' | 'editorial' | 'packaging' | 'art';
 
 export interface Bilingual { es: string; en: string; }
 
@@ -62,6 +62,7 @@ export const filters: { key: string; label: Bilingual }[] = [
   { key: 'all', label: { es: 'Todos', en: 'All' } },
   { key: 'branding', label: { es: 'Branding', en: 'Branding' } },
   { key: 'uxui', label: { es: 'UX/UI', en: 'UX/UI' } },
+  { key: 'motion', label: { es: 'Motion', en: 'Motion' } },
   { key: 'editorial', label: { es: 'Editorial', en: 'Editorial' } },
   { key: 'packaging', label: { es: 'Packaging', en: 'Packaging' } },
   { key: 'art', label: { es: 'Dirección de Arte', en: 'Art Direction' } },
@@ -71,10 +72,12 @@ export const filters: { key: string; label: Bilingual }[] = [
 export const projects: Project[] = [
   { id: 'mercado-norte', cat: 'branding', year: '2025', title: 'Mercado Norte', disc: { es: 'Identidad de Marca', en: 'Brand Identity' }, ratio: '4 / 5' },
   { id: 'lumen', cat: 'uxui', year: '2025', title: 'Lumen App', disc: { es: 'Diseño UX/UI', en: 'UX/UI Design' }, ratio: '4 / 5' },
-  { id: 'catalogo-delta', cat: 'editorial', year: '2025', title: 'Catálogo Delta', disc: { es: 'Editorial · Catálogo', en: 'Editorial · Catalogue' }, ratio: '4 / 5' },
+  { id: 'marcas-en-movimiento', cat: 'motion', year: '2025', title: 'Marcas en Movimiento', disc: { es: 'Motion · Animación de logos', en: 'Motion · Logo animation' }, ratio: '4 / 5' },
   { id: 'revista-sur', cat: 'editorial', year: '2024', title: 'Revista Sur', disc: { es: 'Editorial', en: 'Editorial' }, ratio: '4 / 5' },
   { id: 'cafe-tostado', cat: 'packaging', year: '2024', title: 'Café Tostado', disc: { es: 'Packaging', en: 'Packaging' }, ratio: '4 / 5' },
   { id: 'bienal-ba', cat: 'art', year: '2024', title: 'Bienal BA', disc: { es: 'Dirección de Arte', en: 'Art Direction' }, ratio: '4 / 5' },
+  { id: 'catalogo-delta', cat: 'editorial', year: '2025', title: 'Catálogo Delta', disc: { es: 'Editorial · Catálogo', en: 'Editorial · Catalogue' }, ratio: '4 / 5' },
+  { id: 'sistema-mogrt', cat: 'motion', year: '2024', title: 'Sistema MOGRT', disc: { es: 'Motion · Plantillas de video', en: 'Motion · Video templates' }, ratio: '4 / 5' },
   { id: 'estudio-pampa', cat: 'uxui', year: '2023', title: 'Estudio Pampa', disc: { es: 'Diseño Web · UX', en: 'Web Design · UX' }, ratio: '4 / 5' },
   { id: 'fundacion-rio', cat: 'branding', year: '2023', title: 'Fundación Río', disc: { es: 'Identidad de Marca', en: 'Brand Identity' }, ratio: '4 / 5' },
   { id: 'tipo-festival', cat: 'art', year: '2023', title: 'Tipo Festival', disc: { es: 'Campaña · Dirección de Arte', en: 'Campaign · Art Direction' }, ratio: '4 / 5' },
