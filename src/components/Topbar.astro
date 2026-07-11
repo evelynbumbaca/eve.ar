@@ -1,11 +1,11 @@
 ---
-import { site } from '../data/site';
 import { link } from '../lib/link';
+import LogoEve from './LogoEve.astro';
 ---
 
 <header class="topbar">
-  <a class="wordmark" href={link('/')} aria-label="EVE — inicio" data-wordmark>
-    <span data-name-target>EVE</span>
+  <a class="wordmark" href={link('/')} aria-label="eve — inicio" data-wordmark>
+    <span data-name-target><LogoEve /></span>
   </a>
 
   <div class="topbar-right">
@@ -36,14 +36,9 @@ import { link } from '../lib/link';
   .topbar a,
   .topbar button { pointer-events: auto; }
 
-  .wordmark {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    font-size: 16px;
-    line-height: 1;
-    color: #fff; /* difference -> legible sobre cualquier fondo */
-  }
+  .wordmark { color: #fff; /* difference -> legible sobre cualquier fondo */ }
+  .wordmark span { display: block; }
+  .wordmark :global(svg) { display: block; height: 15px; width: auto; }
   /* en el home con fx, el wordmark aparece recién cuando el nombre grande "llega" */
   :global(html.home-fx) .wordmark span[data-name-target] { opacity: 0; }
 

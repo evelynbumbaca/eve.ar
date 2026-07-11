@@ -17,6 +17,7 @@ const packs = [
     name: 'Esencial',
     fullName: 'Identidad Visual Esencial',
     who: { es: 'Para emprendedores y marcas que arrancan.', en: 'For founders and brands just starting out.' },
+    price: { ars: 'ARS 1.400.000', usd: 'USD 950' },
     items: [
       { es: 'Logotipo principal + variante', en: 'Primary logo + variant' },
       { es: 'Paleta de color y sistema tipográfico', en: 'Color palette & type system' },
@@ -48,6 +49,7 @@ const packs = [
     fullName: 'Identidad Visual Profesional',
     featured: true,
     who: { es: 'Para marcas en crecimiento y profesionales establecidos.', en: 'For growing brands and established professionals.' },
+    price: { ars: 'ARS 3.000.000', usd: 'USD 2.000' },
     items: [
       { es: 'Estrategia: brief profundo, competencia y concepto', en: 'Strategy: deep brief, competitors & concept' },
       { es: 'Sistema visual completo (logos, color, tipografía)', en: 'Full visual system (logos, color, type)' },
@@ -78,6 +80,7 @@ const packs = [
     name: 'Corporativa',
     fullName: 'Identidad Visual Corporativa',
     who: { es: 'Para PyMEs, empresas y organizaciones con estructura.', en: 'For SMEs, companies and structured organizations.' },
+    price: { ars: 'ARS 5.250.000', usd: 'USD 3.500', desde: true },
     items: [
       { es: 'Diagnóstico y estrategia con tu equipo', en: 'Diagnosis & strategy with your team' },
       { es: 'Sistema visual + manual corporativo interactivo', en: 'Visual system + interactive corporate manual' },
@@ -134,6 +137,12 @@ const wa = (p: { fullName: string }) => `${site.whatsapp}?text=${encodeURICompon
             {p.name}
           </h3>
           <p class="pk-who"><span data-es={p.who.es} data-en={p.who.en}>{p.who.es}</span></p>
+          <p class="pk-price">
+            {p.price.desde && <span class="pp-desde mono" data-es="desde" data-en="from">desde</span>}
+            <span class="pp-ars">{p.price.ars}</span>
+            <span class="pp-sep" aria-hidden="true">·</span>
+            <span class="pp-usd mono">{p.price.usd}</span>
+          </p>
           <ul class="pk-items">
             {p.items.map((it) => (
               <li><span data-es={it.es} data-en={it.en}>{it.es}</span></li>
@@ -141,11 +150,14 @@ const wa = (p: { fullName: string }) => `${site.whatsapp}?text=${encodeURICompon
           </ul>
           <details class="pk-full">
             <summary class="mono"><T es="Ver alcance completo" en="See full scope" /> <span aria-hidden="true">+</span></summary>
-            <ul>
-              {p.full.map((it) => (
-                <li><span data-es={it.es} data-en={it.en}>{it.es}</span></li>
-              ))}
-            </ul>
+            <div class="pk-sheet">
+              <p class="pk-sheet-t mono cap"><T es="Alcance completo" en="Full scope" /></p>
+              <ul>
+                {p.full.map((it) => (
+                  <li><span data-es={it.es} data-en={it.en}>{it.es}</span></li>
+                ))}
+              </ul>
+            </div>
           </details>
           <p class="pk-time mono"><span data-es={p.time.es} data-en={p.time.en}>{p.time.es}</span></p>
           <div class="pk-ctas">
@@ -160,8 +172,8 @@ const wa = (p: { fullName: string }) => `${site.whatsapp}?text=${encodeURICompon
 
     <p class="pk-audit mono rise">
       <T
-        es="Servicio adicional — Auditoría de Identidad Visual · diagnóstico profesional en 7–10 días · el mejor primer paso"
-        en="Add-on service — Visual Identity Audit · professional diagnosis in 7–10 days · the best first step"
+        es="Servicio adicional — Auditoría de Identidad Visual · diagnóstico profesional en 7–10 días · ARS 720.000 / USD 480"
+        en="Add-on service — Visual Identity Audit · professional diagnosis in 7–10 days · ARS 720.000 / USD 480"
       />
     </p>
 
@@ -213,7 +225,15 @@ const wa = (p: { fullName: string }) => `${site.whatsapp}?text=${encodeURICompon
     transition: border-color var(--dur-ui) var(--ease-quint), transform var(--dur-ui) var(--ease-out);
   }
   .pack:hover { border-color: var(--ink-45); transform: translateY(-3px); }
-  .pack.is-featured { border-color: var(--ink); }
+  /* el destacado manda: escala leve + sombra editorial */
+  .pack.is-featured {
+    border-color: var(--ink);
+    box-shadow: 0 18px 44px rgba(22, 21, 15, 0.09);
+  }
+  @media (min-width: 901px) {
+    .pack.is-featured { transform: scale(1.025); }
+    .pack.is-featured:hover { transform: scale(1.025) translateY(-3px); }
+  }
 
   .pk-tag {
     position: absolute; top: -11px; left: clamp(18px, 2vw, 30px);
@@ -235,9 +255,26 @@ const wa = (p: { fullName: string }) => `${site.whatsapp}?text=${encodeURICompon
     font-family: var(--sans);
     font-size: clamp(0.9rem, 1vw, 1rem);
     color: var(--ink-60);
-    margin-bottom: clamp(16px, 2.5vh, 24px);
+    margin-bottom: clamp(12px, 2vh, 18px);
     min-height: 2.6em;
   }
+
+  /* precio: ARS protagonista + USD en mono */
+  .pk-price {
+    display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 10px;
+    margin-bottom: clamp(16px, 2.5vh, 24px);
+    padding-bottom: clamp(14px, 2vh, 20px);
+    border-bottom: 1px solid var(--ink-12);
+  }
+  .pp-desde { color: var(--ink-45); font-size: 11px !important; letter-spacing: 0.1em; text-transform: uppercase; }
+  .pp-ars {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(1.3rem, 1.9vw, 1.7rem);
+    letter-spacing: -0.01em;
+  }
+  .pp-sep { color: var(--ink-35); }
+  .pp-usd { color: var(--ink-60); font-size: clamp(11px, 1vw, 13px); }
   .pk-items { list-style: none; margin-bottom: clamp(16px, 2.5vh, 24px); }
   .pk-items li {
     font-family: var(--sans);
@@ -248,7 +285,7 @@ const wa = (p: { fullName: string }) => `${site.whatsapp}?text=${encodeURICompon
     display: flex; gap: 10px;
   }
   .pk-items li::before { content: '·'; color: var(--ink-35); }
-  /* alcance completo desplegable: síntesis arriba, detalle a un clic */
+  /* alcance completo: desplegable en táctil; en desktop, ventana en tinta */
   .pk-full { margin-bottom: clamp(14px, 2vh, 20px); }
   .pk-full summary {
     cursor: pointer;
@@ -262,6 +299,7 @@ const wa = (p: { fullName: string }) => `${site.whatsapp}?text=${encodeURICompon
   .pk-full summary::-webkit-details-marker { display: none; }
   .pk-full summary:hover { color: var(--ink); }
   .pk-full[open] summary span[aria-hidden] { display: inline-block; transform: rotate(45deg); }
+  .pk-sheet-t { display: none; }
   .pk-full ul { list-style: none; margin-top: 10px; }
   .pk-full li {
     font-family: var(--sans);
@@ -272,6 +310,32 @@ const wa = (p: { fullName: string }) => `${site.whatsapp}?text=${encodeURICompon
     display: flex; gap: 9px;
   }
   .pk-full li::before { content: '·'; color: var(--ink-35); }
+
+  @media (hover: hover) and (pointer: fine) {
+    /* la ventana negra cubre SOLO su tarjeta (no estira la fila) */
+    .pk-sheet {
+      position: absolute;
+      inset: 0;
+      z-index: 5;
+      background: var(--ink);
+      color: var(--paper);
+      border-radius: 4px;
+      padding: clamp(20px, 2.2vw, 30px);
+      overflow: auto;
+    }
+    .pk-full[open] .pk-sheet { animation: sheetIn 0.28s var(--ease-out) both; }
+    @keyframes sheetIn { from { opacity: 0; transform: translateY(8px); } }
+    .pk-sheet-t {
+      display: block;
+      color: color-mix(in srgb, var(--paper) 55%, transparent);
+      font-size: 10px !important;
+      letter-spacing: 0.12em;
+      margin-bottom: 6px;
+    }
+    .pk-full li { color: color-mix(in srgb, var(--paper) 88%, transparent); border-top-color: color-mix(in srgb, var(--paper) 16%, transparent); }
+    .pk-full li::before { color: color-mix(in srgb, var(--paper) 45%, transparent); }
+    @media (prefers-reduced-motion: reduce) { .pk-full[open] .pk-sheet { animation: none; } }
+  }
 
   .pk-time { color: var(--ink-45); margin-bottom: clamp(18px, 3vh, 28px); }
 
@@ -336,3 +400,15 @@ const wa = (p: { fullName: string }) => `${site.whatsapp}?text=${encodeURICompon
     .pk-who { min-height: 0; }
   }
 </style>
+
+<script>
+  /* Desktop: la ventana de alcance completo se abre/cierra con el hover
+     (en táctil queda el desplegable por toque, nativo del <details>). */
+  const fine = matchMedia('(hover:hover) and (pointer:fine)').matches;
+  if (fine) {
+    document.querySelectorAll<HTMLDetailsElement>('.pk-full').forEach((d) => {
+      d.addEventListener('mouseenter', () => { d.open = true; });
+      d.addEventListener('mouseleave', () => { d.open = false; });
+    });
+  }
+</script>

@@ -15,6 +15,7 @@
    ============================================================ */
 import { projects, filters, social } from '../data/site';
 import { link } from '../lib/link';
+import LogoEve from './LogoEve.astro';
 
 const works = projects.slice(0, 6);
 ---
@@ -23,8 +24,8 @@ const works = projects.slice(0, 6);
   <div class="bn-inner wrap">
     <header class="bn-head">
       <div class="bn-name-wrap">
-        <p class="bn-name-slot" aria-hidden="true">EVE</p>
-        <span class="bn-name-fly" data-name-fly aria-hidden="true"><span class="ltr">E</span><span class="ltr">V</span><span class="ltr">E</span></span>
+        <p class="bn-name-slot" aria-hidden="true"><LogoEve /></p>
+        <span class="bn-name-fly" data-name-fly aria-hidden="true"><LogoEve /></span>
       </div>
 
       <div class="bn-desc">
@@ -97,21 +98,20 @@ const works = projects.slice(0, 6);
     padding-bottom: clamp(36px, 7vh, 86px);
   }
   .bn-name-wrap { position: relative; }
-  .bn-name-slot,
-  .bn-name-fly {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    font-weight: 700;
-    font-size: clamp(3.4rem, 12vw, 11rem);
-    line-height: 0.86;
-    letter-spacing: -0.02em;
+  /* el logotipo real de Eve, tamaño protagonista */
+  .bn-name-slot :global(svg),
+  .bn-name-fly :global(svg) {
+    display: block;
+    height: clamp(58px, 10.5vw, 152px);
+    width: auto;
     color: var(--ink);
   }
   .bn-name-slot { display: block; margin: 0; }
 
   .bn-name-fly { position: absolute; left: 0; top: 0; pointer-events: none; }
-  /* letras que se estiran cerca del cursor (solo en fx) */
-  .bn-name-fly .ltr {
-    display: inline-block;
+  /* letras (grupos del svg) que se estiran cerca del cursor (solo en fx) */
+  .bn-name-fly :global(.ltr) {
+    transform-box: fill-box;
     transform-origin: 50% 62%;
     will-change: transform;
   }
