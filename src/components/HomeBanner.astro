@@ -109,11 +109,11 @@ const works = projects.slice(0, 6);
   .bn-name-slot { display: block; margin: 0; }
 
   .bn-name-fly { position: absolute; left: 0; top: 0; pointer-events: none; }
-  /* letras (grupos del svg) que se estiran cerca del cursor (solo en fx) */
+  /* letras (grupos del svg) que se estiran cerca del cursor (solo en fx).
+     Sin will-change: congelaría la rasterización del vector y se pixela. */
   .bn-name-fly :global(.ltr) {
     transform-box: fill-box;
     transform-origin: 50% 62%;
-    will-change: transform;
   }
   :global(html.home-fx) .bn-name-slot { visibility: hidden; }
   :global(html:not(.home-fx)) .bn-name-fly { display: none; }
@@ -121,7 +121,7 @@ const works = projects.slice(0, 6);
     position: fixed;
     left: 0; top: 0;
     transform-origin: left top;
-    will-change: transform;
+    /* sin will-change: el svg debe re-rasterizarse al escalar (nitidez) */
     z-index: 45; /* sobre el contenido, debajo del chrome (60) y overlay (55) */
     transition: opacity 0.12s var(--ease-quint);
   }

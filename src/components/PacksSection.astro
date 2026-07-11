@@ -240,6 +240,8 @@ const wa = (p: { fullName: string }) => `${site.whatsapp}?text=${encodeURICompon
     background: var(--ink); color: var(--paper);
     padding: 4px 12px; border-radius: 20px;
     font-size: 10px !important;
+    z-index: 6;
+    transition: background var(--dur-ui) var(--ease-quint), color var(--dur-ui) var(--ease-quint);
   }
   .pk-num { color: var(--ink-35); margin-bottom: clamp(18px, 3vh, 30px); }
   .pk-name {
@@ -312,7 +314,8 @@ const wa = (p: { fullName: string }) => `${site.whatsapp}?text=${encodeURICompon
   .pk-full li::before { content: '·'; color: var(--ink-35); }
 
   @media (hover: hover) and (pointer: fine) {
-    /* la ventana negra cubre SOLO su tarjeta (no estira la fila) */
+    /* la ventana negra cubre SOLO su tarjeta (no estira la fila);
+       SUBE al entrar el mouse y BAJA al salir (clase .show por JS) */
     .pk-sheet {
       position: absolute;
       inset: 0;
@@ -321,10 +324,18 @@ const wa = (p: { fullName: string }) => `${site.whatsapp}?text=${encodeURICompon
       color: var(--paper);
       border-radius: 4px;
       padding: clamp(20px, 2.2vw, 30px);
+      padding-bottom: 96px; /* aire para el botón Contratar que queda encima */
       overflow: auto;
+      opacity: 0;
+      transform: translateY(18px);
+      pointer-events: none;
+      transition: opacity 0.3s var(--ease-out), transform 0.34s var(--ease-out);
     }
-    .pk-full[open] .pk-sheet { animation: sheetIn 0.28s var(--ease-out) both; }
-    @keyframes sheetIn { from { opacity: 0; transform: translateY(8px); } }
+    .pk-full.show .pk-sheet {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
     .pk-sheet-t {
       display: block;
       color: color-mix(in srgb, var(--paper) 55%, transparent);
@@ -334,12 +345,23 @@ const wa = (p: { fullName: string }) => `${site.whatsapp}?text=${encodeURICompon
     }
     .pk-full li { color: color-mix(in srgb, var(--paper) 88%, transparent); border-top-color: color-mix(in srgb, var(--paper) 16%, transparent); }
     .pk-full li::before { color: color-mix(in srgb, var(--paper) 45%, transparent); }
-    @media (prefers-reduced-motion: reduce) { .pk-full[open] .pk-sheet { animation: none; } }
+    @media (prefers-reduced-motion: reduce) { .pk-sheet { transition: opacity 0.2s ease; transform: none; } }
+
+    /* el botón Contratar y el cartelito viven SIEMPRE sobre la ventana */
+    .pack:has(.pk-full.show) .pk-wa {
+      background: var(--paper);
+      color: var(--ink);
+    }
+    .pack.is-featured:has(.pk-full.show) .pk-wa { background: var(--orange); color: #fff; }
+    .pack:has(.pk-full.show) .pk-tag {
+      background: var(--paper);
+      color: var(--ink);
+    }
   }
 
   .pk-time { color: var(--ink-45); margin-bottom: clamp(18px, 3vh, 28px); }
 
-  .pk-ctas { margin-top: auto; display: flex; justify-content: center; }
+  .pk-ctas { margin-top: auto; display: flex; justify-content: center; position: relative; z-index: 6; }
   .pk-wa {
     display: inline-flex; align-items: center; justify-content: center; gap: 9px;
     padding: 12px 34px;
@@ -402,13 +424,25 @@ const wa = (p: { fullName: string }) => `${site.whatsapp}?text=${encodeURICompon
 </style>
 
 <script>
-  /* Desktop: la ventana de alcance completo se abre/cierra con el hover
-     (en táctil queda el desplegable por toque, nativo del <details>). */
+  /* Desktop: la ventana de alcance completo SUBE con el hover sobre la
+     tarjeta y BAJA al salir (en táctil queda el <details> nativo). */
   const fine = matchMedia('(hover:hover) and (pointer:fine)').matches;
   if (fine) {
     document.querySelectorAll<HTMLDetailsElement>('.pk-full').forEach((d) => {
-      d.addEventListener('mouseenter', () => { d.open = true; });
-      d.addEventListener('mouseleave', () => { d.open = false; });
+      let t = 0;
+      const card = d.closest('.pack') || d;
+      // sube al pasar por "Ver alcance completo"
+      d.addEventListener('mouseenter', () => {
+        clearTimeout(t);
+        d.open = true; // contenido en el DOM (accesible) antes de animar
+        requestAnimationFrame(() => d.classList.add('show'));
+      });
+      // baja recién al sacar el mouse de la TARJETA
+      card.addEventListener('mouseleave', () => {
+        d.classList.remove('show');
+        clearTimeout(t);
+        t = window.setTimeout(() => { d.open = false; }, 360);
+      });
     });
   }
 </script>
