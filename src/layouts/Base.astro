@@ -98,8 +98,10 @@ const ogImage = new URL(link('/og.png'), Astro.site).href;
           if (!el) return;
           var cs = getComputedStyle(el);
           var padTop = parseFloat(cs.paddingTop) || 0;
-          var clear = Math.max(58, Math.min(84, innerHeight * 0.09)); // holgura bajo el menú
-          var y = el.getBoundingClientRect().top + window.scrollY + Math.min(padTop, padTop * 0.7) - clear;
+          var clear = Math.max(64, Math.min(84, innerHeight * 0.09)); // holgura bajo el menú
+          // se salta TODO el padding superior -> el borde de la sección queda
+          // fuera de vista (no cruza el logo) y el contenido aterriza a "clear"
+          var y = el.getBoundingClientRect().top + window.scrollY + padTop - clear;
           window.scrollTo({ top: Math.max(0, Math.round(y)), behavior: smooth ? 'smooth' : 'auto' });
         }
 
