@@ -36,8 +36,8 @@ const toolGroups = [
         <div class="bio">
           <p class="lead rise">
             <T
-              es="Soy Eve. Diseño identidades y contenido que se mueve — literalmente. Uno la dirección de marca, el criterio editorial y el pensamiento de producto con una especialización fuerte en motion: hago que una identidad no solo se vea bien, sino que cobre vida."
-              en="I'm Eve. I design identities and content that move — literally. I bring together brand direction, editorial judgment and product thinking with a strong focus on motion: making an identity not just look good, but come alive."
+              es="Diseño identidades y contenido que se mueve — literalmente. Uno la dirección de marca, el criterio editorial y el pensamiento de producto con una especialización fuerte en motion: hago que una identidad no solo se vea bien, sino que cobre vida."
+              en="I design identities and content that move — literally. I bring together brand direction, editorial judgment and product thinking with a strong focus on motion: making an identity not just look good, but come alive."
             />
           </p>
           <p class="rise rise-delay-1">
@@ -57,8 +57,8 @@ const toolGroups = [
         <div class="spec-body rise rise-delay-1">
           <p class="spec-lead">
             <T
-              es="Animo logos y sistemas de marca, y produzco contenido audiovisual de principio a fin: motion graphics, edición y postproducción, y sistemas de plantillas (MOGRTs) que estandarizan y agilizan la producción de video."
-              en="I animate logos and brand systems, and produce audiovisual content end to end: motion graphics, editing and post-production, and template systems (MOGRTs) that standardize and speed up video production."
+              es="Animo logos y sistemas de marca, y produzco contenido audiovisual de principio a fin: motion graphics, edición y postproducción, y sistemas de plantillas reutilizables que estandarizan y agilizan la producción de video."
+              en="I animate logos and brand systems, and produce audiovisual content end to end: motion graphics, editing and post-production, and reusable template systems that standardize and speed up video production."
             />
           </p>
           <p class="spec-lead">
@@ -69,8 +69,35 @@ const toolGroups = [
           </p>
           <p class="spec-tags mono">
             <T
-              es="Animación de logos · Motion graphics · Edición & postproducción · MOGRTs & plantillas · Diseño de información · Automatización con expresiones"
-              en="Logo animation · Motion graphics · Editing & post · MOGRTs & templates · Information design · Expression-based automation"
+              es="Animación de logos · Motion graphics · Edición & postproducción · Plantillas reutilizables · Contenido para e-learning · Diseño de información"
+              en="Logo animation · Motion graphics · Editing & post · Reusable templates · E-learning content · Information design"
+            />
+          </p>
+        </div>
+      </section>
+
+      <section class="also" aria-label="Marca, editorial y producto">
+        <div class="spec-head rise">
+          <span class="spec-kicker mono cap"><T es="Además" en="Also" /></span>
+          <h2 class="spec-title"><T es="Marca, editorial & producto" en="Brand, editorial & product" /></h2>
+        </div>
+        <div class="spec-body rise rise-delay-1">
+          <p class="spec-lead">
+            <T
+              es="Construyo identidades de marca completas, del concepto al sistema, y las llevo a la práctica: editorial, packaging, papelería y contenido para redes. Diseño y testeo experiencias digitales — prototipos, wireframes y flujos de usuario."
+              en="I build complete brand identities, from concept to system, and take them into practice: editorial, packaging, stationery and social content. I design and test digital experiences — prototypes, wireframes and user flows."
+            />
+          </p>
+          <p class="spec-lead">
+            <T
+              es="En editorial participé en el diseño del libro «¿Sabés quién fue?». Sumo también dirección de arte para campañas y realidad aumentada para redes — siempre buscando que la información se entienda y la marca se sostenga."
+              en="In editorial, I took part in the design of the book «¿Sabés quién fue?». I also do art direction for campaigns and augmented reality for social — always making the information clear and the brand hold together."
+            />
+          </p>
+          <p class="spec-tags mono neutral">
+            <T
+              es="Identidad & sistemas de marca · Editorial & libros · Packaging · UX/UI & prototipado · Contenido & redes · Realidad aumentada"
+              en="Identity & brand systems · Editorial & books · Packaging · UX/UI & prototyping · Content & social · Augmented reality"
             />
           </p>
         </div>
@@ -134,8 +161,8 @@ const toolGroups = [
   }
   .bio p { max-width: 52ch; color: var(--ink-80); }
 
-  /* ---------- especialidad: motion (destacado) ---------- */
-  .spec {
+  /* ---------- especialidad: motion (destacado) + marca/editorial ---------- */
+  .spec, .also {
     display: grid;
     grid-template-columns: minmax(200px, 0.34fr) 1fr;
     gap: clamp(24px, 4vw, 72px);
@@ -143,6 +170,8 @@ const toolGroups = [
     padding-top: clamp(28px, 4vh, 52px);
     margin-bottom: var(--section);
   }
+  /* la segunda banda de tags es neutra: motion es el único destacado en naranja */
+  .spec-tags.neutral { color: var(--ink-45); }
   .spec-kicker { color: var(--ink-45); display: block; margin-bottom: 14px; }
   .spec-title {
     font-family: var(--serif);
@@ -201,7 +230,7 @@ const toolGroups = [
   @media (max-width: 820px) {
     .estudio-grid { grid-template-columns: 1fr; }
     .portrait { max-width: 320px; }
-    .spec { grid-template-columns: 1fr; gap: 16px; }
+    .spec, .also { grid-template-columns: 1fr; gap: 16px; }
     .cols { grid-template-columns: 1fr; gap: 36px; }
   }
 </style>
