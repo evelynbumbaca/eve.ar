@@ -3,18 +3,6 @@ import Base from '../layouts/Base.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import T from '../components/T.astro';
 
-/* Qué hago (capacidades) — motion primero */
-const capabilities = [
-  { es: 'Identidad de marca', en: 'Brand identity' },
-  { es: 'Motion & animación', en: 'Motion & animation' },
-  { es: 'Dirección creativa', en: 'Creative direction' },
-  { es: 'Diseño UX/UI & producto', en: 'UX/UI & product design' },
-  { es: 'Contenido audiovisual', en: 'Audiovisual content' },
-  { es: 'Editorial', en: 'Editorial' },
-  { es: 'Packaging', en: 'Packaging' },
-  { es: 'Diseño web', en: 'Web design' },
-];
-
 /* Herramientas agrupadas (del CV, actualizadas) */
 const toolGroups = [
   { label: { es: 'Motion & Video', en: 'Motion & Video' }, items: ['After Effects', 'Premiere', 'Animate', 'Audition'] },
@@ -24,7 +12,7 @@ const toolGroups = [
 ];
 ---
 
-<Base title="Sobre mí — EVE" description="Diseñadora multimedia y UX/UI especializada en motion. Qué hago, herramientas y enfoque.">
+<Base title="Sobre mí — EVE" description="Diseñadora multimedia y UX/UI especializada en motion. Marca, producto digital y contenido audiovisual.">
   <article class="page estudio">
     <div class="wrap">
       <h1 class="visually-hidden">Sobre mí — Eve · Diseñadora Multimedia & UX/UI</h1>
@@ -49,25 +37,23 @@ const toolGroups = [
         </div>
       </div>
 
-      <section class="spec" aria-label="Especialidad: motion">
-        <div class="spec-head rise">
-          <span class="spec-kicker mono cap"><T es="Especialidad" en="Specialty" /></span>
-          <h2 class="spec-title"><T es="Motion & contenido audiovisual" en="Motion & audiovisual content" /></h2>
-        </div>
-        <div class="spec-body rise rise-delay-1">
-          <p class="spec-lead">
+      {/* ---- Motion (especialidad) ---- */}
+      <section class="disc" aria-label="Motion">
+        <h2 class="disc-title rise"><T es="Motion & contenido audiovisual" en="Motion & audiovisual content" /></h2>
+        <div class="disc-body rise rise-delay-1">
+          <p class="disc-lead">
             <T
               es="Animo logos y sistemas de marca, y produzco contenido audiovisual de principio a fin: motion graphics, edición y postproducción, y sistemas de plantillas reutilizables que estandarizan y agilizan la producción de video."
               en="I animate logos and brand systems, and produce audiovisual content end to end: motion graphics, editing and post-production, and reusable template systems that standardize and speed up video production."
             />
           </p>
-          <p class="spec-lead">
+          <p class="disc-lead">
             <T
               es="Cada identidad que diseño nace pensada para moverse: animaciones, piezas para redes e intros que le dan ritmo y presencia a la marca en pantalla."
               en="Every identity I design is born to move: animations, social pieces and intros that give a brand rhythm and presence on screen."
             />
           </p>
-          <p class="spec-tags mono">
+          <p class="disc-tags accent mono">
             <T
               es="Animación de logos · Motion graphics · Edición & postproducción · Plantillas reutilizables · Contenido para redes · Intros & videos"
               en="Logo animation · Motion graphics · Editing & post · Reusable templates · Social content · Intros & video"
@@ -76,43 +62,59 @@ const toolGroups = [
         </div>
       </section>
 
-      <section class="also" aria-label="Marca, editorial y producto">
-        <div class="spec-head rise">
-          <span class="spec-kicker mono cap"><T es="Además" en="Also" /></span>
-          <h2 class="spec-title"><T es="Marca, editorial & producto" en="Brand, editorial & product" /></h2>
-        </div>
-        <div class="spec-body rise rise-delay-1">
-          <p class="spec-lead">
+      {/* ---- Marca / branding ---- */}
+      <section class="disc" aria-label="Identidad de marca">
+        <h2 class="disc-title rise"><T es="Identidad de marca" en="Brand identity" /></h2>
+        <div class="disc-body rise rise-delay-1">
+          <p class="disc-lead">
             <T
-              es="Construyo identidades de marca completas, del concepto al sistema, y las llevo a la práctica: editorial, packaging, papelería y contenido para redes. Diseño y testeo experiencias digitales — prototipos, wireframes y flujos de usuario."
-              en="I build complete brand identities, from concept to system, and take them into practice: editorial, packaging, stationery and social content. I design and test digital experiences — prototypes, wireframes and user flows."
+              es="Construyo identidades completas, del concepto al sistema: logo, paleta, tipografía y un lenguaje visual coherente en cada punto de contacto. Después las llevo a la práctica — editorial, packaging, papelería y contenido para redes — para que la marca se sostenga en el mundo real."
+              en="I build complete identities, from concept to system: logo, palette, type and a visual language that stays coherent at every touchpoint. Then I take them into practice — editorial, packaging, stationery and social content — so the brand holds together in the real world."
             />
           </p>
-          <p class="spec-lead">
+          <p class="disc-lead">
             <T
-              es="Participación fundamental en el diseño del libro «¿Sabés quién fue?». Sumo también dirección de arte para campañas y key visuals — siempre buscando que la información se entienda y la marca se sostenga."
-              en="A key role in the design of the book «¿Sabés quién fue?». I also do art direction for campaigns and key visuals — always making the information clear and the brand hold together."
+              es="Participación fundamental en el diseño del libro «¿Sabés quién fue?». Sumo también dirección de arte para campañas y key visuals."
+              en="A key role in the design of the book «¿Sabés quién fue?». I also do art direction for campaigns and key visuals."
             />
           </p>
-          <p class="spec-tags mono neutral">
+          <p class="disc-tags mono">
             <T
-              es="Identidad & sistemas de marca · Editorial & libros · Packaging · UX/UI & prototipado · Contenido & redes · Dirección de arte"
-              en="Identity & brand systems · Editorial & books · Packaging · UX/UI & prototyping · Content & social · Art direction"
+              es="Estrategia & concepto · Sistemas de marca · Editorial & libros · Packaging · Papelería · Dirección de arte"
+              en="Strategy & concept · Brand systems · Editorial & books · Packaging · Stationery · Art direction"
             />
           </p>
         </div>
       </section>
 
+      {/* ---- UX/UI & producto ---- */}
+      <section class="disc" aria-label="Diseño UX/UI y producto">
+        <h2 class="disc-title rise"><T es="Diseño UX/UI & producto" en="UX/UI & product design" /></h2>
+        <div class="disc-body rise rise-delay-1">
+          <p class="disc-lead">
+            <T
+              es="Diseño y prototipo productos digitales de punta a punta. Formé parte del prototipado de la nueva web de un organismo público de alcance nacional, y de equipos de UX enfocados en mejorar el recorrido del usuario."
+              en="I design and prototype digital products end to end. I was part of the prototyping of the new website for a national public organization, and of UX teams focused on improving the user journey."
+            />
+          </p>
+          <p class="disc-lead">
+            <T
+              es="Arquitectura de información, flujos, wireframes y UX writing — con un objetivo claro: que el producto final funcione mejor para quien lo usa."
+              en="Information architecture, flows, wireframes and UX writing — with one clear goal: a final product that works better for the people who use it."
+            />
+          </p>
+          <p class="disc-tags mono">
+            <T
+              es="Research · Wireframes & prototipos · Flujos de usuario · UX writing · Figma & Adobe XD · Diseño responsivo"
+              en="Research · Wireframes & prototypes · User flows · UX writing · Figma & Adobe XD · Responsive design"
+            />
+          </p>
+        </div>
+      </section>
+
+      {/* ---- herramientas + enfoque ---- */}
       <section class="cols">
         <div class="col rise">
-          <h2 class="col-h mono cap"><T es="Qué hago" en="What I do" /></h2>
-          <ul class="list">
-            {capabilities.map((s) => (
-              <li><span data-es={s.es} data-en={s.en}>{s.es}</span></li>
-            ))}
-          </ul>
-        </div>
-        <div class="col rise rise-delay-1">
           <h2 class="col-h mono cap"><T es="Herramientas" en="Tools" /></h2>
           <div class="tools">
             {toolGroups.map((g) => (
@@ -124,7 +126,7 @@ const toolGroups = [
             ))}
           </div>
         </div>
-        <div class="col rise rise-delay-2">
+        <div class="col rise rise-delay-1">
           <h2 class="col-h mono cap"><T es="Enfoque" en="Approach" /></h2>
           <p class="approach">
             <T
@@ -162,61 +164,52 @@ const toolGroups = [
   }
   .bio p { max-width: 52ch; color: var(--ink-80); }
 
-  /* ---------- especialidad: motion (destacado) + marca/editorial ---------- */
-  .spec, .also {
+  /* ---------- bloques de disciplina (título izq · desarrollo der) ---------- */
+  .disc {
     display: grid;
     grid-template-columns: minmax(200px, 0.34fr) 1fr;
     gap: clamp(24px, 4vw, 72px);
     border-top: 1px solid var(--line);
     padding-top: clamp(28px, 4vh, 52px);
-    margin-bottom: var(--section);
+    margin-bottom: clamp(48px, 8vh, 110px);
   }
-  /* la segunda banda de tags es neutra: motion es el único destacado en naranja */
-  .spec-tags.neutral { color: var(--ink-45); }
-  .spec-kicker { color: var(--ink-45); display: block; margin-bottom: 14px; }
-  .spec-title {
+  .disc-title {
     font-family: var(--serif);
     font-weight: 400;
     font-size: clamp(1.7rem, 3.4vw, 2.9rem);
     line-height: 1.02;
     letter-spacing: -0.02em;
   }
-  .spec-lead {
+  .disc-lead {
     font-family: var(--serif);
     font-weight: 300;
     font-size: clamp(1.15rem, 1.7vw, 1.5rem);
     line-height: 1.4;
     letter-spacing: -0.01em;
     color: var(--ink);
-    max-width: 46ch;
+    max-width: 48ch;
   }
-  .spec-lead + .spec-lead { margin-top: clamp(14px, 2vh, 22px); color: var(--ink-80); }
-  .spec-tags {
+  .disc-lead + .disc-lead { margin-top: clamp(14px, 2vh, 22px); color: var(--ink-80); }
+  .disc-tags {
     margin-top: clamp(20px, 3vh, 30px);
-    color: var(--orange);
+    color: var(--ink-45);
     font-size: 11px;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     line-height: 2;
   }
+  .disc-tags.accent { color: var(--orange); } /* motion = único destacado */
 
-  /* ---------- columnas ---------- */
+  /* ---------- herramientas + enfoque ---------- */
   .cols {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: clamp(28px, 4vw, 64px);
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(28px, 5vw, 80px);
     border-top: 1px solid var(--line);
     padding-top: clamp(28px, 4vh, 48px);
   }
   .col-h { color: var(--ink-60); margin-bottom: 18px; }
-  .list { list-style: none; display: grid; gap: 9px; }
-  .list li {
-    font-family: var(--serif);
-    font-size: clamp(1.05rem, 1.3vw, 1.3rem);
-    padding-bottom: 9px;
-    border-bottom: 1px solid var(--ink-12);
-  }
-  .approach { color: var(--ink-80); line-height: 1.55; }
+  .approach { color: var(--ink-80); line-height: 1.55; max-width: 46ch; }
 
   .tools { display: grid; gap: 16px; }
   .tool-group { display: grid; gap: 5px; padding-bottom: 12px; border-bottom: 1px solid var(--ink-12); }
@@ -232,7 +225,7 @@ const toolGroups = [
   @media (max-width: 820px) {
     .estudio-grid { grid-template-columns: 1fr; }
     .portrait { max-width: 320px; }
-    .spec, .also { grid-template-columns: 1fr; gap: 16px; }
+    .disc { grid-template-columns: 1fr; gap: 16px; }
     .cols { grid-template-columns: 1fr; gap: 36px; }
   }
 </style>
