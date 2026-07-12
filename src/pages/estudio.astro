@@ -5,22 +5,22 @@ import T from '../components/T.astro';
 
 /* Qué hago (capacidades) — motion primero */
 const capabilities = [
-  { es: 'Motion & animación', en: 'Motion & animation' },
-  { es: 'Contenido audiovisual & e-learning', en: 'Audiovisual content & e-learning' },
   { es: 'Identidad de marca', en: 'Brand identity' },
+  { es: 'Motion & animación', en: 'Motion & animation' },
   { es: 'Dirección creativa', en: 'Creative direction' },
   { es: 'Diseño UX/UI & producto', en: 'UX/UI & product design' },
-  { es: 'Editorial & diseño de información', en: 'Editorial & information design' },
+  { es: 'Contenido audiovisual', en: 'Audiovisual content' },
+  { es: 'Editorial', en: 'Editorial' },
+  { es: 'Packaging', en: 'Packaging' },
   { es: 'Diseño web', en: 'Web design' },
-  { es: 'Realidad aumentada', en: 'Augmented reality' },
 ];
 
-/* Herramientas agrupadas (del CV, ampliadas) */
+/* Herramientas agrupadas (del CV, actualizadas) */
 const toolGroups = [
-  { label: { es: 'Motion & Video', en: 'Motion & Video' }, items: ['After Effects', 'Premiere', 'Animate', 'CapCut', 'Audition'] },
+  { label: { es: 'Motion & Video', en: 'Motion & Video' }, items: ['After Effects', 'Premiere', 'Animate', 'Audition'] },
   { label: { es: 'Diseño', en: 'Design' }, items: ['Illustrator', 'Photoshop', 'InDesign', 'Lightroom'] },
-  { label: { es: 'UX/UI & Web', en: 'UX/UI & Web' }, items: ['Figma', 'Adobe XD', 'Spark AR'] },
-  { label: { es: 'IA', en: 'AI' }, items: ['Midjourney', 'Runway', 'ChatGPT', 'DALL·E'] },
+  { label: { es: 'UX/UI & Web', en: 'UX/UI & Web' }, items: ['Figma', 'Adobe XD'] },
+  { label: { es: 'IA', en: 'AI' }, items: ['ChatGPT', 'Claude', 'Gemini'], note: { es: '+ me adapto a las nuevas que van saliendo', en: '+ I adopt whatever new tools appear' } },
 ];
 ---
 
@@ -63,14 +63,14 @@ const toolGroups = [
           </p>
           <p class="spec-lead">
             <T
-              es="Con un foco fuerte en contenido para e-learning y capacitación: traduzco información compleja —protocolos, manuales, procesos— en piezas visuales claras, didácticas y en movimiento."
-              en="With a strong focus on e-learning and training content: I turn complex information — protocols, manuals, processes — into clear, didactic pieces that move."
+              es="Cada identidad que diseño nace pensada para moverse: animaciones, piezas para redes e intros que le dan ritmo y presencia a la marca en pantalla."
+              en="Every identity I design is born to move: animations, social pieces and intros that give a brand rhythm and presence on screen."
             />
           </p>
           <p class="spec-tags mono">
             <T
-              es="Animación de logos · Motion graphics · Edición & postproducción · Plantillas reutilizables · Contenido para e-learning · Diseño de información"
-              en="Logo animation · Motion graphics · Editing & post · Reusable templates · E-learning content · Information design"
+              es="Animación de logos · Motion graphics · Edición & postproducción · Plantillas reutilizables · Contenido para redes · Intros & videos"
+              en="Logo animation · Motion graphics · Editing & post · Reusable templates · Social content · Intros & video"
             />
           </p>
         </div>
@@ -90,14 +90,14 @@ const toolGroups = [
           </p>
           <p class="spec-lead">
             <T
-              es="En editorial participé en el diseño del libro «¿Sabés quién fue?». Sumo también dirección de arte para campañas y realidad aumentada para redes — siempre buscando que la información se entienda y la marca se sostenga."
-              en="In editorial, I took part in the design of the book «¿Sabés quién fue?». I also do art direction for campaigns and augmented reality for social — always making the information clear and the brand hold together."
+              es="En editorial participé en el diseño del libro «¿Sabés quién fue?». Sumo también dirección de arte para campañas y key visuals — siempre buscando que la información se entienda y la marca se sostenga."
+              en="In editorial, I took part in the design of the book «¿Sabés quién fue?». I also do art direction for campaigns and key visuals — always making the information clear and the brand hold together."
             />
           </p>
           <p class="spec-tags mono neutral">
             <T
-              es="Identidad & sistemas de marca · Editorial & libros · Packaging · UX/UI & prototipado · Contenido & redes · Realidad aumentada"
-              en="Identity & brand systems · Editorial & books · Packaging · UX/UI & prototyping · Content & social · Augmented reality"
+              es="Identidad & sistemas de marca · Editorial & libros · Packaging · UX/UI & prototipado · Contenido & redes · Dirección de arte"
+              en="Identity & brand systems · Editorial & books · Packaging · UX/UI & prototyping · Content & social · Art direction"
             />
           </p>
         </div>
@@ -119,6 +119,7 @@ const toolGroups = [
               <div class="tool-group">
                 <span class="tool-label mono"><span data-es={g.label.es} data-en={g.label.en}>{g.label.es}</span></span>
                 <span class="tool-items">{g.items.join(' · ')}</span>
+                {g.note && <span class="tool-note mono"><span data-es={g.note.es} data-en={g.note.en}>{g.note.es}</span></span>}
               </div>
             ))}
           </div>
@@ -226,6 +227,7 @@ const toolGroups = [
     line-height: 1.35;
     color: var(--ink);
   }
+  .tool-note { display: block; margin-top: 5px; color: var(--ink-45); font-size: 11px !important; letter-spacing: 0.02em; }
 
   @media (max-width: 820px) {
     .estudio-grid { grid-template-columns: 1fr; }
