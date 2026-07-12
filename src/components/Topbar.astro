@@ -39,8 +39,8 @@ import LogoEve from './LogoEve.astro';
   .wordmark { color: #fff; /* difference -> legible sobre cualquier fondo */ }
   .wordmark span { display: block; }
   .wordmark :global(svg) { display: block; height: 15px; width: auto; }
-  /* en el home con fx, el wordmark aparece recién cuando el nombre grande "llega" */
-  :global(html.home-fx) .wordmark span[data-name-target] { opacity: 0; }
+  /* en el home con morph, el wordmark aparece recién cuando el nombre grande "llega" */
+  :global(html.morph-on) .wordmark span[data-name-target] { opacity: 0; }
 
   .topbar-right {
     display: flex;

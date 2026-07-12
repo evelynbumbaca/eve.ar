@@ -13,6 +13,8 @@ import SiteFooter from '../components/SiteFooter.astro';
     try {
       var _f = matchMedia('(hover:hover) and (pointer:fine)').matches;
       var _r = matchMedia('(prefers-reduced-motion:reduce)').matches;
+      // morph del nombre = cualquier puntero (es scroll); glow+estiramiento = puntero fino
+      if (!_r) document.documentElement.classList.add('morph-on');
       if (_f && !_r) document.documentElement.classList.add('home-fx');
     } catch (e) {}
   </script>
@@ -29,7 +31,7 @@ import SiteFooter from '../components/SiteFooter.astro';
 <script>
   const reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
   const fine = matchMedia('(hover:hover) and (pointer:fine)').matches;
-  const enhance = fine && !reduce;
+  const morph = !reduce;            // el morph corre también en táctil (es scroll)
   const html = document.documentElement;
 
   const banner = document.querySelector('[data-banner]') as HTMLElement | null;
@@ -37,10 +39,12 @@ import SiteFooter from '../components/SiteFooter.astro';
   const slot = document.querySelector('.bn-name-slot') as HTMLElement | null;
   const target = document.querySelector('[data-name-target]') as HTMLElement | null;
 
-  if (!enhance || !banner || !fly || !slot || !target) {
+  if (!morph || !banner || !fly || !slot || !target) {
+    html.classList.remove('morph-on');
     html.classList.remove('home-fx');
   } else {
-    html.classList.add('home-fx');
+    html.classList.add('morph-on');
+    html.classList.toggle('home-fx', fine); // estiramiento/glow: solo puntero fino
 
     const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
 
@@ -92,19 +96,21 @@ import SiteFooter from '../components/SiteFooter.astro';
     function frame() {
       applyMorph();
 
-      // estiramiento de letras (solo con el nombre en reposo, no durante el morph)
+      // estiramiento de letras: SOLO puntero fino, con el nombre en reposo
       let lettersMoving = false;
-      const active = lastE < 0.12 && lcx.length === letters.length;
-      letters.forEach((l, i) => {
-        let target = 1;
-        if (active) {
-          const d = Math.hypot(mx - lcx[i], my - lcy[i]);
-          target = 1 + 0.12 * smooth(1 - d / 300);
-        }
-        lsx[i] += (target - lsx[i]) * 0.16;
-        if (Math.abs(target - lsx[i]) > 0.002) lettersMoving = true;
-        l.style.transform = `scaleX(${lsx[i].toFixed(4)})`;
-      });
+      if (fine) {
+        const active = lastE < 0.12 && lcx.length === letters.length;
+        letters.forEach((l, i) => {
+          let target = 1;
+          if (active) {
+            const d = Math.hypot(mx - lcx[i], my - lcy[i]);
+            target = 1 + 0.12 * smooth(1 - d / 300);
+          }
+          lsx[i] += (target - lsx[i]) * 0.16;
+          if (Math.abs(target - lsx[i]) > 0.002) lettersMoving = true;
+          l.style.transform = `scaleX(${lsx[i].toFixed(4)})`;
+        });
+      }
 
       const moving = scrollDirty || lettersMoving;
       scrollDirty = false;
@@ -113,7 +119,7 @@ import SiteFooter from '../components/SiteFooter.astro';
     }
     function kick() { if (!running) { running = true; raf = requestAnimationFrame(frame); } }
 
-    addEventListener('pointermove', (e) => { mx = e.clientX; my = e.clientY; kick(); }, { passive: true });
+    if (fine) addEventListener('pointermove', (e) => { mx = e.clientX; my = e.clientY; kick(); }, { passive: true });
     addEventListener('scroll', () => { scrollDirty = true; kick(); }, { passive: true });
     let rt = 0;
     addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { measure(); scrollDirty = true; kick(); }, 150); }, { passive: true });

@@ -89,6 +89,20 @@ const ogImage = new URL(link('/og.png'), Astro.site).href;
         /* ---------- menu overlay ---------- */
         const closeMenu = () => document.body.classList.remove('menu-open');
 
+        /* Ancla al CONTENIDO de la sección (salta el padding superior) con una
+           holgura fija bajo el menú -> todas las secciones aterrizan igual,
+           centradas y sin cortes, sin importar cuánto padding tenga cada una. */
+        function scrollToHash(hash, smooth) {
+          var el;
+          try { el = document.querySelector(hash); } catch (e) { return; }
+          if (!el) return;
+          var cs = getComputedStyle(el);
+          var padTop = parseFloat(cs.paddingTop) || 0;
+          var clear = Math.max(58, Math.min(84, innerHeight * 0.09)); // holgura bajo el menú
+          var y = el.getBoundingClientRect().top + window.scrollY + Math.min(padTop, padTop * 0.7) - clear;
+          window.scrollTo({ top: Math.max(0, Math.round(y)), behavior: smooth ? 'smooth' : 'auto' });
+        }
+
         document.addEventListener('click', (e) => {
           if (e.target.closest('[data-lang-btn]')) {
             window.__eveSetLang(lang === 'es' ? 'en' : 'es');
@@ -101,22 +115,22 @@ const ogImage = new URL(link('/og.png'), Astro.site).href;
           var navA = e.target.closest('.overlay nav a');
           if (navA) {
             closeMenu();
-            // ancla en la misma página: scroll manual (el clic repetido con el
-            // hash ya presente en la URL no dispara navegación sola)
             try {
               var u = new URL(navA.href, location.href);
               if (u.pathname === location.pathname && u.hash) {
                 e.preventDefault();
-                var el = document.querySelector(u.hash);
-                if (el) {
-                  var smooth = !matchMedia('(prefers-reduced-motion: reduce)').matches;
-                  el.scrollIntoView({ behavior: smooth ? 'smooth' : 'auto', block: 'start' });
-                  history.pushState(null, '', u.hash);
-                }
+                var smooth = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+                scrollToHash(u.hash, smooth);
+                history.pushState(null, '', u.hash);
               }
             } catch (err) {}
           }
         });
+
+        // llegar con un #hash en la URL: re-anclar con el mismo criterio
+        if (location.hash && location.hash.length > 1) {
+          addEventListener('load', () => { setTimeout(() => scrollToHash(location.hash, false), 60); }, { once: true });
+        }
         document.addEventListener('keydown', (e) => {
           if (e.key === 'Escape') closeMenu();
         });

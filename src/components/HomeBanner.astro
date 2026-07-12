@@ -117,9 +117,10 @@ const works = projects.slice(0, 6);
     transform-box: fill-box;
     transform-origin: 50% 62%;
   }
-  :global(html.home-fx) .bn-name-slot { visibility: hidden; }
-  :global(html:not(.home-fx)) .bn-name-fly { display: none; }
-  :global(html.home-fx) .bn-name-fly {
+  /* el morph (nombre grande -> menú) corre en desktop Y en táctil */
+  :global(html.morph-on) .bn-name-slot { visibility: hidden; }
+  :global(html:not(.morph-on)) .bn-name-fly { display: none; }
+  :global(html.morph-on) .bn-name-fly {
     position: fixed;
     left: 0; top: 0;
     transform-origin: left top;
