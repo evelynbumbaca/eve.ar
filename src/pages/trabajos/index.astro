@@ -66,10 +66,8 @@ import { projects, filters } from '../../data/site';
   }
 
   @media (max-width: 680px) {
-    .grid { grid-template-columns: repeat(2, 1fr); }
-  }
-  @media (max-width: 420px) {
-    .grid { grid-template-columns: 1fr 1fr; gap: 18px 12px; }
+    /* celu: una columna, piezas grandes (coherente con el home) */
+    .grid { grid-template-columns: 1fr; gap: 32px; }
   }
 </style>
 

@@ -151,6 +151,7 @@ const wa = (p: { fullName: string }) => `${site.whatsapp}?text=${encodeURICompon
           <details class="pk-full">
             <summary class="mono"><T es="Ver alcance completo" en="See full scope" /> <span aria-hidden="true">+</span></summary>
             <div class="pk-sheet">
+              <button class="pk-close" type="button" aria-label="Cerrar · Close" data-sheet-close>✕</button>
               <p class="pk-sheet-t mono cap"><T es="Alcance completo" en="Full scope" /></p>
               <ul>
                 {p.full.map((it) => (
@@ -276,7 +277,24 @@ const wa = (p: { fullName: string }) => `${site.whatsapp}?text=${encodeURICompon
     letter-spacing: -0.01em;
   }
   .pp-sep { color: var(--ink-35); }
-  .pp-usd { color: var(--ink-60); font-size: clamp(11px, 1vw, 13px); }
+  .pp-usd { font-family: var(--mono); color: var(--ink-60); font-size: clamp(11px, 1vw, 13px); letter-spacing: 0.06em; }
+
+  /* en inglés, el protagonista es el USD y el ARS pasa a secundario */
+  :global(html[lang='en']) .pp-ars {
+    order: 3;
+    font-family: var(--mono);
+    font-size: clamp(11px, 1vw, 13px);
+    letter-spacing: 0.06em;
+    color: var(--ink-60);
+  }
+  :global(html[lang='en']) .pp-sep { order: 2; }
+  :global(html[lang='en']) .pp-usd {
+    order: 1;
+    font-family: var(--serif);
+    font-size: clamp(1.3rem, 1.9vw, 1.7rem);
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
   .pk-items { list-style: none; margin-bottom: clamp(16px, 2.5vh, 24px); }
   .pk-items li {
     font-family: var(--sans);
@@ -292,6 +310,7 @@ const wa = (p: { fullName: string }) => `${site.whatsapp}?text=${encodeURICompon
   .pk-full summary {
     cursor: pointer;
     list-style: none;
+    width: max-content; /* el área sensible es SOLO el texto, no toda la fila */
     color: var(--ink-60);
     font-size: 11px;
     letter-spacing: 0.08em;
@@ -302,6 +321,7 @@ const wa = (p: { fullName: string }) => `${site.whatsapp}?text=${encodeURICompon
   .pk-full summary:hover { color: var(--ink); }
   .pk-full[open] summary span[aria-hidden] { display: inline-block; transform: rotate(45deg); }
   .pk-sheet-t { display: none; }
+  .pk-close { display: none; } /* solo existe en la ventana de desktop */
   .pk-full ul { list-style: none; margin-top: 10px; }
   .pk-full li {
     font-family: var(--sans);
@@ -343,6 +363,22 @@ const wa = (p: { fullName: string }) => `${site.whatsapp}?text=${encodeURICompon
       letter-spacing: 0.12em;
       margin-bottom: 6px;
     }
+    /* cierre manual */
+    .pk-close {
+      display: flex;
+      position: absolute;
+      top: 12px; right: 12px;
+      width: 30px; height: 30px;
+      align-items: center; justify-content: center;
+      border: 1px solid color-mix(in srgb, var(--paper) 35%, transparent);
+      border-radius: 50%;
+      color: var(--paper);
+      font-size: 12px;
+      line-height: 1;
+      z-index: 7;
+      transition: background var(--dur-micro) var(--ease-quint), color var(--dur-micro) var(--ease-quint);
+    }
+    .pk-close:hover { background: var(--paper); color: var(--ink); }
     .pk-full li { color: color-mix(in srgb, var(--paper) 88%, transparent); border-top-color: color-mix(in srgb, var(--paper) 16%, transparent); }
     .pk-full li::before { color: color-mix(in srgb, var(--paper) 45%, transparent); }
     @media (prefers-reduced-motion: reduce) { .pk-sheet { transition: opacity 0.2s ease; transform: none; } }
@@ -431,18 +467,26 @@ const wa = (p: { fullName: string }) => `${site.whatsapp}?text=${encodeURICompon
     document.querySelectorAll<HTMLDetailsElement>('.pk-full').forEach((d) => {
       let t = 0;
       const card = d.closest('.pack') || d;
-      // sube al pasar por "Ver alcance completo"
-      d.addEventListener('mouseenter', () => {
+      const summary = d.querySelector('summary');
+      const closeBtn = d.querySelector('[data-sheet-close]');
+
+      const up = () => {
         clearTimeout(t);
         d.open = true; // contenido en el DOM (accesible) antes de animar
         requestAnimationFrame(() => d.classList.add('show'));
-      });
-      // baja recién al sacar el mouse de la TARJETA
-      card.addEventListener('mouseleave', () => {
+      };
+      const down = () => {
         d.classList.remove('show');
         clearTimeout(t);
         t = window.setTimeout(() => { d.open = false; }, 360);
-      });
+      };
+
+      // sube SOLO al pasar por el texto "Ver alcance completo"
+      summary?.addEventListener('mouseenter', up);
+      // baja al sacar el mouse de la TARJETA…
+      card.addEventListener('mouseleave', down);
+      // …o manualmente con la ✕
+      closeBtn?.addEventListener('click', (e) => { e.preventDefault(); down(); });
     });
   }
 </script>

@@ -105,6 +105,8 @@ const works = projects.slice(0, 6);
     height: clamp(58px, 10.5vw, 152px);
     width: auto;
     color: var(--ink);
+    /* las letras estiradas pueden salir de la caja del svg sin cortarse */
+    overflow: visible;
   }
   .bn-name-slot { display: block; margin: 0; }
 
@@ -258,7 +260,11 @@ const works = projects.slice(0, 6);
   /* ---------- responsive / táctil ---------- */
   @media (max-width: 860px) {
     .bn-head { grid-template-columns: 1fr; gap: clamp(20px, 5vw, 36px); }
-    .bn-grid { grid-template-columns: repeat(2, 1fr); }
+    /* celu: una columna, las piezas grandes y protagonistas */
+    .bn-grid { grid-template-columns: 1fr; gap: 14px; }
+    /* y una sola línea bajo la grilla: solo "Ver todos los trabajos" */
+    .bn-sw { display: none; }
+    .bn-below { justify-content: flex-start; }
   }
   @media (hover: none) {
     .bn-glow { display: none; }
