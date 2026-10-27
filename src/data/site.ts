@@ -24,6 +24,8 @@ export interface Project {
   title: string;
   disc: Bilingual;
   ratio: string;
+  /* imagen de portada real (ruta en /public, sin barra inicial). Si falta, va placeholder */
+  hero?: string;
 }
 
 /* ---------- identidad ---------- */
@@ -71,7 +73,7 @@ export const filters: { key: string; label: Bilingual }[] = [
 /* ---------- proyectos (placeholders por ahora) ---------- */
 export const projects: Project[] = [
   { id: 'mercado-norte', cat: 'branding', year: '2025', title: 'Mercado Norte', disc: { es: 'Identidad de Marca', en: 'Brand Identity' }, ratio: '4 / 5' },
-  { id: 'lumen', cat: 'uxui', year: '2025', title: 'Lumen App', disc: { es: 'Diseño UX/UI', en: 'UX/UI Design' }, ratio: '4 / 5' },
+  { id: 'lookap', cat: 'uxui', year: '2025', title: 'Lookap', disc: { es: 'Diseño UX/UI · App', en: 'UX/UI Design · App' }, ratio: '4 / 5', hero: 'projects/lookap/hero.jpg' },
   { id: 'marcas-en-movimiento', cat: 'motion', year: '2025', title: 'Marcas en Movimiento', disc: { es: 'Motion · Animación de logos', en: 'Motion · Logo animation' }, ratio: '4 / 5' },
   { id: 'revista-sur', cat: 'editorial', year: '2024', title: 'Revista Sur', disc: { es: 'Editorial', en: 'Editorial' }, ratio: '4 / 5' },
   { id: 'cafe-tostado', cat: 'packaging', year: '2024', title: 'Café Tostado', disc: { es: 'Packaging', en: 'Packaging' }, ratio: '4 / 5' },
