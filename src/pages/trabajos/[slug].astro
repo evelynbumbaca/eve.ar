@@ -17,12 +17,16 @@ const { project: P, next: NEXT } = Astro.props;
 
 <Base title={`${P.title} — EVE`} description={`${P.title} — caso de estudio. ${P.disc.es}.`}>
   <article class="case">
-    <h1 class="visually-hidden">{P.title} — {P.disc.es} · {P.year}</h1>
-
-    {/* la obra primero: impacto visual; los datos viven en la ficha de abajo */}
-    <div class="c-open wrap">
-      <div class="c-hero-img reveal"><span class="ph revfill" data-label={`${P.title} — hero`}></span></div>
-    </div>
+    {/* HERO a sangre: la obra a todos los bordes, el título encima */}
+    <header class="c-hero">
+      <div class="c-hero-media"><span class="ph" data-label={`${P.title} — portada`}></span></div>
+      <div class="c-hero-scrim" aria-hidden="true"></div>
+      <div class="c-hero-cap wrap">
+        <p class="c-hero-kick mono"><span data-es={P.disc.es} data-en={P.disc.en}>{P.disc.es}</span> · {P.year}</p>
+        <h1 class="c-hero-title">{P.title}</h1>
+      </div>
+      <span class="c-hero-scroll" aria-hidden="true"></span>
+    </header>
 
     <div class="wrap">
       <dl class="c-meta">
@@ -82,16 +86,64 @@ const { project: P, next: NEXT } = Astro.props;
 <style>
   .case { padding-bottom: clamp(40px, 8vh, 96px); }
 
-  /* apertura: la pieza entra apenas debajo del menú */
-  .c-open { padding-top: clamp(96px, 13vh, 150px); }
-  .c-hero-img { width: 100%; aspect-ratio: 16 / 9; border-radius: 3px; }
-  .c-hero-img .ph { width: 100%; height: 100%; }
+  /* ---------- HERO a sangre (imagen a todos los bordes + título encima) ---------- */
+  .c-hero {
+    position: relative;
+    width: 100%;
+    height: clamp(560px, 92vh, 920px);
+    overflow: hidden;
+    background: var(--ink);
+    isolation: isolate;
+  }
+  .c-hero-media { position: absolute; inset: 0; z-index: 0; }
+  .c-hero-media .ph {
+    width: 100%; height: 100%;
+    /* placeholder editorial oscuro (demo). Con imagen real: <img> object-fit:cover */
+    background: radial-gradient(135% 110% at 28% 16%, #3d342c 0%, #231d19 52%, #14100d 100%);
+    box-shadow: none;
+  }
+  .c-hero-media .ph::after { color: rgba(255, 255, 255, 0.26); }
+
+  .c-hero-scrim {
+    position: absolute; inset: 0; z-index: 1;
+    background: linear-gradient(to top,
+      rgba(12, 11, 9, 0.66) 0%,
+      rgba(12, 11, 9, 0.20) 38%,
+      rgba(12, 11, 9, 0.04) 68%,
+      rgba(12, 11, 9, 0.10) 100%);
+  }
+
+  .c-hero-cap { position: absolute; left: 0; right: 0; bottom: clamp(34px, 6.5vh, 78px); z-index: 2; }
+  .c-hero-kick { color: rgba(255, 255, 255, 0.80); margin-bottom: clamp(12px, 1.8vh, 20px); }
+  .c-hero-title {
+    font-family: var(--serif); font-weight: 400;
+    font-size: clamp(2.6rem, 8.5vw, 7.2rem);
+    line-height: 0.96; letter-spacing: -0.02em;
+    color: #fff; text-wrap: balance; max-width: 15ch;
+  }
+
+  /* indicador de scroll (línea fina que respira) */
+  .c-hero-scroll {
+    position: absolute; z-index: 2; right: var(--pad); bottom: clamp(34px, 6.5vh, 78px);
+    width: 1px; height: clamp(36px, 6vh, 60px);
+    background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.75));
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .c-hero-media .ph { animation: heroZoom 1.5s var(--ease-out) both; transform-origin: 30% 20%; }
+    @keyframes heroZoom { from { transform: scale(1.09); } to { transform: scale(1); } }
+    .c-hero-kick { animation: heroRise 0.9s var(--ease-out) 0.15s both; }
+    .c-hero-title { animation: heroRise 1s var(--ease-out) 0.28s both; }
+    @keyframes heroRise { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: none; } }
+    .c-hero-scroll { animation: heroScroll 2.2s var(--ease) 0.8s infinite; transform-origin: top; }
+    @keyframes heroScroll { 0%, 100% { transform: scaleY(0.4); opacity: 0.4; } 50% { transform: scaleY(1); opacity: 1; } }
+  }
 
   .c-meta {
     display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;
     padding: clamp(22px, 3vh, 34px) 0;
     border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
-    margin-top: clamp(40px, 7vh, 80px);
+    margin-top: clamp(56px, 9vh, 112px);
   }
   .c-meta dt { font-family: var(--sans); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-60); margin-bottom: 7px; }
   .c-meta dd { font-family: var(--serif); font-size: clamp(15px, 1.3vw, 18px); line-height: 1.3; }
