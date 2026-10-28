@@ -90,8 +90,20 @@ export const lookap: CaseContent = {
     {
       t: 'stats',
       items: [
-        { n: '90%', es: 'agrupó “Conectar con otros usuarios” con “Encuestas en historias”.', en: 'grouped “Connect with other users” with “Polls in stories”.' },
-        { n: '80%', es: 'agrupó “Hacer combinaciones” con “Combinaciones guardadas”.', en: 'grouped “Make combinations” with “Saved combinations”.' },
+        {
+          n: '90%',
+          a: { es: 'Conectar con otros usuarios', en: 'Connect with other users' },
+          b: { es: 'Encuestas en historias', en: 'Polls in stories' },
+          es: 'de las personas agrupó estas dos funciones.',
+          en: 'of people grouped these two features together.',
+        },
+        {
+          n: '80%',
+          a: { es: 'Hacer combinaciones', en: 'Make combinations' },
+          b: { es: 'Combinaciones guardadas', en: 'Saved combinations' },
+          es: 'de las personas agrupó estas dos funciones.',
+          en: 'of people grouped these two features together.',
+        },
       ],
     },
 
@@ -101,38 +113,75 @@ export const lookap: CaseContent = {
       t: 'sitemap',
       es: 'Arquitectura de la información',
       en: 'Information architecture',
-      root: 'Lookap',
-      rootNote: { es: 'Siete secciones', en: 'Seven sections' },
-      icon: `${P}/icono-lookap.png`,
+      root: 'LOOKAP',
       branches: [
         { title: { es: 'Buscar', en: 'Search' }, kids: [{ es: 'Buscar prendas', en: 'Search garments' }, { es: 'Filtros', en: 'Filters' }] },
         { title: { es: 'Home', en: 'Home' }, kids: [{ es: 'Favoritos', en: 'Favorites' }, { es: 'Looks favoritos', en: 'Favorite looks' }, { es: 'Prendas favoritas', en: 'Favorite garments' }] },
-        { title: { es: 'Ropero', en: 'Closet' }, kids: [{ es: 'Organizar ropa', en: 'Organize clothes' }, { es: 'Looks', en: 'Looks' }, { es: 'Hacer combinaciones', en: 'Make combinations' }, { es: 'Combinaciones guardadas', en: 'Saved combinations' }] },
+        {
+          title: { es: 'Ropero', en: 'Closet' },
+          kids: [
+            { es: 'Organizar ropa', en: 'Organize clothes' },
+            { es: 'Looks', en: 'Looks' },
+            {
+              es: 'Combinaciones',
+              en: 'Combinations',
+              kids: [
+                {
+                  es: 'Hacer combinaciones',
+                  en: 'Make combinations',
+                  kids: [
+                    { es: 'Compartir en historias', en: 'Share in stories' },
+                    { es: 'Compartir con amigos', en: 'Share with friends' },
+                    { es: 'Compartir en otras redes', en: 'Share on other networks' },
+                  ],
+                },
+                { es: 'Combinaciones guardadas', en: 'Saved combinations' },
+              ],
+            },
+          ],
+        },
         { title: { es: 'Cámara', en: 'Camera' }, kids: [{ es: 'Guardar prenda en el ropero', en: 'Save garment to closet' }] },
-        { title: { es: 'Social', en: 'Social' }, kids: [{ es: 'Feed de amigos', en: 'Friends feed' }, { es: 'Encuestas en historias', en: 'Polls in stories' }, { es: 'Perfil', en: 'Profile' }] },
-        { title: { es: 'Compras', en: 'Shop' }, kids: [{ es: 'Carrito', en: 'Cart' }, { es: 'Códigos de descuento', en: 'Discount codes' }] },
+        {
+          title: { es: 'Social', en: 'Social' },
+          kids: [
+            { es: 'Feed de amigos', en: 'Friends feed' },
+            { es: 'Encuestas en historias', en: 'Polls in stories' },
+            { es: 'Perfil', en: 'Profile', kids: [{ es: 'Configuración', en: 'Settings' }] },
+          ],
+        },
+        { title: { es: 'Compras', en: 'Shop' }, kids: [{ es: 'Carrito de compras', en: 'Shopping cart' }, { es: 'Códigos de descuento', en: 'Discount codes' }] },
         { title: { es: 'Notificaciones', en: 'Notifications' }, kids: [] },
       ],
     },
     {
+      t: 'p',
+      es: 'Después, tracé el camino de Belén. Es asesora de imagen y quiere compartir un look con una clienta; tiene poco tiempo, así que el recorrido tiene que ser corto y claro.',
+      en: 'Then I mapped Belén’s path. She is an image consultant and wants to share a look with a client; she has little time, so the journey has to be short and clear.',
+    },
+    {
       t: 'steps',
-      es: 'Task flow: Belén comparte un look con una clienta',
-      en: 'Task flow: Belén shares a look with a client',
+      es: 'Task flow de Belén',
+      en: 'Belén’s task flow',
       items: [
         { es: 'Ingresa a la app', en: 'Opens the app' },
         { es: 'Entra al ropero', en: 'Goes to the closet' },
         { es: 'Abre combinaciones', en: 'Opens combinations' },
         { es: 'Arma el look', en: 'Builds the look' },
-        { es: 'Lo comparte', en: 'Shares it' },
+        { es: 'Lo comparte con su clienta', en: 'Shares it with her client' },
       ],
     },
 
     /* ---------- 03 · Prototipo y pruebas ---------- */
     { t: 'h', n: '03', es: 'Prototipo y pruebas', en: 'Prototype and testing' },
     {
+      t: 'p',
+      es: 'Fui subiendo la fidelidad de a poco. Esta es la pantalla de ingreso en cada etapa, del boceto en papel al prototipo con la identidad aplicada.',
+      en: 'I raised the fidelity step by step. This is the login screen at each stage, from the paper sketch to the prototype with the identity applied.',
+    },
+    {
       t: 'fidelity',
-      es: 'Cuatro niveles de fidelidad',
-      en: 'Four levels of fidelity',
+      es: 'Cuatro niveles de fidelidad · pantalla de ingreso',
+      en: 'Four levels of fidelity · login screen',
       logo: `${P}/logo-lookap.png`,
       items: [
         { kind: 'sketch', title: { es: 'Papel', en: 'Paper' }, text: { es: 'Bocetos a mano de las pantallas clave.', en: 'Hand sketches of the key screens.' } },
@@ -164,19 +213,20 @@ export const lookap: CaseContent = {
       ],
     },
     {
-      t: 'cols',
-      items: [
-        {
-          title: { es: 'Lo que encontré', en: 'What I found' },
-          es: 'Compartir el look fue lo más difícil: el 80% lo calificó “más o menos”. Lo demás resultó fácil.',
-          en: 'Sharing the look was the hardest: 80% rated it “so-so”. Everything else was easy.',
-        },
-        {
-          title: { es: 'Lo que cambié', en: 'What I changed' },
-          es: 'Sacar la foto, la función principal, pasó al centro de la tab bar. Y sumé el ícono de compartir en cada sección del ropero, los chats, las encuestas y el perfil.',
-          en: 'Taking the photo, the main function, moved to the center of the tab bar. And I added a share icon to every closet section, chats, polls and the profile.',
-        },
-      ],
+      t: 'finding',
+      found: {
+        title: { es: 'Lo que encontré', en: 'What I found' },
+        n: '80%',
+        es: 'calificó “más o menos” compartir el look con amigos. Sacar la foto, combinar y entrar al perfil resultaron fáciles.',
+        en: 'rated sharing the look with friends “so-so”. Taking the photo, combining and opening the profile were easy.',
+      },
+      changed: {
+        title: { es: 'Lo que cambié', en: 'What I changed' },
+        items: [
+          { from: { es: 'Sacar la foto', en: 'Taking the photo' }, to: { es: 'pasó al centro de la tab bar, por ser la función principal.', en: 'moved to the center of the tab bar, as the main function.' } },
+          { from: { es: 'Compartir', en: 'Sharing' }, to: { es: 'sumó su ícono en cada sección del ropero, los chats, las encuestas y el perfil.', en: 'got its icon in every closet section, the chats, the polls and the profile.' } },
+        ],
+      },
     },
 
     /* ---------- 04 · Identidad ---------- */

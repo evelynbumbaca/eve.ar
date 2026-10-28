@@ -1,0 +1,27 @@
+---
+/* Árbol recursivo del mapa de arquitectura (casos). Los estilos son globales porque el
+   componente se anida a sí mismo y se usa desde la página del caso. */
+import type { TreeNode } from '../data/cases/types';
+import CaseTree from './CaseTree.astro';
+
+interface Props { nodes: TreeNode[] }
+const { nodes } = Astro.props;
+---
+<ul class="lk-tl">
+  {nodes.map((n) => (
+    <li>
+      <div class="lk-nd"><span data-es={n.es} data-en={n.en}>{n.es}</span></div>
+      {n.kids && n.kids.length > 0 && <CaseTree nodes={n.kids} />}
+    </li>
+  ))}
+</ul>
+
+<style is:global>
+  .lk-tl { list-style: none; margin: 12px 0 0 14px; padding: 0 0 0 14px; border-left: 1px solid rgba(206, 108, 63, 0.55); display: grid; gap: 10px; }
+  .lk-tl .lk-tl { margin-top: 10px; margin-left: 8px; }
+  .lk-tl li { position: relative; }
+  .lk-tl li::before { content: ''; position: absolute; left: -14px; top: 20px; width: 12px; height: 1px; background: rgba(206, 108, 63, 0.55); }
+  .lk-nd { background: #fff; border: 1px solid rgba(22, 21, 15, 0.14); border-radius: 12px; padding: 9px 11px; font-family: var(--sans); font-size: 14px; line-height: 1.3; color: var(--lk-night, #1f0a0e); }
+  .lk-tl .lk-tl .lk-nd { background: var(--lk-cream, #fff9ed); }
+  .lk-nd.head { background: var(--lk-wine, #a92f3c); border-color: var(--lk-wine, #a92f3c); color: var(--lk-cream, #fff9ed); text-align: center; font-weight: 500; font-size: 15px; padding: 11px 8px; }
+</style>

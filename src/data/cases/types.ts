@@ -1,5 +1,7 @@
 import type { Bilingual } from '../site';
 
+export interface TreeNode { es: string; en: string; kids?: TreeNode[] }
+
 export type Block =
   | { t: 'h'; n: string; es: string; en: string }
   | { t: 'p'; es: string; en: string }
@@ -7,14 +9,15 @@ export type Block =
   | { t: 'os'; items: { label: Bilingual; es: string; en: string }[] }
   | { t: 'list'; title: Bilingual; items: Bilingual[] }
   | { t: 'cols'; items: { title: Bilingual; es: string; en: string }[] }
-  | { t: 'stats'; items: { n: string; es: string; en: string }[] }
+  | { t: 'stats'; items: { n: string; a: Bilingual; b: Bilingual; es: string; en: string }[] }
+  | { t: 'finding'; found: { title: Bilingual; n: string; es: string; en: string }; changed: { title: Bilingual; items: { from: Bilingual; to: Bilingual }[] } }
   | { t: 'fig'; src: string; es: string; en: string; w?: 'wide' | 'narrow' }
   | { t: 'video'; src: string; es: string; en: string }
   | { t: 'gallery'; es: string; en: string; items: { src: string; alt: string }[] }
   | { t: 'split'; src: string; alt: string; es: string; en: string }
   | { t: 'break'; kind: 'img' | 'video'; src: string; alt: string; w?: 'wide' | 'narrow' }
   | { t: 'compare'; es: string; en: string; rows: Bilingual[]; items: { name: string; vals: Bilingual[] }[] }
-  | { t: 'sitemap'; es: string; en: string; root: string; rootNote: Bilingual; icon: string; branches: { title: Bilingual; kids: Bilingual[] }[] }
+  | { t: 'sitemap'; es: string; en: string; root: string; branches: { title: Bilingual; kids: TreeNode[] }[] }
   | { t: 'steps'; es: string; en: string; items: Bilingual[] }
   | { t: 'fidelity'; es: string; en: string; logo: string; items: { kind: 'sketch' | 'wire' | 'mid' | 'hi'; title: Bilingual; text: Bilingual }[] }
   | { t: 'bars'; es: string; en: string; legend: { key: string; label: Bilingual }[]; items: { q: Bilingual; hot?: boolean; parts: { key: string; pct: number }[] }[] }
