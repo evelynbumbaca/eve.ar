@@ -190,8 +190,8 @@ export const lookap: CaseContent = {
     },
     {
       t: 'brand',
-      es: 'Logo, color y tipografía',
-      en: 'Logo, color and type',
+      es: 'Logo, color y tipografía de la interfaz',
+      en: 'Logo, color and interface typography',
       logo: `${P}/logo-lookap.png`,
       icon: `${P}/icono-lookap.png`,
       swatches: [
@@ -199,10 +199,21 @@ export const lookap: CaseContent = {
         { name: { es: 'Secundario', en: 'Secondary' }, tone: 'cream' },
         { name: { es: 'Acento', en: 'Accent' }, tone: 'wine' },
       ],
-      type: [
-        { name: 'Doppelganger', text: { es: 'Logo. Tipografía de Speak Design.', en: 'Logo. Typeface by Speak Design.' } },
-        { name: 'Roboto', text: { es: 'Interfaz: títulos 20, 18 y 14 pt; botones en bold 16 pt.', en: 'Interface: headings 20, 18 and 14 pt; buttons in bold 16 pt.' } },
-      ],
+      labels: {
+        logo: { es: 'Logo', en: 'Logo' },
+        icon: { es: 'Ícono', en: 'Icon' },
+        palette: { es: 'Paleta', en: 'Palette' },
+        type: { es: 'Tipografía', en: 'Typography' },
+      },
+      font: {
+        name: 'Roboto',
+        specs: [
+          { es: 'Título 1', en: 'Heading 1', size: 20, weight: 500 },
+          { es: 'Título 2', en: 'Heading 2', size: 18, weight: 500 },
+          { es: 'Título 3', en: 'Heading 3', size: 14, weight: 500 },
+          { es: 'Botón', en: 'Button', size: 16, weight: 700 },
+        ],
+      },
     },
     {
       t: 'links',

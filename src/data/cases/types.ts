@@ -18,7 +18,7 @@ export type Block =
   | { t: 'steps'; es: string; en: string; items: Bilingual[] }
   | { t: 'fidelity'; es: string; en: string; logo: string; items: { kind: 'sketch' | 'wire' | 'mid' | 'hi'; title: Bilingual; text: Bilingual }[] }
   | { t: 'bars'; es: string; en: string; legend: { key: string; label: Bilingual }[]; items: { q: Bilingual; hot?: boolean; parts: { key: string; pct: number }[] }[] }
-  | { t: 'brand'; es: string; en: string; logo: string; icon: string; swatches: { name: Bilingual; tone: string }[]; type: { name: string; text: Bilingual }[] }
+  | { t: 'brand'; es: string; en: string; logo: string; icon: string; swatches: { name: Bilingual; tone: string }[]; labels: { logo: Bilingual; icon: Bilingual; palette: Bilingual; type: Bilingual }; font: { name: string; specs: { es: string; en: string; size: number; weight: number }[] } }
   | { t: 'links'; items: { es: string; en: string; href: string }[] };
 
 export interface CaseContent {

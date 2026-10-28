@@ -233,21 +233,32 @@ const pad = (n: number) => String(n).padStart(2, '0');
             );
             case 'brand': return (
               <figure class="c-figure k-fig lk-brand">
-                <div class="lk-panel lk-brand-grid">
-                  <div class="lk-logo"><img src={link(`/${b.logo}`)} alt="Logo Lookap" loading="lazy" decoding="async" /></div>
-                  <div class="lk-mark">
-                    <img class="lk-icon" src={link(`/${b.icon}`)} alt="Ícono de la app" width="96" height="96" loading="lazy" decoding="async" />
-                    <div class="lk-swatches">
-                      {b.swatches.map((sw) => (
-                        <div class="lk-sw"><i class={`tone-${sw.tone}`}></i><span data-es={sw.name.es} data-en={sw.name.en}>{sw.name.es}</span></div>
-                      ))}
-                    </div>
+                <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" />
+                <div class="lk-board">
+                  <div class="lk-b logo rise">
+                    <img src={link(`/${b.logo}`)} alt="Logo Lookap" loading="lazy" decoding="async" />
+                    <span class="lk-tag" data-es={b.labels.logo.es} data-en={b.labels.logo.en}>{b.labels.logo.es}</span>
                   </div>
-                  <dl class="lk-type">
-                    {b.type.map((ty) => (
-                      <div><dt>{ty.name}</dt><dd><span data-es={ty.text.es} data-en={ty.text.en}>{ty.text.es}</span></dd></div>
+                  <div class="lk-b icon rise">
+                    <img src={link(`/${b.icon}`)} alt="Ícono de la app" width="132" height="132" loading="lazy" decoding="async" />
+                    <span class="lk-tag" data-es={b.labels.icon.es} data-en={b.labels.icon.en}>{b.labels.icon.es}</span>
+                  </div>
+                  <div class="lk-b palette rise">
+                    {b.swatches.map((sw) => (
+                      <div class={`lk-band tone-${sw.tone}`}><span data-es={sw.name.es} data-en={sw.name.en}>{sw.name.es}</span></div>
                     ))}
-                  </dl>
+                    <span class="lk-tag" data-es={b.labels.palette.es} data-en={b.labels.palette.en}>{b.labels.palette.es}</span>
+                  </div>
+                  <div class="lk-b type rise">
+                    <p class="lk-aa">Aa</p>
+                    <p class="lk-fname">{b.font.name}</p>
+                    <ul class="lk-specs">
+                      {b.font.specs.map((sp) => (
+                        <li style={`font-size:${sp.size}px;font-weight:${sp.weight}`}><span data-es={sp.es} data-en={sp.en}>{sp.es}</span> <em>{sp.size} pt</em></li>
+                      ))}
+                    </ul>
+                    <span class="lk-tag" data-es={b.labels.type.es} data-en={b.labels.type.en}>{b.labels.type.es}</span>
+                  </div>
                 </div>
                 <figcaption><span data-es={b.es} data-en={b.en}>{b.es}</span></figcaption>
               </figure>
@@ -405,26 +416,26 @@ const pad = (n: number) => String(n).padStart(2, '0');
   .c-meta dt { font-family: var(--sans); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-60); margin-bottom: 7px; }
   .c-meta dd { font-family: var(--serif); font-size: clamp(15px, 1.3vw, 18px); line-height: 1.3; }
 
-  .c-body { max-width: 980px; }
+  .c-body { max-width: 980px; --k-r: 16px; }
   .c-intro {
     font-family: var(--serif); font-weight: 300;
-    font-size: clamp(20px, 2.5vw, 30px); line-height: 1.32; letter-spacing: -0.01em;
-    max-width: 24ch; margin: clamp(48px, 9vh, 110px) 0 0;
+    font-size: clamp(20px, 2.5vw, 30px); line-height: 1.36; letter-spacing: -0.01em;
+    max-width: 30ch; margin: clamp(48px, 9vh, 110px) 0 0;
   }
 
   .c-os { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(16px, 2vw, 26px); margin-top: clamp(34px, 5vh, 56px); }
-  .os-box { border: 1px solid var(--ink); border-radius: 3px; padding: clamp(20px, 2vw, 30px); }
+  .os-box { border: 1px solid var(--ink); border-radius: var(--k-r, 16px); padding: clamp(20px, 2vw, 30px); }
   .os-box h4 {
     font-family: var(--sans); font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase;
     color: var(--ink); margin-bottom: 13px; display: flex; align-items: center; gap: 9px;
   }
   .os-box h4::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--ink); }
   .os-box.solucion h4::before { background: transparent; box-shadow: inset 0 0 0 1.5px var(--ink); }
-  .os-box p { font-family: var(--serif); font-size: clamp(16px, 1.5vw, 20px); line-height: 1.4; }
+  .os-box p { font-family: var(--serif); font-size: clamp(16px, 1.5vw, 20px); line-height: 1.5; }
 
   /* ritmo de museo: cada pieza respira */
   .c-figure { margin-top: clamp(72px, 14vh, 180px); }
-  .c-figure .frame { width: 100%; aspect-ratio: 3 / 2; border-radius: 3px; }
+  .c-figure .frame { width: 100%; aspect-ratio: 3 / 2; border-radius: var(--k-r, 16px); }
   .c-figure.tall .frame { aspect-ratio: 4 / 5; max-width: 620px; margin: 0 auto; }
   .c-figure .ph { width: 100%; height: 100%; }
   .c-figure figcaption {
@@ -467,7 +478,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
   }
   .k-h .mono { font-size: 12px; letter-spacing: 0.1em; color: var(--ink-60); }
   .k-p {
-    font-family: var(--serif); font-size: clamp(17px, 1.7vw, 22px); line-height: 1.42;
+    font-family: var(--serif); font-size: clamp(17px, 1.7vw, 22px); line-height: 1.5;
     max-width: 38em; margin-top: clamp(22px, 3.2vh, 36px);
   }
   .k-note { color: var(--ink-60); margin-top: 18px; }
@@ -488,30 +499,31 @@ const pad = (n: number) => String(n).padStart(2, '0');
   .k-list li .mono { font-size: 11px; color: var(--ink-60); }
 
   .k-cols { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(24px, 4vw, 56px); margin-top: clamp(48px, 8vh, 96px); }
-  .k-cols p { font-family: var(--serif); font-size: clamp(16px, 1.5vw, 20px); line-height: 1.42; }
+  .k-cols p { font-family: var(--serif); font-size: clamp(16px, 1.5vw, 20px); line-height: 1.5; }
 
   .k-stats { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(24px, 4vw, 56px); margin-top: clamp(40px, 7vh, 80px); }
   .k-n {
     display: block; font-family: var(--serif); font-weight: 300;
     font-size: clamp(4rem, 12vw, 9rem); line-height: 0.9; letter-spacing: -0.04em; margin-bottom: 14px;
   }
-  .k-stats p { font-family: var(--serif); font-size: clamp(16px, 1.5vw, 20px); line-height: 1.38; max-width: 22em; }
+  .k-stats p { font-family: var(--serif); font-size: clamp(16px, 1.5vw, 20px); line-height: 1.5; max-width: 22em; }
 
   .k-fig { margin-top: clamp(48px, 9vh, 110px); }
-  .k-fig .frame { aspect-ratio: auto; line-height: 0; background: transparent; }
-  .k-fig .frame > img, .k-fig .frame > video { width: 100%; height: auto; display: block; border-radius: 3px; }
+  .k-fig .frame { aspect-ratio: auto; line-height: 0; background: transparent; border-radius: var(--k-r, 16px); }
+  .k-fig .frame > img, .k-fig .frame > video { width: 100%; height: auto; display: block; border-radius: var(--k-r, 16px); }
   .k-fig.narrow { max-width: 760px; margin-left: auto; margin-right: auto; }
 
   .k-gal-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(10px, 1.6vw, 22px); }
   .k-gallery .frame { aspect-ratio: 4 / 5; }
   .k-gallery .frame > img { height: 100%; object-fit: cover; }
   .k-split { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr); gap: clamp(24px, 4vw, 64px); align-items: center; margin-top: clamp(32px, 5vh, 56px); }
-  .k-split .frame { line-height: 0; border-radius: 18px; }
-  .k-split .frame > img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; display: block; border-radius: 18px; }
-  .k-split p { font-family: var(--serif); font-size: clamp(18px, 1.9vw, 24px); line-height: 1.4; letter-spacing: -0.005em; }
+  .k-split .frame { line-height: 0; border-radius: var(--k-r, 16px); }
+  .k-split .frame > img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; display: block; border-radius: var(--k-r, 16px); }
+  .k-split p { font-family: var(--serif); font-size: clamp(18px, 1.9vw, 24px); line-height: 1.5; letter-spacing: -0.005em; }
   .k-break { margin-top: clamp(80px, 15vh, 180px); }
   .k-break .frame { line-height: 0; }
-  .k-break .frame > img, .k-break .frame > video { width: 100%; height: auto; display: block; border-radius: 3px; }
+  .k-break .frame { border-radius: var(--k-r, 16px); }
+  .k-break .frame > img, .k-break .frame > video { width: 100%; height: auto; display: block; border-radius: var(--k-r, 16px); }
   .k-break.narrow { max-width: 560px; margin-left: auto; margin-right: auto; }
 
   .k-links { display: flex; flex-wrap: wrap; gap: 14px 32px; margin-top: clamp(40px, 7vh, 80px); }
@@ -530,24 +542,24 @@ const pad = (n: number) => String(n).padStart(2, '0');
   }
 
   /* ---------- piezas rediseñadas con la estética de Lookap (vino · coral · crema) ---------- */
-  .lk-panel { background: var(--lk-cream, #fff9ed); border: 1px solid var(--ink-12); border-radius: 18px; padding: clamp(22px, 3vw, 44px); }
+  .lk-panel { background: var(--lk-cream, #fff9ed); border: 1px solid var(--ink-12); border-radius: var(--k-r, 16px); padding: clamp(22px, 3vw, 44px); }
 
   /* benchmarking */
   .lk-cards { display: grid; grid-template-columns: repeat(var(--n), 1fr); gap: clamp(12px, 1.6vw, 20px); }
-  .lk-card { background: var(--lk-cream, #fff9ed); border: 1px solid var(--ink-12); border-radius: 18px; overflow: hidden; display: flex; flex-direction: column; }
+  .lk-card { background: var(--lk-cream, #fff9ed); border: 1px solid var(--ink-12); border-radius: var(--k-r, 16px); overflow: hidden; display: flex; flex-direction: column; }
   .lk-card h4 { font-family: var(--serif); font-weight: 500; font-size: clamp(1.35rem, 2vw, 1.7rem); padding: 22px 24px 14px; color: var(--lk-night, #1f0a0e); }
   .lk-cell { padding: 16px 24px 22px; flex: 1; }
   .lk-cell .lk-lab { display: block; font-family: var(--sans); font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 10px; color: var(--lk-coral, #c86838); font-weight: 600; }
-  .lk-cell p { font-family: var(--serif); font-size: clamp(16px, 1.3vw, 18px); line-height: 1.42; }
+  .lk-cell p { font-family: var(--serif); font-size: clamp(16px, 1.3vw, 18px); line-height: 1.5; }
   .lk-cell.weak { background: var(--lk-wine, #a82838); color: var(--lk-cream, #fff9ed); }
   .lk-cell.weak .lk-lab { color: rgba(255, 249, 237, 0.74); }
 
   /* arquitectura: un mosaico de secciones */
   .lk-tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: clamp(12px, 1.6vw, 20px); }
-  .lk-tile { background: var(--lk-cream, #fff9ed); border: 1px solid var(--ink-12); border-radius: 18px; padding: 22px 22px 20px; min-width: 0; }
+  .lk-tile { background: var(--lk-cream, #fff9ed); border: 1px solid var(--ink-12); border-radius: var(--k-r, 16px); padding: 22px 22px 20px; min-width: 0; }
   .lk-tile h4 { font-family: var(--serif); font-weight: 500; font-size: clamp(1.25rem, 1.8vw, 1.5rem); line-height: 1.1; color: var(--lk-wine, #a82838); padding-bottom: 14px; }
   .lk-tile ul { list-style: none; margin: 0; padding: 0; }
-  .lk-tile li { position: relative; padding: 11px 0 11px 20px; border-top: 1px solid var(--ink-12); font-family: var(--serif); font-size: clamp(15.5px, 1.25vw, 17px); line-height: 1.3; color: var(--lk-night, #1f0a0e); }
+  .lk-tile li { position: relative; padding: 11px 0 11px 20px; border-top: 1px solid var(--ink-12); font-family: var(--serif); font-size: clamp(15.5px, 1.25vw, 17px); line-height: 1.4; color: var(--lk-night, #1f0a0e); }
   .lk-tile li::before { content: ''; position: absolute; left: 3px; top: 50%; width: 6px; height: 6px; background: var(--lk-coral, #c86838); transform: translateY(-50%) rotate(45deg); }
   .lk-tile.root { background: var(--lk-wine, #a82838); border-color: var(--lk-wine, #a82838); color: var(--lk-cream, #fff9ed); display: flex; flex-direction: column; align-items: flex-start; justify-content: space-between; gap: 18px; }
   .lk-tile.root img { width: 64px; height: 64px; border-radius: 16px; }
@@ -561,13 +573,13 @@ const pad = (n: number) => String(n).padStart(2, '0');
   .lk-dia { width: 48px; height: 48px; display: grid; place-items: center; position: relative; }
   .lk-dia::before { content: ''; position: absolute; inset: 7px; background: var(--lk-coral, #c86838); transform: rotate(45deg); border-radius: 9px; }
   .lk-dia b { position: relative; color: var(--lk-cream, #fff9ed); font-weight: 500; font-size: 14px; }
-  .lk-step { font-family: var(--serif); font-size: clamp(17px, 1.5vw, 20px); line-height: 1.25; }
+  .lk-step { font-family: var(--serif); font-size: clamp(17px, 1.5vw, 20px); line-height: 1.35; }
 
   /* fidelidad */
   .lk-stages { display: grid; grid-template-columns: repeat(4, 1fr); gap: clamp(16px, 2.4vw, 36px); }
   .lk-stage h4 { font-family: var(--serif); font-weight: 500; font-size: clamp(1.25rem, 1.8vw, 1.5rem); margin: 20px 0 8px; }
   .lk-stage h4 .mono { font-size: 11px; color: var(--ink-60); margin-right: 8px; }
-  .lk-stage p { font-family: var(--serif); font-size: clamp(15.5px, 1.25vw, 17px); line-height: 1.38; color: var(--ink-80); }
+  .lk-stage p { font-family: var(--serif); font-size: clamp(15.5px, 1.25vw, 17px); line-height: 1.5; color: var(--ink-80); }
   .lk-phone { aspect-ratio: 9 / 18.5; width: 100%; max-width: 190px; border-radius: 28px; padding: 26px 13px 13px; display: flex; flex-direction: column; gap: 9px; position: relative; }
   .lk-phone i, .lk-phone img.logo { display: block; flex: none; }
   .lk-phone .notch { position: absolute; top: 9px; left: 50%; width: 34%; height: 9px; transform: translateX(-50%); border-radius: 99px; }
@@ -617,20 +629,29 @@ const pad = (n: number) => String(n).padStart(2, '0');
   .t-c { background: #e9cdb0; color: var(--lk-night, #1f0a0e); }
   .t-d { background: var(--lk-night, #1f0a0e); color: #fff; }
 
-  /* identidad */
-  .lk-brand-grid { display: grid; grid-template-columns: 1.15fr 1fr; gap: clamp(24px, 3.4vw, 52px); align-items: center; }
-  .lk-logo img { width: 100%; max-width: 440px; height: auto; display: block; margin: 0 auto; }
-  .lk-mark { display: flex; align-items: center; justify-content: center; gap: clamp(20px, 3vw, 40px); flex-wrap: wrap; }
-  .lk-icon { width: 96px; height: 96px; border-radius: 22px; }
-  .lk-swatches { display: flex; gap: clamp(18px, 2.6vw, 34px); }
-  .lk-sw { display: grid; justify-items: center; gap: 18px; font-family: var(--sans); font-size: 14px; color: var(--ink-80); }
-  .lk-sw i { display: block; width: 52px; height: 52px; margin-top: 10px; transform: rotate(45deg); border-radius: 10px; border: 1px solid var(--ink-18); }
-  .lk-sw .tone-coral { background: var(--lk-coral, #c86838); }
-  .lk-sw .tone-cream { background: var(--lk-cream, #fff9ed); }
-  .lk-sw .tone-wine { background: var(--lk-wine, #a82838); }
-  .lk-type { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 16px 36px; margin: 0; padding-top: 24px; border-top: 1px solid var(--ink-12); }
-  .lk-type dt { font-family: var(--sans); font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--lk-coral, #c86838); font-weight: 600; margin-bottom: 6px; }
-  .lk-type dd { margin: 0; font-family: var(--serif); font-size: clamp(16px, 1.3vw, 18px); line-height: 1.42; }
+  /* identidad: tablero de marca */
+  .lk-board { display: grid; grid-template-columns: repeat(12, 1fr); gap: clamp(12px, 1.6vw, 20px); }
+  .lk-b { position: relative; border-radius: var(--k-r, 16px); overflow: hidden; min-height: clamp(240px, 26vw, 320px); }
+  .lk-tag { position: absolute; left: 20px; bottom: 16px; font-family: var(--sans); font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 500; }
+  .lk-b.logo { grid-column: span 8; background: var(--lk-cream, #fff9ed); border: 1px solid var(--ink-12); display: grid; place-items: center; padding: clamp(32px, 5vw, 64px) clamp(24px, 4vw, 56px) clamp(48px, 5vw, 64px); }
+  .lk-b.logo img { width: min(100%, 440px); height: auto; }
+  .lk-b.logo .lk-tag { color: var(--ink-60); }
+  .lk-b.icon { grid-column: span 4; background: var(--lk-wine, #a82838); display: grid; place-items: center; padding-bottom: 28px; }
+  .lk-b.icon img { width: clamp(96px, 11vw, 132px); height: auto; border-radius: 28px; box-shadow: 0 18px 36px rgba(31, 10, 14, 0.35); }
+  .lk-b.icon .lk-tag { color: rgba(255, 249, 237, 0.78); }
+  .lk-b.palette { grid-column: span 7; display: flex; border: 1px solid var(--ink-12); }
+  .lk-band { flex: 1; display: flex; align-items: flex-start; padding: 20px; font-family: var(--serif); font-size: clamp(17px, 1.6vw, 20px); }
+  .lk-band.tone-coral { background: var(--lk-coral, #c86838); color: var(--lk-cream, #fff9ed); }
+  .lk-band.tone-cream { background: var(--lk-cream, #fff9ed); color: var(--lk-night, #1f0a0e); }
+  .lk-band.tone-wine { background: var(--lk-wine, #a82838); color: var(--lk-cream, #fff9ed); }
+  .lk-b.palette .lk-tag { color: var(--lk-night, #1f0a0e); mix-blend-mode: normal; background: var(--lk-cream, #fff9ed); padding: 5px 10px; border-radius: 99px; left: 16px; bottom: 16px; }
+  .lk-b.type { grid-column: span 5; background: var(--lk-night, #1f0a0e); color: var(--lk-cream, #fff9ed); padding: 24px 24px 52px; font-family: Roboto, var(--sans); }
+  .lk-b.type .lk-tag { color: rgba(255, 249, 237, 0.7); font-family: var(--sans); }
+  .lk-aa { font-family: Roboto, var(--sans); font-weight: 500; font-size: clamp(64px, 8vw, 96px); line-height: 0.95; letter-spacing: -0.02em; color: var(--lk-coral, #c86838); }
+  .lk-fname { font-family: Roboto, var(--sans); font-size: 18px; line-height: 1.3; margin: 8px 0 16px; opacity: 0.85; }
+  .lk-specs { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; font-family: Roboto, var(--sans); }
+  .lk-specs li { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; line-height: 1.3; border-top: 1px solid rgba(255, 249, 237, 0.16); padding-top: 6px; }
+  .lk-specs em { font-style: normal; font-weight: 400; font-size: 12px; opacity: 0.6; letter-spacing: 0.04em; }
 
   .k-fig.lk-compare, .k-fig.lk-map, .k-fig.lk-steps, .k-fig.lk-fid, .k-fig.lk-bars, .k-fig.lk-brand { margin-top: clamp(40px, 7vh, 80px); }
 
@@ -640,7 +661,8 @@ const pad = (n: number) => String(n).padStart(2, '0');
   }
   @media (max-width: 860px) {
     .lk-cards { grid-template-columns: 1fr; }
-    .lk-brand-grid, .lk-type { grid-template-columns: 1fr; }
+    .lk-b.logo, .lk-b.icon, .lk-b.palette, .lk-b.type { grid-column: 1 / -1; }
+    .lk-b.palette { min-height: 200px; }
     .lk-flow { grid-template-columns: 1fr; gap: 18px; }
     .lk-flow li { grid-template-columns: 48px 1fr; align-items: center; gap: 16px; }
     .lk-flow li::after { display: none; }
