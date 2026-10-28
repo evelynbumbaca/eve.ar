@@ -9,7 +9,7 @@ const P = 'projects/lookap';
 export const lookap: CaseContent = {
   /* colores del proyecto (UI kit de Lookap) */
   heroImage: `${P}/ctx-jean.jpg`,
-  theme: { wine: '#a82838', coral: '#c86838', cream: '#fff9ed', night: '#1f0a0e' },
+  theme: { wine: '#a92f3c', coral: '#ce6c3f', cream: '#fff9ed', night: '#1f0a0e' },
   meta: {
     context: { es: 'Proyecto final · Coderhouse', en: 'Final project · Coderhouse' },
     role: { es: 'Research · UX/UI · Prototipado · Identidad visual', en: 'Research · UX/UI · Prototyping · Visual identity' },
@@ -195,9 +195,9 @@ export const lookap: CaseContent = {
       logo: `${P}/logo-lookap.png`,
       icon: `${P}/icono-lookap.png`,
       swatches: [
-        { name: { es: 'Primario', en: 'Primary' }, tone: 'coral' },
-        { name: { es: 'Secundario', en: 'Secondary' }, tone: 'cream' },
-        { name: { es: 'Acento', en: 'Accent' }, tone: 'wine' },
+        { name: { es: 'Primario', en: 'Primary' }, tone: 'coral', hex: '#CE6C3F' },
+        { name: { es: 'Secundario', en: 'Secondary' }, tone: 'cream', hex: '#FFF9ED' },
+        { name: { es: 'Acento', en: 'Accent' }, tone: 'wine', hex: '#A92F3C' },
       ],
       labels: {
         logo: { es: 'Logo', en: 'Logo' },

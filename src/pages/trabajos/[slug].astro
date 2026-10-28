@@ -245,7 +245,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
                   </div>
                   <div class="lk-b palette rise">
                     {b.swatches.map((sw) => (
-                      <div class={`lk-band tone-${sw.tone}`}><span data-es={sw.name.es} data-en={sw.name.en}>{sw.name.es}</span></div>
+                      <div class={`lk-band tone-${sw.tone}`}><span class="lk-cn" data-es={sw.name.es} data-en={sw.name.en}>{sw.name.es}</span><code class="lk-hex">{sw.hex}</code></div>
                     ))}
                     <span class="lk-tag" data-es={b.labels.palette.es} data-en={b.labels.palette.en}>{b.labels.palette.es}</span>
                   </div>
@@ -633,14 +633,16 @@ const pad = (n: number) => String(n).padStart(2, '0');
   .lk-board { display: grid; grid-template-columns: repeat(12, 1fr); gap: clamp(12px, 1.6vw, 20px); }
   .lk-b { position: relative; border-radius: var(--k-r, 16px); overflow: hidden; min-height: clamp(240px, 26vw, 320px); }
   .lk-tag { position: absolute; left: 20px; bottom: 16px; font-family: var(--sans); font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 500; }
-  .lk-b.logo { grid-column: span 8; background: var(--lk-cream, #fff9ed); border: 1px solid var(--ink-12); display: grid; place-items: center; padding: clamp(32px, 5vw, 64px) clamp(24px, 4vw, 56px) clamp(48px, 5vw, 64px); }
-  .lk-b.logo img { width: min(100%, 440px); height: auto; }
+  .lk-b.logo { grid-column: span 8; background: var(--lk-cream, #fff9ed); border: 1px solid var(--ink-12); display: grid; place-items: center; padding: clamp(32px, 5vw, 64px) clamp(24px, 4vw, 56px); }
+  .lk-b.logo img { width: min(76%, 330px); height: auto; }
   .lk-b.logo .lk-tag { color: var(--ink-60); }
-  .lk-b.icon { grid-column: span 4; background: var(--lk-wine, #a82838); display: grid; place-items: center; padding-bottom: 28px; }
-  .lk-b.icon img { width: clamp(96px, 11vw, 132px); height: auto; border-radius: 28px; box-shadow: 0 18px 36px rgba(31, 10, 14, 0.35); }
-  .lk-b.icon .lk-tag { color: rgba(255, 249, 237, 0.78); }
+  .lk-b.icon { grid-column: span 4; background: transparent; border: 1.5px solid var(--lk-wine, #a82838); display: grid; place-items: center; padding: 32px; }
+  .lk-b.icon img { width: clamp(96px, 11vw, 132px); height: auto; border-radius: 28px; box-shadow: 0 12px 26px rgba(31, 10, 14, 0.16); }
+  .lk-b.icon .lk-tag { color: var(--ink-60); }
   .lk-b.palette { grid-column: span 7; display: flex; border: 1px solid var(--ink-12); }
-  .lk-band { flex: 1; display: flex; align-items: flex-start; padding: 20px; font-family: var(--serif); font-size: clamp(17px, 1.6vw, 20px); }
+  .lk-band { flex: 1; display: flex; flex-direction: column; justify-content: space-between; padding: 20px; }
+  .lk-cn { font-family: var(--serif); font-size: clamp(17px, 1.6vw, 20px); }
+  .lk-hex { align-self: flex-start; margin-bottom: 44px; font-family: var(--mono); font-size: 13px; letter-spacing: 0.04em; opacity: 0.9; }
   .lk-band.tone-coral { background: var(--lk-coral, #c86838); color: var(--lk-cream, #fff9ed); }
   .lk-band.tone-cream { background: var(--lk-cream, #fff9ed); color: var(--lk-night, #1f0a0e); }
   .lk-band.tone-wine { background: var(--lk-wine, #a82838); color: var(--lk-cream, #fff9ed); }
