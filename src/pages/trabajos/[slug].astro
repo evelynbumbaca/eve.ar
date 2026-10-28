@@ -3,6 +3,7 @@ import Base from '../../layouts/Base.astro';
 import SiteFooter from '../../components/SiteFooter.astro';
 import T from '../../components/T.astro';
 import { projects, caseSample as C } from '../../data/site';
+import { cases } from '../../data/cases';
 import { link } from '../../lib/link';
 
 export function getStaticPaths() {
@@ -13,6 +14,12 @@ export function getStaticPaths() {
 }
 
 const { project: P, next: NEXT } = Astro.props;
+
+/* caso con contenido propio (bloques) o molde genérico */
+const K = cases[P.id];
+let figN = 0;
+const blocks = (K?.blocks ?? []).map((b) => (b.t === 'fig' || b.t === 'video' ? { ...b, n: ++figN } : b));
+const pad = (n: number) => String(n).padStart(2, '0');
 ---
 
 <Base title={`${P.title} — EVE`} description={`${P.title} — caso de estudio. ${P.disc.es}.`}>
@@ -34,7 +41,10 @@ const { project: P, next: NEXT } = Astro.props;
 
     <div class="wrap">
       <dl class="c-meta">
-        <div><dt><T es="Cliente" en="Client" /></dt><dd>{P.title}</dd></div>
+        <div>
+          <dt><T es={K ? 'Contexto' : 'Cliente'} en={K ? 'Context' : 'Client'} /></dt>
+          <dd>{K ? <span data-es={K.meta.context.es} data-en={K.meta.context.en}>{K.meta.context.es}</span> : P.title}</dd>
+        </div>
         <div>
           <dt><T es="Servicios" en="Services" /></dt>
           <dd><span data-es={P.disc.es} data-en={P.disc.en}>{P.disc.es}</span></dd>
@@ -42,39 +52,131 @@ const { project: P, next: NEXT } = Astro.props;
         <div><dt><T es="Año" en="Year" /></dt><dd>{P.year}</dd></div>
         <div>
           <dt><T es="Rol" en="Role" /></dt>
-          <dd><span data-es={C.role.es} data-en={C.role.en}>{C.role.es}</span></dd>
+          <dd>{K
+            ? <span data-es={K.meta.role.es} data-en={K.meta.role.en}>{K.meta.role.es}</span>
+            : <span data-es={C.role.es} data-en={C.role.en}>{C.role.es}</span>}</dd>
         </div>
+        {K && (
+          <div><dt><T es="Herramientas" en="Tools" /></dt><dd>{K.meta.tools}</dd></div>
+        )}
       </dl>
     </div>
 
-    <div class="c-body wrap">
-      <p class="c-intro rise"><span data-es={C.intro.es} data-en={C.intro.en}>{C.intro.es}</span></p>
+    {K ? (
+      <div class="c-body wrap">
+        <p class="c-intro rise"><span data-es={K.intro.es} data-en={K.intro.en}>{K.intro.es}</span></p>
 
-      <div class="c-os">
-        <div class="os-box objetivo rise">
-          <h4><span data-es={C.objetivo.label.es} data-en={C.objetivo.label.en}>{C.objetivo.label.es}</span></h4>
-          <p><span data-es={C.objetivo.es} data-en={C.objetivo.en}>{C.objetivo.es}</span></p>
-        </div>
-        <div class="os-box solucion rise">
-          <h4><span data-es={C.solucion.label.es} data-en={C.solucion.label.en}>{C.solucion.label.es}</span></h4>
-          <p><span data-es={C.solucion.es} data-en={C.solucion.en}>{C.solucion.es}</span></p>
-        </div>
+        {blocks.map((b) => {
+          switch (b.t) {
+            case 'h': return (
+              <h2 class="k-h rise"><span class="mono">{b.n}</span><span data-es={b.es} data-en={b.en}>{b.es}</span></h2>
+            );
+            case 'p': return <p class="k-p rise"><span data-es={b.es} data-en={b.en}>{b.es}</span></p>;
+            case 'note': return <p class="k-note mono"><span data-es={b.es} data-en={b.en}>{b.es}</span></p>;
+            case 'os': return (
+              <div class="c-os k-os">
+                {b.items.map((it) => (
+                  <div class="os-box rise">
+                    <h4><span data-es={it.label.es} data-en={it.label.en}>{it.label.es}</span></h4>
+                    <p><span data-es={it.es} data-en={it.en}>{it.es}</span></p>
+                  </div>
+                ))}
+              </div>
+            );
+            case 'list': return (
+              <div class="k-list rise">
+                <h3 class="k-sub"><span data-es={b.title.es} data-en={b.title.en}>{b.title.es}</span></h3>
+                <ol>
+                  {b.items.map((it, i) => (
+                    <li><span class="mono">{pad(i + 1)}</span><span data-es={it.es} data-en={it.en}>{it.es}</span></li>
+                  ))}
+                </ol>
+              </div>
+            );
+            case 'cols': return (
+              <div class="k-cols">
+                {b.items.map((it) => (
+                  <div class="rise">
+                    <h3 class="k-sub"><span data-es={it.title.es} data-en={it.title.en}>{it.title.es}</span></h3>
+                    <p><span data-es={it.es} data-en={it.en}>{it.es}</span></p>
+                  </div>
+                ))}
+              </div>
+            );
+            case 'stats': return (
+              <div class="k-stats">
+                {b.items.map((it) => (
+                  <div class="rise">
+                    <span class="k-n">{it.n}</span>
+                    <p><span data-es={it.es} data-en={it.en}>{it.es}</span></p>
+                  </div>
+                ))}
+              </div>
+            );
+            case 'fig': return (
+              <figure class={`c-figure k-fig ${b.w === 'narrow' ? 'narrow' : ''}`}>
+                <div class="frame reveal">
+                  <img class="revfill" src={link(`/${b.src}`)} alt={b.es} loading="lazy" decoding="async" />
+                </div>
+                <figcaption>
+                  <span data-es={b.es} data-en={b.en}>{b.es}</span>
+                  <span class="mono">FIG {pad(b.n)}</span>
+                </figcaption>
+              </figure>
+            );
+            case 'video': return (
+              <figure class="c-figure k-fig">
+                <div class="frame reveal">
+                  <video class="revfill" src={link(`/${b.src}`)} autoplay muted loop playsinline preload="metadata" aria-label={b.es}></video>
+                </div>
+                <figcaption>
+                  <span data-es={b.es} data-en={b.en}>{b.es}</span>
+                  <span class="mono">FIG {pad(b.n)}</span>
+                </figcaption>
+              </figure>
+            );
+            case 'links': return (
+              <div class="k-links">
+                {b.items.map((it) => (
+                  <a href={it.href} target="_blank" rel="noopener noreferrer">
+                    <span data-es={it.es} data-en={it.en}>{it.es}</span> <span aria-hidden="true">↗</span>
+                  </a>
+                ))}
+              </div>
+            );
+          }
+        })}
       </div>
-
-      {C.sections.map((s, i) => (
-        <figure class={`c-figure ${i === 1 ? 'tall' : ''}`}>
-          <div class="frame reveal"><span class="ph revfill" data-label={s.es}></span></div>
-          <figcaption>
-            <span data-es={s.es} data-en={s.en}>{s.es}</span>
-            <span class="mono">FIG {String(i + 1).padStart(2, '0')}</span>
-          </figcaption>
-        </figure>
-      ))}
-
-      <blockquote class="c-quote rise">
-        <span data-es={`“${C.quote.es}”`} data-en={`“${C.quote.en}”`}>“{C.quote.es}”</span>
-      </blockquote>
-    </div>
+    ) : (
+    <div class="c-body wrap">
+        <p class="c-intro rise"><span data-es={C.intro.es} data-en={C.intro.en}>{C.intro.es}</span></p>
+  
+        <div class="c-os">
+          <div class="os-box objetivo rise">
+            <h4><span data-es={C.objetivo.label.es} data-en={C.objetivo.label.en}>{C.objetivo.label.es}</span></h4>
+            <p><span data-es={C.objetivo.es} data-en={C.objetivo.en}>{C.objetivo.es}</span></p>
+          </div>
+          <div class="os-box solucion rise">
+            <h4><span data-es={C.solucion.label.es} data-en={C.solucion.label.en}>{C.solucion.label.es}</span></h4>
+            <p><span data-es={C.solucion.es} data-en={C.solucion.en}>{C.solucion.es}</span></p>
+          </div>
+        </div>
+  
+        {C.sections.map((s, i) => (
+          <figure class={`c-figure ${i === 1 ? 'tall' : ''}`}>
+            <div class="frame reveal"><span class="ph revfill" data-label={s.es}></span></div>
+            <figcaption>
+              <span data-es={s.es} data-en={s.en}>{s.es}</span>
+              <span class="mono">FIG {String(i + 1).padStart(2, '0')}</span>
+            </figcaption>
+          </figure>
+        ))}
+  
+        <blockquote class="c-quote rise">
+          <span data-es={`“${C.quote.es}”`} data-en={`“${C.quote.en}”`}>“{C.quote.es}”</span>
+        </blockquote>
+      </div>
+    )}
 
     <div class="wrap">
       <div class="c-next">
@@ -146,7 +248,7 @@ const { project: P, next: NEXT } = Astro.props;
   }
 
   .c-meta {
-    display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 24px;
     padding: clamp(22px, 3vh, 34px) 0;
     border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
     margin-top: clamp(56px, 9vh, 112px);
@@ -205,5 +307,61 @@ const { project: P, next: NEXT } = Astro.props;
   @media (max-width: 860px) {
     .c-meta { grid-template-columns: 1fr 1fr; gap: 18px 24px; }
     .c-os { grid-template-columns: 1fr; }
+  }
+
+  /* ---------- caso con contenido propio (bloques) ---------- */
+  .k-h {
+    display: flex; align-items: baseline; gap: 18px;
+    font-family: var(--serif); font-weight: 400; font-size: clamp(2rem, 5vw, 3.6rem);
+    line-height: 1; letter-spacing: -0.02em;
+    margin-top: clamp(96px, 17vh, 200px); padding-top: 22px; border-top: 1px solid var(--ink);
+  }
+  .k-h .mono { font-size: 12px; letter-spacing: 0.1em; color: var(--ink-60); }
+  .k-p {
+    font-family: var(--serif); font-size: clamp(17px, 1.7vw, 22px); line-height: 1.42;
+    max-width: 38em; margin-top: clamp(22px, 3.2vh, 36px);
+  }
+  .k-note { color: var(--ink-60); margin-top: 18px; }
+  .k-os { grid-template-columns: repeat(3, 1fr); }
+  .k-os .os-box p { font-size: clamp(15px, 1.25vw, 17px); }
+
+  .k-sub {
+    font-family: var(--sans); font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--ink); margin-bottom: 14px; font-weight: 500;
+  }
+  .k-list { margin-top: clamp(48px, 8vh, 96px); }
+  .k-list ol { list-style: none; padding: 0; margin: 0; border-top: 1px solid var(--line); }
+  .k-list li {
+    display: grid; grid-template-columns: 52px 1fr; align-items: baseline; gap: 12px;
+    padding: 15px 0; border-bottom: 1px solid var(--line);
+    font-family: var(--serif); font-size: clamp(16px, 1.5vw, 20px); line-height: 1.35;
+  }
+  .k-list li .mono { font-size: 11px; color: var(--ink-60); }
+
+  .k-cols { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(24px, 4vw, 56px); margin-top: clamp(48px, 8vh, 96px); }
+  .k-cols p { font-family: var(--serif); font-size: clamp(16px, 1.5vw, 20px); line-height: 1.42; }
+
+  .k-stats { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(24px, 4vw, 56px); margin-top: clamp(40px, 7vh, 80px); }
+  .k-n {
+    display: block; font-family: var(--serif); font-weight: 300;
+    font-size: clamp(4rem, 12vw, 9rem); line-height: 0.9; letter-spacing: -0.04em; margin-bottom: 14px;
+  }
+  .k-stats p { font-family: var(--serif); font-size: clamp(16px, 1.5vw, 20px); line-height: 1.38; max-width: 22em; }
+
+  .k-fig { margin-top: clamp(48px, 9vh, 110px); }
+  .k-fig .frame { aspect-ratio: auto; line-height: 0; background: transparent; }
+  .k-fig .frame > img, .k-fig .frame > video { width: 100%; height: auto; display: block; border-radius: 3px; }
+  .k-fig.narrow { max-width: 760px; margin-left: auto; margin-right: auto; }
+
+  .k-links { display: flex; flex-wrap: wrap; gap: 14px 32px; margin-top: clamp(40px, 7vh, 80px); }
+  .k-links a {
+    font-family: var(--serif); font-size: clamp(1.1rem, 1.7vw, 1.5rem); line-height: 1;
+    border-bottom: 1px solid var(--ink-35); padding-bottom: 3px;
+    transition: opacity 0.25s var(--ease), border-color 0.25s var(--ease);
+  }
+  .k-links a:hover { opacity: 0.65; border-color: var(--ink); }
+
+  @media (max-width: 860px) {
+    .k-os, .k-cols, .k-stats { grid-template-columns: 1fr; }
   }
 </style>
