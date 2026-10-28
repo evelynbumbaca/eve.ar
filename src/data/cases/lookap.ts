@@ -8,6 +8,7 @@ const P = 'projects/lookap';
 
 export const lookap: CaseContent = {
   /* colores del proyecto (UI kit de Lookap) */
+  heroVideo: { src: `${P}/app-en-uso.mp4`, poster: `${P}/hero-poster.jpg` },
   theme: { wine: '#a82838', coral: '#c86838', cream: '#fff9ed', night: '#1f0a0e' },
   meta: {
     context: { es: 'Proyecto final · Coderhouse', en: 'Final project · Coderhouse' },
@@ -39,7 +40,6 @@ export const lookap: CaseContent = {
         },
       ],
     },
-    { t: 'video', src: `${P}/app-en-uso.mp4`, es: 'La app en uso', en: 'The app in use' },
     {
       t: 'gallery',
       es: 'La app en contexto',
@@ -111,6 +111,8 @@ export const lookap: CaseContent = {
       es: 'Arquitectura de la información',
       en: 'Information architecture',
       root: 'Lookap',
+      rootNote: { es: 'Siete secciones', en: 'Seven sections' },
+      icon: `${P}/icono-lookap.png`,
       branches: [
         { title: { es: 'Buscar', en: 'Search' }, kids: [{ es: 'Buscar prendas', en: 'Search garments' }, { es: 'Filtros', en: 'Filters' }] },
         { title: { es: 'Home', en: 'Home' }, kids: [{ es: 'Favoritos', en: 'Favorites' }, { es: 'Looks favoritos', en: 'Favorite looks' }, { es: 'Prendas favoritas', en: 'Favorite garments' }] },
@@ -140,6 +142,7 @@ export const lookap: CaseContent = {
       t: 'fidelity',
       es: 'Cuatro niveles de fidelidad',
       en: 'Four levels of fidelity',
+      logo: `${P}/logo-lookap.png`,
       items: [
         { kind: 'sketch', title: { es: 'Papel', en: 'Paper' }, text: { es: 'Bocetos a mano de las pantallas clave.', en: 'Hand sketches of the key screens.' } },
         { kind: 'wire', title: { es: 'Baja digital', en: 'Low digital' }, text: { es: 'Wireframes: estructura y jerarquía.', en: 'Wireframes: structure and hierarchy.' } },
@@ -192,7 +195,8 @@ export const lookap: CaseContent = {
       t: 'brand',
       es: 'Logo, color y tipografía',
       en: 'Logo, color and type',
-      logo: `${P}/logo-lookap.jpg`,
+      logo: `${P}/logo-lookap.png`,
+      icon: `${P}/icono-lookap.png`,
       swatches: [
         { name: { es: 'Primario', en: 'Primary' }, tone: 'coral' },
         { name: { es: 'Secundario', en: 'Secondary' }, tone: 'cream' },
