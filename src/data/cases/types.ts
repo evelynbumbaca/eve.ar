@@ -11,6 +11,7 @@ export type Block =
   | { t: 'fig'; src: string; es: string; en: string; w?: 'wide' | 'narrow' }
   | { t: 'video'; src: string; es: string; en: string }
   | { t: 'gallery'; es: string; en: string; items: { src: string; alt: string }[] }
+  | { t: 'split'; src: string; alt: string; es: string; en: string }
   | { t: 'break'; kind: 'img' | 'video'; src: string; alt: string; w?: 'wide' | 'narrow' }
   | { t: 'compare'; es: string; en: string; rows: Bilingual[]; items: { name: string; vals: Bilingual[] }[] }
   | { t: 'sitemap'; es: string; en: string; root: string; rootNote: Bilingual; icon: string; branches: { title: Bilingual; kids: Bilingual[] }[] }
@@ -24,6 +25,8 @@ export interface CaseContent {
   /* colores propios del proyecto (se aplican como variables --lk-* al caso) */
   /* video de fondo del hero (reemplaza la foto estática) */
   heroVideo?: { src: string; poster: string };
+  /* imagen de portada propia del caso (la home sigue usando Project.hero) */
+  heroImage?: string;
   theme?: { wine: string; coral: string; cream: string; night: string };
   meta: { context: Bilingual; role: Bilingual; tools: string };
   intro: Bilingual;

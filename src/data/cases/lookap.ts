@@ -8,7 +8,7 @@ const P = 'projects/lookap';
 
 export const lookap: CaseContent = {
   /* colores del proyecto (UI kit de Lookap) */
-  heroVideo: { src: `${P}/app-en-uso.mp4`, poster: `${P}/hero-poster.jpg` },
+  heroImage: `${P}/ctx-jean.jpg`,
   theme: { wine: '#a82838', coral: '#c86838', cream: '#fff9ed', night: '#1f0a0e' },
   meta: {
     context: { es: 'Proyecto final · Coderhouse', en: 'Final project · Coderhouse' },
@@ -40,16 +40,7 @@ export const lookap: CaseContent = {
         },
       ],
     },
-    {
-      t: 'gallery',
-      es: 'La app en contexto',
-      en: 'The app in context',
-      items: [
-        { src: `${P}/ctx-armario.jpg`, alt: 'Lookap: pantalla de ingreso frente a un placard' },
-        { src: `${P}/ctx-jean.jpg`, alt: 'Lookap: el ropero sobre un jean' },
-        { src: `${P}/ctx-flatlay.jpg`, alt: 'Lookap: combinación guardada junto a la ropa' },
-      ],
-    },
+    { t: 'video', src: `${P}/app-en-uso.mp4`, es: 'La app en uso', en: 'The app in use' },
 
     /* ---------- 01 · Research ---------- */
     { t: 'break', kind: 'video', src: `${P}/percha.mp4`, alt: 'Percha en un perchero, luz natural' },
@@ -189,8 +180,14 @@ export const lookap: CaseContent = {
     },
 
     /* ---------- 04 · Identidad ---------- */
-    { t: 'break', kind: 'img', src: `${P}/textura.jpg`, alt: 'Tejido, lana y jean apilados junto a una ventana', w: 'narrow' },
     { t: 'h', n: '04', es: 'Identidad', en: 'Identity' },
+    {
+      t: 'split',
+      src: `${P}/textura.jpg`,
+      alt: 'Tejido, lana y jean apilados junto a una ventana',
+      es: 'La estética de Lookap parte de la moda editorial: tonos cálidos y texturas de tela como la lana, el algodón y el jean. Un logo con una tipografía display de trazo elegante, y una interfaz limpia en Roboto para que la ropa sea la protagonista.',
+      en: 'Lookap’s look comes from editorial fashion: warm tones and fabric textures like wool, cotton and denim. A logo set in an elegant display typeface, and a clean Roboto interface so the clothes are the stars.',
+    },
     {
       t: 'brand',
       es: 'Logo, color y tipografía',

@@ -29,8 +29,8 @@ const pad = (n: number) => String(n).padStart(2, '0');
       <div class="c-hero-media">
         {K?.heroVideo
           ? <video class="c-hero-photo" src={link(`/${K.heroVideo.src}`)} poster={link(`/${K.heroVideo.poster}`)} autoplay muted loop playsinline preload="auto" aria-label={`${P.title} — portada`}></video>
-          : P.hero
-            ? <img class="c-hero-photo" src={link(`/${P.hero}`)} alt={`${P.title} — portada`} />
+          : (K?.heroImage ?? P.hero)
+            ? <img class="c-hero-photo" src={link(`/${K?.heroImage ?? P.hero}`)} alt={`${P.title} — portada`} />
             : <span class="ph" data-label={`${P.title} — portada`}></span>}
       </div>
       <div class="c-hero-scrim" aria-hidden="true"></div>
@@ -267,6 +267,14 @@ const pad = (n: number) => String(n).padStart(2, '0');
                 </figcaption>
               </figure>
             );
+            case 'split': return (
+              <div class="k-split">
+                <div class="frame reveal">
+                  <img class="revfill" src={link(`/${b.src}`)} alt={b.alt} loading="lazy" decoding="async" />
+                </div>
+                <p class="rise"><span data-es={b.es} data-en={b.en}>{b.es}</span></p>
+              </div>
+            );
             case 'break': return (
               <div class={`k-break ${b.w === 'narrow' ? 'narrow' : ''}`}>
                 <div class="frame reveal">
@@ -497,6 +505,10 @@ const pad = (n: number) => String(n).padStart(2, '0');
   .k-gal-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(10px, 1.6vw, 22px); }
   .k-gallery .frame { aspect-ratio: 4 / 5; }
   .k-gallery .frame > img { height: 100%; object-fit: cover; }
+  .k-split { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr); gap: clamp(24px, 4vw, 64px); align-items: center; margin-top: clamp(32px, 5vh, 56px); }
+  .k-split .frame { line-height: 0; border-radius: 18px; }
+  .k-split .frame > img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; display: block; border-radius: 18px; }
+  .k-split p { font-family: var(--serif); font-size: clamp(18px, 1.9vw, 24px); line-height: 1.4; letter-spacing: -0.005em; }
   .k-break { margin-top: clamp(80px, 15vh, 180px); }
   .k-break .frame { line-height: 0; }
   .k-break .frame > img, .k-break .frame > video { width: 100%; height: auto; display: block; border-radius: 3px; }
@@ -513,6 +525,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
   @media (max-width: 860px) {
     .k-os, .k-cols, .k-stats { grid-template-columns: 1fr; }
     .k-gal-grid { grid-template-columns: 1fr 1fr; }
+    .k-split { grid-template-columns: 1fr; }
     .k-gal-grid .frame:last-child { grid-column: 1 / -1; aspect-ratio: 4 / 3; }
   }
 
