@@ -39,7 +39,7 @@ export const lookap: CaseContent = {
     },
     {
       t: 'video',
-      src: `${P}/flatlay-app.mp4`,
+      src: `${P}/app-en-uso.mp4`,
       es: 'La app en uso',
       en: 'The app in use',
     },
