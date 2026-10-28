@@ -43,7 +43,18 @@ export const lookap: CaseContent = {
       es: 'La app en uso',
       en: 'The app in use',
     },
+    {
+      t: 'gallery',
+      es: 'La app en contexto',
+      en: 'The app in context',
+      items: [
+        { src: `${P}/ctx-armario.jpg`, alt: 'Lookap: pantalla de ingreso frente a un placard' },
+        { src: `${P}/ctx-jean.jpg`, alt: 'Lookap: el ropero sobre un jean' },
+        { src: `${P}/ctx-flatlay.jpg`, alt: 'Lookap: combinación guardada junto a la ropa' },
+      ],
+    },
     { t: 'fig', src: `${P}/screens.jpg`, es: 'Las pantallas principales', en: 'The main screens', w: 'wide' },
+    { t: 'break', kind: 'video', src: `${P}/percha.mp4`, alt: 'Percha en un perchero, luz natural' },
 
     /* ---------- 01 · Descubrir ---------- */
     { t: 'h', n: '01', es: 'Descubrir', en: 'Discover' },
@@ -151,6 +162,7 @@ export const lookap: CaseContent = {
     },
 
     /* ---------- 05 · Identidad ---------- */
+    { t: 'break', kind: 'img', src: `${P}/textura.jpg`, alt: 'Tejido, lana y jean apilados junto a una ventana', w: 'narrow' },
     { t: 'h', n: '05', es: 'Identidad visual', en: 'Visual identity' },
     {
       t: 'p',

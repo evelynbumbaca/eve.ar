@@ -10,6 +10,8 @@ export type Block =
   | { t: 'stats'; items: { n: string; es: string; en: string }[] }
   | { t: 'fig'; src: string; es: string; en: string; w?: 'wide' | 'narrow' }
   | { t: 'video'; src: string; es: string; en: string }
+  | { t: 'gallery'; es: string; en: string; items: { src: string; alt: string }[] }
+  | { t: 'break'; kind: 'img' | 'video'; src: string; alt: string; w?: 'wide' | 'narrow' }
   | { t: 'links'; items: { es: string; en: string; href: string }[] };
 
 export interface CaseContent {
