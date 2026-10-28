@@ -63,7 +63,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
     </div>
 
     {K ? (
-      <div class="c-body wrap">
+      <div class="c-body wrap" style={K.theme ? `--lk-wine:${K.theme.wine};--lk-coral:${K.theme.coral};--lk-cream:${K.theme.cream};--lk-night:${K.theme.night}` : undefined}>
         <p class="c-intro rise"><span data-es={K.intro.es} data-en={K.intro.en}>{K.intro.es}</span></p>
 
         {blocks.map((b) => {
@@ -133,6 +133,106 @@ const pad = (n: number) => String(n).padStart(2, '0');
                   <span data-es={b.es} data-en={b.en}>{b.es}</span>
                   <span class="mono">FIG {pad(b.n)}</span>
                 </figcaption>
+              </figure>
+            );
+            case 'compare': return (
+              <figure class="c-figure k-fig lk-compare">
+                <div class="lk-cards" style={`--n:${b.items.length}`}>
+                  {b.items.map((it) => (
+                    <div class="lk-card rise">
+                      <h4>{it.name}</h4>
+                      {b.rows.map((r, ri) => (
+                        <div class={`lk-cell ${ri === 1 ? 'weak' : ''}`}>
+                          <span class="lk-lab" data-es={r.es} data-en={r.en}>{r.es}</span>
+                          <p><span data-es={it.vals[ri].es} data-en={it.vals[ri].en}>{it.vals[ri].es}</span></p>
+                        </div>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+                <figcaption><span data-es={b.es} data-en={b.en}>{b.es}</span></figcaption>
+              </figure>
+            );
+            case 'sitemap': return (
+              <figure class="c-figure k-fig lk-map">
+                <div class="lk-panel">
+                  <div class="lk-root"><span>{b.root}</span></div>
+                  <div class="lk-branches" style={`--n:${b.branches.length}`}>
+                    {b.branches.map((br) => (
+                      <div class="lk-branch">
+                        <h4><span data-es={br.title.es} data-en={br.title.en}>{br.title.es}</span></h4>
+                        {br.kids.length > 0 && (
+                          <ul>
+                            {br.kids.map((k) => <li><span data-es={k.es} data-en={k.en}>{k.es}</span></li>)}
+                          </ul>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <figcaption><span data-es={b.es} data-en={b.en}>{b.es}</span></figcaption>
+              </figure>
+            );
+            case 'steps': return (
+              <figure class="c-figure k-fig lk-steps">
+                <ol class="lk-flow">
+                  {b.items.map((it, i) => (
+                    <li><span class="lk-dia mono">{i + 1}</span><span data-es={it.es} data-en={it.en}>{it.es}</span></li>
+                  ))}
+                </ol>
+                <figcaption><span data-es={b.es} data-en={b.en}>{b.es}</span></figcaption>
+              </figure>
+            );
+            case 'fidelity': return (
+              <figure class="c-figure k-fig lk-fid">
+                <div class="lk-stages">
+                  {b.items.map((it, i) => (
+                    <div class="lk-stage rise">
+                      <div class="lk-phone" data-kind={it.kind} aria-hidden="true">
+                        <i class="bar"></i><i class="img"></i><i class="ln"></i><i class="ln s"></i><i class="btn"></i><i class="tab"></i>
+                      </div>
+                      <h4><span class="mono">{pad(i + 1)}</span> <span data-es={it.title.es} data-en={it.title.en}>{it.title.es}</span></h4>
+                      <p><span data-es={it.text.es} data-en={it.text.en}>{it.text.es}</span></p>
+                    </div>
+                  ))}
+                </div>
+                <figcaption><span data-es={b.es} data-en={b.en}>{b.es}</span></figcaption>
+              </figure>
+            );
+            case 'bars': return (
+              <figure class="c-figure k-fig lk-bars">
+                <div class="lk-panel">
+                  <ul class="lk-legend">
+                    {b.legend.map((l) => <li><i class={`t-${l.key}`}></i><span data-es={l.label.es} data-en={l.label.en}>{l.label.es}</span></li>)}
+                  </ul>
+                  {b.items.map((it) => (
+                    <div class={`lk-row ${it.hot ? 'hot' : ''}`}>
+                      <p class="lk-q"><span data-es={it.q.es} data-en={it.q.en}>{it.q.es}</span></p>
+                      <div class="lk-bar">
+                        {it.parts.map((pt) => <span class={`t-${pt.key}`} style={`width:${pt.pct}%`}>{pt.pct}%</span>)}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <figcaption><span data-es={b.es} data-en={b.en}>{b.es}</span></figcaption>
+              </figure>
+            );
+            case 'brand': return (
+              <figure class="c-figure k-fig lk-brand">
+                <div class="lk-panel lk-brand-grid">
+                  <div class="lk-logo"><img src={link(`/${b.logo}`)} alt="Logo Lookap" loading="lazy" decoding="async" /></div>
+                  <div class="lk-swatches">
+                    {b.swatches.map((sw) => (
+                      <div class="lk-sw"><i class={`tone-${sw.tone}`}></i><span data-es={sw.name.es} data-en={sw.name.en}>{sw.name.es}</span></div>
+                    ))}
+                  </div>
+                  <dl class="lk-type">
+                    {b.type.map((ty) => (
+                      <div><dt>{ty.name}</dt><dd><span data-es={ty.text.es} data-en={ty.text.en}>{ty.text.es}</span></dd></div>
+                    ))}
+                  </dl>
+                </div>
+                <figcaption><span data-es={b.es} data-en={b.en}>{b.es}</span></figcaption>
               </figure>
             );
             case 'gallery': return (
@@ -397,5 +497,106 @@ const pad = (n: number) => String(n).padStart(2, '0');
     .k-os, .k-cols, .k-stats { grid-template-columns: 1fr; }
     .k-gal-grid { grid-template-columns: 1fr 1fr; }
     .k-gal-grid .frame:last-child { grid-column: 1 / -1; aspect-ratio: 4 / 3; }
+  }
+
+  /* ---------- piezas rediseñadas con la estética de Lookap (vino · coral · crema) ---------- */
+  .lk-panel { background: var(--lk-cream, #fff9ed); border: 1px solid var(--ink-12); border-radius: 3px; padding: clamp(20px, 3vw, 40px); }
+  .lk-lab, .lk-legend, .lk-type dt, .lk-dia { font-family: var(--sans); }
+
+  /* benchmarking */
+  .lk-cards { display: grid; grid-template-columns: repeat(var(--n), 1fr); gap: clamp(10px, 1.4vw, 18px); }
+  .lk-card { background: var(--lk-cream, #fff9ed); border: 1px solid var(--ink-12); border-radius: 3px; overflow: hidden; display: flex; flex-direction: column; }
+  .lk-card h4 { font-family: var(--serif); font-weight: 500; font-size: clamp(1.2rem, 1.8vw, 1.5rem); padding: 18px 20px 12px; color: var(--lk-night, #1f0a0e); }
+  .lk-cell { padding: 14px 20px 18px; flex: 1; }
+  .lk-cell .lk-lab { display: block; font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 8px; color: var(--lk-coral, #c86838); font-weight: 600; }
+  .lk-cell p { font-family: var(--serif); font-size: clamp(14.5px, 1.2vw, 16.5px); line-height: 1.4; }
+  .lk-cell.weak { background: var(--lk-wine, #a82838); color: var(--lk-cream, #fff9ed); }
+  .lk-cell.weak .lk-lab { color: rgba(255, 249, 237, 0.72); }
+
+  /* arquitectura (mapa) */
+  .lk-root { display: flex; justify-content: center; position: relative; padding-bottom: 28px; }
+  .lk-root span { background: var(--lk-coral, #c86838); color: var(--lk-cream, #fff9ed); font-family: var(--serif); font-size: 1.15rem; padding: 8px 26px; border-radius: 2px; }
+  .lk-root::after { content: ''; position: absolute; left: 50%; bottom: 0; width: 1px; height: 28px; background: var(--lk-coral, #c86838); }
+  .lk-branches { display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); gap: 14px; border-top: 1px solid var(--lk-coral, #c86838); padding-top: 22px; }
+  .lk-branch { position: relative; }
+  .lk-branch::before { content: ''; position: absolute; top: -22px; left: 50%; width: 1px; height: 22px; background: var(--lk-coral, #c86838); }
+  .lk-branch h4 { background: var(--lk-wine, #a82838); color: var(--lk-cream, #fff9ed); font-family: var(--sans); font-weight: 500; font-size: 12px; letter-spacing: 0.04em; text-align: center; padding: 9px 6px; border-radius: 2px; }
+  .lk-branch ul { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 7px; }
+  .lk-branch li { background: #fff; border: 1px solid var(--ink-12); border-radius: 2px; font-family: var(--sans); font-size: 11.5px; line-height: 1.3; padding: 8px 9px; text-align: center; color: var(--lk-night, #1f0a0e); }
+
+  /* task flow */
+  .lk-flow { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 10px 0; }
+  .lk-flow li { flex: 1 1 150px; position: relative; display: flex; align-items: center; gap: 12px; font-family: var(--serif); font-size: clamp(15px, 1.3vw, 18px); line-height: 1.25; padding-right: 34px; }
+  .lk-flow li:not(:last-child)::after { content: ''; position: absolute; right: 12px; top: 50%; width: 9px; height: 9px; border-top: 1.5px solid var(--lk-coral, #c86838); border-right: 1.5px solid var(--lk-coral, #c86838); transform: translateY(-50%) rotate(45deg); }
+  .lk-dia { flex: none; width: 34px; height: 34px; display: grid; place-items: center; background: var(--lk-coral, #c86838); color: var(--lk-cream, #fff9ed); font-size: 12px; transform: rotate(45deg); border-radius: 3px; }
+  .lk-dia { writing-mode: horizontal-tb; }
+  .lk-flow li .lk-dia { margin-right: 4px; }
+
+  /* fidelidad */
+  .lk-stages { display: grid; grid-template-columns: repeat(4, 1fr); gap: clamp(14px, 2vw, 28px); }
+  .lk-stage h4 { font-family: var(--serif); font-weight: 500; font-size: clamp(1.05rem, 1.5vw, 1.3rem); margin: 16px 0 6px; }
+  .lk-stage h4 .mono { font-size: 11px; color: var(--ink-60); margin-right: 6px; }
+  .lk-stage p { font-family: var(--serif); font-size: clamp(14px, 1.15vw, 16px); line-height: 1.35; color: var(--ink-80); }
+  .lk-phone { aspect-ratio: 9 / 18; width: 100%; max-width: 150px; border-radius: 16px; padding: 10px 9px 9px; display: flex; flex-direction: column; gap: 7px; position: relative; }
+  .lk-phone i { display: block; border-radius: 2px; }
+  .lk-phone .bar { height: 8px; width: 55%; }
+  .lk-phone .img { flex: 1; }
+  .lk-phone .ln { height: 5px; width: 80%; }
+  .lk-phone .ln.s { width: 50%; }
+  .lk-phone .btn { height: 15px; }
+  .lk-phone .tab { height: 12px; margin-top: 2px; }
+  .lk-phone[data-kind='sketch'] { background: #fff; border: 1.5px dashed rgba(31, 10, 14, 0.55); }
+  .lk-phone[data-kind='sketch'] i { border: 1.2px dashed rgba(31, 10, 14, 0.5); background: transparent; }
+  .lk-phone[data-kind='sketch'] .img { background: linear-gradient(to top right, transparent calc(50% - 0.6px), rgba(31, 10, 14, 0.45) 50%, transparent calc(50% + 0.6px)), linear-gradient(to bottom right, transparent calc(50% - 0.6px), rgba(31, 10, 14, 0.45) 50%, transparent calc(50% + 0.6px)); }
+  .lk-phone[data-kind='wire'] { background: #fff; border: 1.5px solid #bdbdbd; }
+  .lk-phone[data-kind='wire'] i { background: #d6d6d6; }
+  .lk-phone[data-kind='mid'] { background: #fff; border: 1.5px solid #8d8d8d; }
+  .lk-phone[data-kind='mid'] i { background: #cfcfcf; }
+  .lk-phone[data-kind='mid'] .bar { background: #8d8d8d; }
+  .lk-phone[data-kind='mid'] .btn { background: #8d8d8d; }
+  .lk-phone[data-kind='mid'] .tab { background: repeating-linear-gradient(90deg, #8d8d8d 0 10px, transparent 10px 22%); }
+  .lk-phone[data-kind='hi'] { background: var(--lk-cream, #fff9ed); border: 2px solid var(--lk-night, #1f0a0e); box-shadow: 0 10px 22px rgba(31, 10, 14, 0.16); }
+  .lk-phone[data-kind='hi'] .bar { background: var(--lk-coral, #c86838); }
+  .lk-phone[data-kind='hi'] .img { background: linear-gradient(160deg, #e9cdb0, var(--lk-wine, #a82838)); }
+  .lk-phone[data-kind='hi'] .ln { background: rgba(31, 10, 14, 0.22); }
+  .lk-phone[data-kind='hi'] .btn { background: var(--lk-coral, #c86838); border-radius: 8px; }
+  .lk-phone[data-kind='hi'] .tab { background: repeating-linear-gradient(90deg, var(--lk-night, #1f0a0e) 0 8px, transparent 8px 22%); opacity: 0.7; }
+
+  /* usabilidad */
+  .lk-legend { list-style: none; display: flex; flex-wrap: wrap; gap: 8px 20px; margin: 0 0 22px; padding: 0; font-size: 12px; color: var(--ink-80); }
+  .lk-legend li { display: inline-flex; align-items: center; gap: 8px; }
+  .lk-legend i { width: 11px; height: 11px; border-radius: 2px; display: block; }
+  .lk-row { padding: 14px 0 14px 14px; border-top: 1px solid var(--ink-12); border-left: 3px solid transparent; }
+  .lk-row.hot { border-left-color: var(--lk-wine, #a82838); }
+  .lk-q { font-family: var(--serif); font-size: clamp(15px, 1.4vw, 18px); margin-bottom: 9px; }
+  .lk-bar { display: flex; height: 30px; border-radius: 2px; overflow: hidden; }
+  .lk-bar span { display: grid; place-items: center; font-family: var(--sans); font-size: 12px; font-weight: 500; }
+  .t-a { background: var(--lk-wine, #a82838); color: #fff; }
+  .t-b { background: var(--lk-coral, #c86838); color: #fff; }
+  .t-c { background: #e9cdb0; color: var(--lk-night, #1f0a0e); }
+  .t-d { background: var(--lk-night, #1f0a0e); color: #fff; }
+
+  /* identidad */
+  .lk-brand-grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: clamp(20px, 3vw, 44px); align-items: center; }
+  .lk-logo img { width: 100%; height: auto; display: block; mix-blend-mode: multiply; }
+  .lk-swatches { display: flex; gap: clamp(14px, 2.4vw, 32px); justify-content: center; padding: 14px 0; }
+  .lk-sw { display: grid; justify-items: center; gap: 22px; font-family: var(--sans); font-size: 12px; color: var(--ink-80); }
+  .lk-sw i { display: block; width: clamp(46px, 6vw, 66px); height: clamp(46px, 6vw, 66px); transform: rotate(45deg); margin-top: 12px; border-radius: 3px; border: 1px solid var(--ink-18); }
+  .lk-sw .tone-coral { background: var(--lk-coral, #c86838); }
+  .lk-sw .tone-cream { background: var(--lk-cream, #fff9ed); }
+  .lk-sw .tone-wine { background: var(--lk-wine, #a82838); }
+  .lk-type { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 14px 32px; margin: 0; padding-top: 22px; border-top: 1px solid var(--ink-12); }
+  .lk-type dt { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--lk-coral, #c86838); font-weight: 600; margin-bottom: 4px; }
+  .lk-type dd { margin: 0; font-family: var(--serif); font-size: clamp(14.5px, 1.2vw, 16.5px); line-height: 1.4; }
+
+  .k-fig.lk-compare, .k-fig.lk-map, .k-fig.lk-steps, .k-fig.lk-fid, .k-fig.lk-bars, .k-fig.lk-brand { margin-top: clamp(40px, 7vh, 80px); }
+
+  @media (max-width: 860px) {
+    .lk-cards { grid-template-columns: 1fr; }
+    .lk-stages { grid-template-columns: 1fr 1fr; }
+    .lk-brand-grid, .lk-type { grid-template-columns: 1fr; }
+    .lk-branches { grid-template-columns: repeat(auto-fit, minmax(135px, 1fr)); }
+    .lk-branch::before { display: none; }
+    .lk-branches { border-top: 0; padding-top: 0; }
   }
 </style>

@@ -7,6 +7,8 @@ import type { CaseContent } from './types';
 const P = 'projects/lookap';
 
 export const lookap: CaseContent = {
+  /* colores del proyecto (UI kit de Lookap) */
+  theme: { wine: '#a82838', coral: '#c86838', cream: '#fff9ed', night: '#1f0a0e' },
   meta: {
     context: { es: 'Proyecto final · Coderhouse', en: 'Final project · Coderhouse' },
     role: { es: 'Research · UX/UI · Prototipado · Identidad visual', en: 'Research · UX/UI · Prototyping · Visual identity' },
@@ -22,27 +24,22 @@ export const lookap: CaseContent = {
       items: [
         {
           label: { es: 'Problema', en: 'Problem' },
-          es: 'Elegir qué ponerse es un conflicto cotidiano. No podemos ver todo el placard a la vez, olvidamos prendas que nos encantaban y terminamos repitiendo lo que tenemos a mano. La ropa admite mil combinaciones, pero la vida agitada no deja tiempo para explorarlas.',
-          en: "Choosing what to wear is a daily conflict. We can't see the whole wardrobe at once, we forget pieces we loved and end up repeating whatever is within reach. Clothes allow a thousand combinations, but a busy life leaves no time to explore them.",
+          es: 'Elegir qué ponerse es un conflicto cotidiano. No podemos ver todo el placard a la vez, olvidamos prendas que nos encantaban y terminamos repitiendo lo que tenemos a mano.',
+          en: "Choosing what to wear is a daily conflict. We can't see the whole wardrobe at once, we forget pieces we loved and end up repeating whatever is within reach.",
         },
         {
           label: { es: 'Objetivo', en: 'Objective' },
-          es: 'Crear una herramienta práctica, útil y estética para quienes entran en conflicto a la hora de vestirse: por indecisión, o por el olvido de ciertas prendas y de viejas combinaciones que les gustaba hacer.',
-          en: 'Create a practical, useful and beautiful tool for people who struggle when getting dressed: out of indecision, or from forgetting certain pieces and old combinations they liked.',
+          es: 'Una herramienta práctica, útil y estética para quienes se traban a la hora de vestirse: por indecisión, o por olvidar prendas y combinaciones que les gustaban.',
+          en: 'A practical, useful and beautiful tool for people who get stuck when getting dressed: from indecision, or from forgetting pieces and combinations they liked.',
         },
         {
           label: { es: 'Solución', en: 'Solution' },
-          es: 'Una app para llevar la cuenta de todas tus prendas: sacás una foto, la etiquetás y la organizás por categorías. Armás combinaciones, las guardás y las compartís con amigos o las sometés a votación en historias. Una interfaz atractiva, sin elementos innecesarios.',
-          en: 'An app that keeps track of all your garments: take a photo, tag it and sort it into categories. Build combinations, save them, share them with friends or put them to a vote in stories. An attractive interface with nothing unnecessary.',
+          es: 'Una app para llevar la cuenta de tus prendas: sacás una foto, la etiquetás y la organizás. Armás combinaciones, las guardás y las compartís o las sometés a votación en historias.',
+          en: 'An app that keeps track of your garments: take a photo, tag it and sort it. Build combinations, save them, and share them or put them to a vote in stories.',
         },
       ],
     },
-    {
-      t: 'video',
-      src: `${P}/app-en-uso.mp4`,
-      es: 'La app en uso',
-      en: 'The app in use',
-    },
+    { t: 'video', src: `${P}/app-en-uso.mp4`, es: 'La app en uso', en: 'The app in use' },
     {
       t: 'gallery',
       es: 'La app en contexto',
@@ -53,58 +50,51 @@ export const lookap: CaseContent = {
         { src: `${P}/ctx-flatlay.jpg`, alt: 'Lookap: combinación guardada junto a la ropa' },
       ],
     },
-    { t: 'fig', src: `${P}/screens.jpg`, es: 'Las pantallas principales', en: 'The main screens', w: 'wide' },
+
+    /* ---------- 01 · Research ---------- */
     { t: 'break', kind: 'video', src: `${P}/percha.mp4`, alt: 'Percha en un perchero, luz natural' },
-
-    /* ---------- 01 · Descubrir ---------- */
-    { t: 'h', n: '01', es: 'Descubrir', en: 'Discover' },
+    { t: 'h', n: '01', es: 'Research', en: 'Research' },
     {
       t: 'p',
-      es: 'Empecé por las personas. Dos arquetipos —Camila, 28, administrativa con poco espacio en su placard, y Belén, 40, asesora de imagen y mamá de dos— marcaron las necesidades: ahorrar tiempo al vestirse y poder mostrar, recordar y agendar looks.',
-      en: 'I started with people. Two archetypes — Camila, 28, an office worker with little closet space, and Belén, 40, an image consultant and mother of two — set the needs: save time when getting dressed, and be able to show, recall and schedule looks.',
+      es: 'Empecé por las personas: Camila, 28, administrativa con poco espacio en su placard, y Belén, 40, asesora de imagen y mamá de dos. Necesitan lo mismo: ahorrar tiempo al vestirse y poder mostrar y recordar looks.',
+      en: 'I started with people: Camila, 28, an office worker with little closet space, and Belén, 40, an image consultant and mother of two. They need the same thing: save time getting dressed and be able to show and recall looks.',
     },
-    { t: 'fig', src: `${P}/arquetipos.jpg`, es: 'Arquetipos: Camila y Belén', en: 'Archetypes: Camila and Belén', w: 'wide' },
     {
-      t: 'list',
-      title: { es: 'Funcionalidades', en: 'Features' },
+      t: 'compare',
+      es: 'Benchmarking',
+      en: 'Benchmarking',
+      rows: [
+        { es: 'Fortalezas', en: 'Strengths' },
+        { es: 'Debilidades', en: 'Weaknesses' },
+      ],
       items: [
-        { es: 'Sacar fotos a las prendas y hacer combinaciones.', en: 'Photograph garments and build combinations.' },
-        { es: 'Organizar por estilo, color, estación y categorías personalizadas.', en: 'Organize by style, color, season and custom categories.' },
-        { es: 'Guardar fotos de los looks.', en: 'Save photos of your looks.' },
-        { es: 'Encuestas rápidas en historias.', en: 'Quick polls in stories.' },
-        { es: 'Compartir prendas o looks con amigos, dentro de la app o en redes.', en: 'Share pieces or looks with friends, in-app or on social media.' },
-        { es: 'Comprar productos sugeridos para completar looks.', en: 'Buy suggested products to complete looks.' },
-        { es: 'Obtener códigos de descuento en distintas marcas.', en: 'Get discount codes from different brands.' },
+        {
+          name: 'Combyne',
+          vals: [
+            { es: 'Muchas funciones y herramientas; visualmente atractiva.', en: 'Many features and tools; visually attractive.' },
+            { es: 'Su público son niñas y adolescentes; se usa más para armar templates que para organizar la ropa.', en: 'Its audience is girls and teens; used more to make templates than to organize clothes.' },
+          ],
+        },
+        {
+          name: 'My Outfit',
+          vals: [
+            { es: 'Organiza la ropa en categorías y permite buscar por color, talle o marca.', en: 'Sorts clothes into categories and lets you search by color, size or brand.' },
+            { es: 'Solo permite postear las combinaciones; a quien solo quiere organizarse no le sirve.', en: 'You can only post combinations; no use for someone who just wants to get organized.' },
+          ],
+        },
+        {
+          name: 'Closet+',
+          vals: [
+            { es: 'Arma el equipaje para viajar y tiene calendario de looks.', en: 'Packs for trips and has a calendar of looks.' },
+            { es: 'Interfaz poco atractiva e intuitiva: hacen falta muchos pasos para lograr el objetivo.', en: 'Unattractive, unintuitive interface: too many steps to reach the goal.' },
+          ],
+        },
       ],
     },
     {
-      t: 'cols',
-      items: [
-        {
-          title: { es: 'Punto de vista', en: 'Point of view' },
-          es: 'Belén necesita una herramienta práctica que la ayude a optimizar el tiempo de selección de vestuario y que además le sirva para trabajar con sus clientas: mostrar combinaciones, recordar outfits pasados y agendar nuevos.',
-          en: 'Belén needs a practical tool that helps her optimize the time she spends choosing outfits, and that also works for her clients: showing combinations, recalling past outfits and scheduling new ones.',
-        },
-        {
-          title: { es: 'MVP', en: 'MVP' },
-          es: 'Guardar fotos de toda la ropa. Combinar ropa. Conectar usuarios.',
-          en: 'Save photos of all your clothes. Combine clothes. Connect users.',
-        },
-      ],
-    },
-    { t: 'fig', src: `${P}/benchmarking.jpg`, es: 'Benchmarking: Combyne, My Outfit y Closet+', en: 'Benchmarking: Combyne, My Outfit and Closet+', w: 'narrow' },
-    {
       t: 'p',
-      es: 'Cada app resolvía una parte —estética, organización o armado de equipaje—, pero ninguna reunía organización, combinaciones y una interfaz simple.',
-      en: 'Each app solved one part — aesthetics, organization or travel packing — but none brought together organization, combinations and a simple interface.',
-    },
-
-    /* ---------- 02 · Definir ---------- */
-    { t: 'h', n: '02', es: 'Definir', en: 'Define' },
-    {
-      t: 'p',
-      es: 'Con un card sorting entendí cómo agrupan las funciones las personas usuarias, y eso ordenó la estructura de la app.',
-      en: 'A card sorting study showed how people group the features, and that shaped the structure of the app.',
+      es: 'Cada app resolvía una parte, pero ninguna reunía organización, combinaciones y una interfaz simple. Con un card sorting entendí cómo agrupan las funciones las personas usuarias:',
+      en: 'Each app solved one part, but none brought together organization, combinations and a simple interface. A card sorting study showed how people group the features:',
     },
     {
       t: 'stats',
@@ -113,70 +103,105 @@ export const lookap: CaseContent = {
         { n: '80%', es: 'agrupó “Hacer combinaciones” con “Combinaciones guardadas”.', en: 'grouped “Make combinations” with “Saved combinations”.' },
       ],
     },
-    { t: 'fig', src: `${P}/cardsorting.jpg`, es: 'Card sorting y matriz de similitud', en: 'Card sorting and similarity matrix', w: 'narrow' },
-    { t: 'fig', src: `${P}/dendrograma.jpg`, es: 'Dendrograma', en: 'Dendrogram', w: 'wide' },
-    {
-      t: 'p',
-      es: 'Después del benchmarking, el card sorting, las entrevistas y las pruebas, la arquitectura quedó en siete secciones: Buscar, Home, Ropero, Cámara, Social, Compras y Notificaciones.',
-      en: 'After the benchmarking, card sorting, interviews and tests, the architecture settled into seven sections: Search, Home, Closet, Camera, Social, Shop and Notifications.',
-    },
-    { t: 'fig', src: `${P}/arquitectura.jpg`, es: 'Arquitectura de la información', en: 'Information architecture', w: 'wide' },
-    { t: 'fig', src: `${P}/userflow.jpg`, es: 'User flow: combinación de prendas', en: 'User flow: combining garments', w: 'wide' },
-    { t: 'fig', src: `${P}/taskflow.jpg`, es: 'Task flow: Belén comparte un look con una clienta', en: 'Task flow: Belén shares a look with a client', w: 'wide' },
 
-    /* ---------- 03 · Prototipar ---------- */
-    { t: 'h', n: '03', es: 'Prototipar', en: 'Prototype' },
+    /* ---------- 02 · Estructura ---------- */
+    { t: 'h', n: '02', es: 'Estructura', en: 'Structure' },
     {
-      t: 'p',
-      es: 'Fui subiendo la fidelidad de a poco: del papel al wireframe digital, luego a media fidelidad y finalmente al prototipo en alta, con la identidad ya aplicada.',
-      en: 'I raised the fidelity step by step: from paper to digital wireframes, then mid-fidelity and finally the high-fidelity prototype, with the identity applied.',
+      t: 'sitemap',
+      es: 'Arquitectura de la información',
+      en: 'Information architecture',
+      root: 'Lookap',
+      branches: [
+        { title: { es: 'Buscar', en: 'Search' }, kids: [{ es: 'Buscar prendas', en: 'Search garments' }, { es: 'Filtros', en: 'Filters' }] },
+        { title: { es: 'Home', en: 'Home' }, kids: [{ es: 'Favoritos', en: 'Favorites' }, { es: 'Looks favoritos', en: 'Favorite looks' }, { es: 'Prendas favoritas', en: 'Favorite garments' }] },
+        { title: { es: 'Ropero', en: 'Closet' }, kids: [{ es: 'Organizar ropa', en: 'Organize clothes' }, { es: 'Looks', en: 'Looks' }, { es: 'Hacer combinaciones', en: 'Make combinations' }, { es: 'Combinaciones guardadas', en: 'Saved combinations' }] },
+        { title: { es: 'Cámara', en: 'Camera' }, kids: [{ es: 'Guardar prenda en el ropero', en: 'Save garment to closet' }] },
+        { title: { es: 'Social', en: 'Social' }, kids: [{ es: 'Feed de amigos', en: 'Friends feed' }, { es: 'Encuestas en historias', en: 'Polls in stories' }, { es: 'Perfil', en: 'Profile' }] },
+        { title: { es: 'Compras', en: 'Shop' }, kids: [{ es: 'Carrito', en: 'Cart' }, { es: 'Códigos de descuento', en: 'Discount codes' }] },
+        { title: { es: 'Notificaciones', en: 'Notifications' }, kids: [] },
+      ],
     },
-    { t: 'fig', src: `${P}/proto-papel.jpg`, es: 'Prototipo en baja: papel', en: 'Low fidelity: paper', w: 'wide' },
-    { t: 'fig', src: `${P}/proto-baja.jpg`, es: 'Prototipo en baja digital', en: 'Low fidelity: digital', w: 'wide' },
-    { t: 'fig', src: `${P}/proto-media.jpg`, es: 'Prototipo en media fidelidad', en: 'Mid fidelity', w: 'wide' },
-    { t: 'fig', src: `${P}/proto-alta.jpg`, es: 'Prototipo en alta fidelidad', en: 'High fidelity', w: 'wide' },
-    { t: 'fig', src: `${P}/social.jpg`, es: 'Social: historias, chats, perfil y feed', en: 'Social: stories, chats, profile and feed', w: 'wide' },
+    {
+      t: 'steps',
+      es: 'Task flow: Belén comparte un look con una clienta',
+      en: 'Task flow: Belén shares a look with a client',
+      items: [
+        { es: 'Ingresa a la app', en: 'Opens the app' },
+        { es: 'Entra al ropero', en: 'Goes to the closet' },
+        { es: 'Abre combinaciones', en: 'Opens combinations' },
+        { es: 'Arma el look', en: 'Builds the look' },
+        { es: 'Lo comparte', en: 'Shares it' },
+      ],
+    },
 
-    /* ---------- 04 · Validar ---------- */
-    { t: 'h', n: '04', es: 'Validar', en: 'Validate' },
+    /* ---------- 03 · Prototipo y pruebas ---------- */
+    { t: 'h', n: '03', es: 'Prototipo y pruebas', en: 'Prototype and testing' },
+    {
+      t: 'fidelity',
+      es: 'Cuatro niveles de fidelidad',
+      en: 'Four levels of fidelity',
+      items: [
+        { kind: 'sketch', title: { es: 'Papel', en: 'Paper' }, text: { es: 'Bocetos a mano de las pantallas clave.', en: 'Hand sketches of the key screens.' } },
+        { kind: 'wire', title: { es: 'Baja digital', en: 'Low digital' }, text: { es: 'Wireframes: estructura y jerarquía.', en: 'Wireframes: structure and hierarchy.' } },
+        { kind: 'mid', title: { es: 'Media', en: 'Mid' }, text: { es: 'Navegación y etiquetas, todavía en grises.', en: 'Navigation and labels, still in grey.' } },
+        { kind: 'hi', title: { es: 'Alta', en: 'High' }, text: { es: 'Identidad aplicada y prototipo interactivo.', en: 'Identity applied and interactive prototype.' } },
+      ],
+    },
     {
       t: 'p',
-      es: 'Probé el prototipo con cinco personas y medí qué tan sencillo les resultó cada tarea.',
-      en: 'I tested the prototype with five people and measured how easy each task was for them.',
+      es: 'Probé el prototipo con cinco personas y medí qué tan sencilla les resultó cada tarea.',
+      en: 'I tested the prototype with five people and measured how easy each task was.',
     },
-    { t: 'fig', src: `${P}/usabilidad.jpg`, es: 'Pruebas de usabilidad: métricas de satisfacción (5 respuestas)', en: 'Usability tests: satisfaction metrics (5 responses)', w: 'wide' },
+    {
+      t: 'bars',
+      es: 'Pruebas de usabilidad · 5 respuestas',
+      en: 'Usability tests · 5 responses',
+      legend: [
+        { key: 'a', label: { es: 'Muy fácil', en: 'Very easy' } },
+        { key: 'b', label: { es: 'Fácil', en: 'Easy' } },
+        { key: 'c', label: { es: 'Más o menos', en: 'So-so' } },
+        { key: 'd', label: { es: 'Difícil', en: 'Hard' } },
+      ],
+      items: [
+        { q: { es: 'Sacar una foto de una prenda', en: 'Taking a photo of a garment' }, parts: [{ key: 'b', pct: 80 }, { key: 'c', pct: 20 }] },
+        { q: { es: 'Hacer una combinación', en: 'Making a combination' }, parts: [{ key: 'a', pct: 20 }, { key: 'b', pct: 80 }] },
+        { q: { es: 'Compartir el look con amigos', en: 'Sharing the look with friends' }, hot: true, parts: [{ key: 'c', pct: 80 }, { key: 'd', pct: 20 }] },
+        { q: { es: 'Ir al perfil', en: 'Going to the profile' }, parts: [{ key: 'a', pct: 60 }, { key: 'b', pct: 20 }, { key: 'c', pct: 20 }] },
+      ],
+    },
     {
       t: 'cols',
       items: [
         {
-          title: { es: 'Lo que encontramos', en: 'What we found' },
-          es: 'Sacar una foto, combinar y entrar al perfil resultaron fáciles. Compartir el look con amigos fue lo más difícil: el 80% lo calificó “más o menos” y un 20%, difícil.',
-          en: 'Taking a photo, combining and opening the profile were easy. Sharing the look with friends was the hardest: 80% rated it “so-so” and 20% found it difficult.',
+          title: { es: 'Lo que encontré', en: 'What I found' },
+          es: 'Compartir el look fue lo más difícil: el 80% lo calificó “más o menos”. Lo demás resultó fácil.',
+          en: 'Sharing the look was the hardest: 80% rated it “so-so”. Everything else was easy.',
         },
         {
           title: { es: 'Lo que cambié', en: 'What I changed' },
-          es: 'La función principal, sacar la foto de la prenda, pasó al centro de la tab bar. Y sumé el ícono de compartir en cada sección del ropero, en los chats, en las encuestas de historias y en el perfil.',
-          en: 'The main function, photographing a garment, moved to the center of the tab bar. And I added a share icon to every closet section, the chats, the story polls and the profile.',
+          es: 'Sacar la foto, la función principal, pasó al centro de la tab bar. Y sumé el ícono de compartir en cada sección del ropero, los chats, las encuestas y el perfil.',
+          en: 'Taking the photo, the main function, moved to the center of the tab bar. And I added a share icon to every closet section, chats, polls and the profile.',
         },
       ],
     },
 
-    /* ---------- 05 · Identidad ---------- */
+    /* ---------- 04 · Identidad ---------- */
     { t: 'break', kind: 'img', src: `${P}/textura.jpg`, alt: 'Tejido, lana y jean apilados junto a una ventana', w: 'narrow' },
-    { t: 'h', n: '05', es: 'Identidad visual', en: 'Visual identity' },
+    { t: 'h', n: '04', es: 'Identidad', en: 'Identity' },
     {
-      t: 'p',
-      es: 'La estética parte de la moda editorial: tonos cálidos, texturas de tela y una tipografía display de trazo elegante para el logo. Para la interfaz, Roboto, por su legibilidad.',
-      en: 'The look comes from editorial fashion: warm tones, fabric textures and an elegant display typeface for the logo. For the interface, Roboto, for its legibility.',
-    },
-    { t: 'fig', src: `${P}/moodboard.jpg`, es: 'Moodboard', en: 'Moodboard', w: 'wide' },
-    { t: 'fig', src: `${P}/logo.jpg`, es: 'Logo e ícono', en: 'Logo and icon', w: 'wide' },
-    { t: 'fig', src: `${P}/uikit.jpg`, es: 'UI Kit: paleta, tipografías, inputs, botones, tab bar y cards', en: 'UI Kit: palette, typography, inputs, buttons, tab bar and cards', w: 'narrow' },
-    { t: 'fig', src: `${P}/cierre.jpg`, es: 'Lookap, en perspectiva', en: 'Lookap, in perspective', w: 'wide' },
-    {
-      t: 'note',
-      es: 'Tipografía del logo: Doppelganger, de Speak Design.',
-      en: 'Logo typeface: Doppelganger, by Speak Design.',
+      t: 'brand',
+      es: 'Logo, color y tipografía',
+      en: 'Logo, color and type',
+      logo: `${P}/logo-lookap.jpg`,
+      swatches: [
+        { name: { es: 'Primario', en: 'Primary' }, tone: 'coral' },
+        { name: { es: 'Secundario', en: 'Secondary' }, tone: 'cream' },
+        { name: { es: 'Acento', en: 'Accent' }, tone: 'wine' },
+      ],
+      type: [
+        { name: 'Doppelganger', text: { es: 'Logo. Tipografía de Speak Design.', en: 'Logo. Typeface by Speak Design.' } },
+        { name: 'Roboto', text: { es: 'Interfaz: títulos 20, 18 y 14 pt; botones en bold 16 pt.', en: 'Interface: headings 20, 18 and 14 pt; buttons in bold 16 pt.' } },
+      ],
     },
     {
       t: 'links',
