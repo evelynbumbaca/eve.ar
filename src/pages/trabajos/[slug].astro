@@ -431,8 +431,7 @@ const navItems = blocks.filter((b) => b.t === 'h') as { t: 'h'; n: string; es: s
               </div>
             );
             case 'proto': return (
-              <figure class="c-figure k-fig lk-proto">
-                <h3 class="lk-ptitle"><span data-es={b.title.es} data-en={b.title.en}>{b.title.es}</span></h3>
+              <figure class="c-figure k-fig lk-proto" aria-label={b.title.es}>
                 <div class="lk-ptick" aria-hidden="true">
                   <div class="lk-ptrack">
                     {[0, 1].map(() => (
