@@ -21,6 +21,15 @@ const K = cases[P.id];
 let figN = 0;
 const blocks = (K?.blocks ?? []).map((b) => (b.t === 'fig' || b.t === 'video' || b.t === 'gallery' ? { ...b, n: ++figN } : b));
 const pad = (n: number) => String(n).padStart(2, '0');
+/* Convierte el enlace de un prototipo de Figma al formato de embed (embed.figma.com). */
+const figmaEmbed = (url: string) => {
+  const u = new URL(url);
+  u.hostname = 'embed.figma.com';
+  const node = u.searchParams.get('node-id');
+  if (node) u.searchParams.set('node-id', node.replace(':', '-'));
+  u.searchParams.set('embed-host', 'eve.ar');
+  return u.toString();
+};
 const navItems = blocks.filter((b) => b.t === 'h') as { t: 'h'; n: string; es: string; en: string; nav?: { es: string; en: string } }[];
 ---
 
@@ -409,9 +418,10 @@ const navItems = blocks.filter((b) => b.t === 'h') as { t: 'h'; n: string; es: s
             );
             case 'proto': return (
               <figure class="c-figure k-fig lk-proto">
-                <div class="lk-pbox" data-proto data-src={`https://www.figma.com/embed?embed_host=share&url=${encodeURIComponent(b.url)}`}>
+                <div class="lk-pbox" data-proto data-src={figmaEmbed(b.url)}>
                   <img class="lk-pposter" src={link(`/${b.poster}`)} alt="" loading="lazy" decoding="async" />
                   <div class="lk-pcover">
+                    <span class="lk-ptag"><i aria-hidden="true"></i><span data-es={b.tag.es} data-en={b.tag.en}>{b.tag.es}</span></span>
                     <h3><span data-es={b.title.es} data-en={b.title.en}>{b.title.es}</span></h3>
                     <p><span data-es={b.text.es} data-en={b.text.en}>{b.text.es}</span></p>
                     <div class="lk-pact">
@@ -420,6 +430,10 @@ const navItems = blocks.filter((b) => b.t === 'h') as { t: 'h'; n: string; es: s
                     </div>
                   </div>
                 </div>
+                <p class="lk-pfall">
+                  <span data-es="¿No carga? Abrilo directamente en Figma." data-en="Not loading? Open it directly in Figma.">¿No carga? Abrilo directamente en Figma.</span>
+                  <a href={b.url} target="_blank" rel="noopener noreferrer">↗</a>
+                </p>
               </figure>
             );
             case 'links': return (
@@ -655,9 +669,9 @@ const navItems = blocks.filter((b) => b.t === 'h') as { t: 'h'; n: string; es: s
 
 
   /* prototipo de Figma embebido (se carga al tocar) */
-  .k-fig.lk-proto { margin-top: clamp(40px, 7vh, 80px); }
-  .lk-pbox { position: relative; aspect-ratio: 16 / 9; border-radius: var(--k-r, 16px); overflow: hidden; background: var(--lk-night, #1f0a0e); }
-  .lk-pposter { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.55; }
+  .k-fig.lk-proto { margin-top: clamp(36px, 6vh, 64px); }
+  .lk-pbox { position: relative; aspect-ratio: 16 / 9; min-height: 340px; box-shadow: 0 30px 60px -30px rgba(31, 10, 14, 0.45); border-radius: var(--k-r, 16px); overflow: hidden; background: var(--lk-night, #1f0a0e); }
+  .lk-pposter { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.8; }
   .lk-pcover { position: relative; z-index: 1; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; gap: 12px; padding: clamp(22px, 3.4vw, 48px); color: var(--lk-cream, #fff9ed); background: linear-gradient(to top, rgba(31, 10, 14, 0.85), rgba(31, 10, 14, 0.05) 70%); }
   .lk-pcover h3 { font-family: var(--serif); font-weight: 400; font-size: var(--t-h2); line-height: 1.1; letter-spacing: -0.02em; }
   .lk-pcover p { font-family: var(--sans); font-size: var(--t-p); line-height: 1.6; max-width: 46ch; opacity: 0.92; }
@@ -666,6 +680,13 @@ const navItems = blocks.filter((b) => b.t === 'h') as { t: 'h'; n: string; es: s
   .lk-pbtn:hover { transform: translateY(-2px); }
   .lk-pbtn span:last-child { font-size: 11px; color: var(--lk-coral, #ce6c3f); }
   .lk-pact a { font-family: var(--sans); font-size: var(--t-sm); border-bottom: 1px solid rgba(255, 249, 237, 0.5); padding-bottom: 2px; }
+  .lk-ptag { align-self: flex-start; display: inline-flex; align-items: center; gap: 10px; font-family: var(--sans); font-size: var(--t-xs); font-weight: 500; background: rgba(255, 249, 237, 0.16); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); border: 1px solid rgba(255, 249, 237, 0.35); padding: 7px 14px; border-radius: 99px; }
+  .lk-ptag i { width: 8px; height: 8px; border-radius: 50%; background: var(--lk-coral, #ce6c3f); box-shadow: 0 0 0 0 rgba(206, 108, 63, 0.7); animation: lkPulse 2s infinite; }
+  @keyframes lkPulse { 70% { box-shadow: 0 0 0 9px rgba(206, 108, 63, 0); } 100% { box-shadow: 0 0 0 0 rgba(206, 108, 63, 0); } }
+  @media (prefers-reduced-motion: reduce) { .lk-ptag i { animation: none; } }
+  .lk-pfall { display: none; margin-top: 12px; font-family: var(--sans); font-size: var(--t-sm); color: var(--ink-60); }
+  .lk-pbox.live ~ .lk-pfall { display: block; }
+  .lk-pfall a { margin-left: 6px; border-bottom: 1px solid var(--ink-35); }
   .lk-pbox iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; background: #fff; z-index: 2; }
   .lk-pbox.live .lk-pcover, .lk-pbox.live .lk-pposter { visibility: hidden; }
 

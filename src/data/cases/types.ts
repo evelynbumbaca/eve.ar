@@ -26,7 +26,7 @@ export type Block =
   | { t: 'fidelity'; es: string; en: string; logo: string; items: { kind: 'sketch' | 'wire' | 'mid' | 'hi'; title: Bilingual; text: Bilingual }[] }
   | { t: 'bars'; es: string; en: string; legend: { key: string; label: Bilingual }[]; items: { q: Bilingual; hot?: boolean; parts: { key: string; pct: number }[] }[] }
   | { t: 'brand'; es: string; en: string; logo: string; icon: string; swatches: { name: Bilingual; tone: string; hex: string }[]; labels: { logo: Bilingual; icon: Bilingual; palette: Bilingual; type: Bilingual }; font: { name: string; specs: { es: string; en: string; size: number; weight: number }[] } }
-  | { t: 'proto'; title: Bilingual; text: Bilingual; cta: Bilingual; open: Bilingual; url: string; poster: string }
+  | { t: 'proto'; tag: Bilingual; title: Bilingual; text: Bilingual; cta: Bilingual; open: Bilingual; url: string; poster: string }
   | { t: 'links'; items: { es: string; en: string; href: string }[] };
 
 export interface CaseContent {
