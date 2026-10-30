@@ -407,6 +407,21 @@ const navItems = blocks.filter((b) => b.t === 'h') as { t: 'h'; n: string; es: s
                 </div>
               </div>
             );
+            case 'proto': return (
+              <figure class="c-figure k-fig lk-proto">
+                <div class="lk-pbox" data-proto data-src={`https://www.figma.com/embed?embed_host=share&url=${encodeURIComponent(b.url)}`}>
+                  <img class="lk-pposter" src={link(`/${b.poster}`)} alt="" loading="lazy" decoding="async" />
+                  <div class="lk-pcover">
+                    <h3><span data-es={b.title.es} data-en={b.title.en}>{b.title.es}</span></h3>
+                    <p><span data-es={b.text.es} data-en={b.text.en}>{b.text.es}</span></p>
+                    <div class="lk-pact">
+                      <button type="button" class="lk-pbtn" data-proto-go><span data-es={b.cta.es} data-en={b.cta.en}>{b.cta.es}</span> <span aria-hidden="true">▶</span></button>
+                      <a href={b.url} target="_blank" rel="noopener noreferrer"><span data-es={b.open.es} data-en={b.open.en}>{b.open.es}</span> <span aria-hidden="true">↗</span></a>
+                    </div>
+                  </div>
+                </div>
+              </figure>
+            );
             case 'links': return (
               <div class="k-links">
                 {b.items.map((it) => (
@@ -457,6 +472,26 @@ const navItems = blocks.filter((b) => b.t === 'h') as { t: 'h'; n: string; es: s
       </div>
     </div>
   </article>
+
+  {K && (
+    <script is:inline>
+      (function () {
+        document.querySelectorAll('[data-proto]').forEach(function (box) {
+          var go = box.querySelector('[data-proto-go]');
+          if (!go) return;
+          go.addEventListener('click', function () {
+            var f = document.createElement('iframe');
+            f.src = box.getAttribute('data-src');
+            f.title = 'Prototipo de Lookap en Figma';
+            f.setAttribute('allowfullscreen', '');
+            f.setAttribute('loading', 'lazy');
+            box.classList.add('live');
+            box.appendChild(f);
+          });
+        });
+      })();
+    </script>
+  )}
 
   {K && (
     <script is:inline>
@@ -617,6 +652,22 @@ const navItems = blocks.filter((b) => b.t === 'h') as { t: 'h'; n: string; es: s
     .c-os { grid-template-columns: 1fr; }
   }
 
+
+
+  /* prototipo de Figma embebido (se carga al tocar) */
+  .k-fig.lk-proto { margin-top: clamp(40px, 7vh, 80px); }
+  .lk-pbox { position: relative; aspect-ratio: 16 / 9; border-radius: var(--k-r, 16px); overflow: hidden; background: var(--lk-night, #1f0a0e); }
+  .lk-pposter { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.55; }
+  .lk-pcover { position: relative; z-index: 1; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; gap: 12px; padding: clamp(22px, 3.4vw, 48px); color: var(--lk-cream, #fff9ed); background: linear-gradient(to top, rgba(31, 10, 14, 0.85), rgba(31, 10, 14, 0.05) 70%); }
+  .lk-pcover h3 { font-family: var(--serif); font-weight: 400; font-size: var(--t-h2); line-height: 1.1; letter-spacing: -0.02em; }
+  .lk-pcover p { font-family: var(--sans); font-size: var(--t-p); line-height: 1.6; max-width: 46ch; opacity: 0.92; }
+  .lk-pact { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 26px; margin-top: 6px; }
+  .lk-pbtn { display: inline-flex; align-items: center; gap: 10px; background: var(--lk-cream, #fff9ed); color: var(--lk-night, #1f0a0e); font-family: var(--sans); font-weight: 500; font-size: var(--t-sm); padding: 13px 22px; border-radius: 99px; transition: transform 0.25s var(--ease); }
+  .lk-pbtn:hover { transform: translateY(-2px); }
+  .lk-pbtn span:last-child { font-size: 11px; color: var(--lk-coral, #ce6c3f); }
+  .lk-pact a { font-family: var(--sans); font-size: var(--t-sm); border-bottom: 1px solid rgba(255, 249, 237, 0.5); padding-bottom: 2px; }
+  .lk-pbox iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; background: #fff; z-index: 2; }
+  .lk-pbox.live .lk-pcover, .lk-pbox.live .lk-pposter { visibility: hidden; }
 
   /* ---------- navegación del caso: progreso + índice ---------- */
   .case .mono { font-size: var(--t-xs); letter-spacing: 0.02em; }
@@ -896,6 +947,7 @@ const navItems = blocks.filter((b) => b.t === 'h') as { t: 'h'; n: string; es: s
     .lk-flow li:not(:last-child)::before { right: auto; left: 37px; top: auto; bottom: 8px; width: 2px; height: 26px; transform: none; }
     .lk-flow li:not(:last-child)::after { right: auto; left: 33px; top: auto; bottom: 6px; transform: rotate(135deg); }
     .k-nav { top: 64px; }
+    .lk-pbox { aspect-ratio: 3 / 4; }
     .k-stats, .k-find, .k-personas, .k-feat { grid-template-columns: 1fr; }
     .k-glance ul { grid-template-columns: 1fr 1fr; }
     .k-nav a { padding: 9px 12px; }

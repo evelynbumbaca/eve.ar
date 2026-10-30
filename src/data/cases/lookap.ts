@@ -259,6 +259,18 @@ export const lookap: CaseContent = {
       ],
     },
     {
+      t: 'proto',
+      title: { es: 'Probalo vos', en: 'Try it yourself' },
+      text: {
+        es: 'Este es el prototipo real, hecho en Figma. Tocá las pantallas y recorré la app como lo harías en el celular.',
+        en: 'This is the real prototype, built in Figma. Tap the screens and move through the app as you would on your phone.',
+      },
+      cta: { es: 'Probar el prototipo', en: 'Try the prototype' },
+      open: { es: 'Abrir en Figma', en: 'Open in Figma' },
+      url: 'https://www.figma.com/proto/tmesKsrV5FW1vJ73ifa5jv/Atomic-Grilla-y-Layout-Evelyn-Bumbaca?page-id=0%3A1&node-id=183%3A2990&viewport=-2764%2C-2466%2C0.5108493566513062&scaling=scale-down',
+      poster: `${P}/ctx-jean.jpg`,
+    },
+    {
       t: 'p',
       es: 'Probé el prototipo con cinco personas y medí qué tan sencilla les resultó cada tarea.',
       en: 'I tested the prototype with five people and measured how easy each task was.',
@@ -375,11 +387,6 @@ export const lookap: CaseContent = {
     {
       t: 'links',
       items: [
-        {
-          es: 'Probar el prototipo en Figma',
-          en: 'Try the Figma prototype',
-          href: 'https://www.figma.com/proto/tmesKsrV5FW1vJ73ifa5jv/Atomic-Grilla-y-Layout-Evelyn-Bumbaca?page-id=0%3A1&node-id=183%3A2990&viewport=-2764%2C-2466%2C0.5108493566513062&scaling=scale-down',
-        },
         {
           es: 'Ver el caso en Behance',
           en: 'See the case on Behance',
