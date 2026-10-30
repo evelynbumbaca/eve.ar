@@ -8,7 +8,7 @@ const P = 'projects/lookap';
 
 export const lookap: CaseContent = {
   /* colores del proyecto (UI kit de Lookap) */
-  heroImage: `${P}/ctx-jean.jpg`,
+  heroImage: `${P}/mockup-jeans.jpg`,
   theme: { wine: '#a92f3c', coral: '#ce6c3f', cream: '#fff9ed', night: '#1f0a0e' },
   meta: {
     context: { es: 'Proyecto final · Coderhouse', en: 'Final project · Coderhouse' },
@@ -51,6 +51,15 @@ export const lookap: CaseContent = {
       ],
     },
     { t: 'video', src: `${P}/app-en-uso.mp4`, es: 'La app en uso', en: 'The app in use' },
+    {
+      t: 'gallery',
+      es: 'La app en contexto',
+      en: 'The app in context',
+      items: [
+        { src: `${P}/ctx-armario.jpg`, alt: 'Lookap: pantalla de ingreso frente a un placard' },
+        { src: `${P}/ctx-flatlay.jpg`, alt: 'Lookap: combinación guardada junto a la ropa' },
+      ],
+    },
 
     /* ---------- 01 · Research ---------- */
     { t: 'break', kind: 'video', src: `${P}/percha.mp4`, alt: 'Percha en un perchero, luz natural' },
@@ -70,6 +79,7 @@ export const lookap: CaseContent = {
       items: [
         {
           name: 'Camila',
+          photo: `${P}/persona-camila.jpg`,
           tone: 'coral',
           role: { es: 'Administrativa', en: 'Office worker' },
           meta: { es: '28 años · Vicente López · Soltera', en: '28 · Vicente López · Single' },
@@ -79,6 +89,7 @@ export const lookap: CaseContent = {
         },
         {
           name: 'Belén',
+          photo: `${P}/persona-belen.jpg`,
           tone: 'wine',
           role: { es: 'Asesora de imagen', en: 'Image consultant' },
           meta: { es: '40 años · Córdoba · Casada · 2 hijos', en: '40 · Córdoba · Married · 2 kids' },

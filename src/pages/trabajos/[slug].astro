@@ -122,7 +122,7 @@ const navItems = blocks.filter((b) => b.t === 'h') as { t: 'h'; n: string; es: s
             case 'stats': return (
               <div class="k-stats">
                 {b.items.map((it, i) => (
-                  <div class={`k-stat rise ${i === 1 ? 'alt' : ''}`}>
+                  <div class={`k-stat ${i === 1 ? 'alt' : ''}`}>
                     <span class="k-n">{it.n}</span>
                     <p class="k-sd"><span data-es={it.es} data-en={it.en}>{it.es}</span></p>
                     <div class="k-pair">
@@ -136,12 +136,12 @@ const navItems = blocks.filter((b) => b.t === 'h') as { t: 'h'; n: string; es: s
             );
             case 'finding': return (
               <div class="k-find">
-                <div class="k-fbox found rise">
+                <div class="k-fbox found">
                   <span class="k-ftag mono" data-es={b.found.title.es} data-en={b.found.title.en}>{b.found.title.es}</span>
                   <span class="k-n">{b.found.n}</span>
                   <p><span data-es={b.found.es} data-en={b.found.en}>{b.found.es}</span></p>
                 </div>
-                <div class="k-fbox changed rise">
+                <div class="k-fbox changed">
                   <span class="k-ftag mono" data-es={b.changed.title.es} data-en={b.changed.title.en}>{b.changed.title.es}</span>
                   <ul>
                     {b.changed.items.map((it) => (
@@ -178,7 +178,7 @@ const navItems = blocks.filter((b) => b.t === 'h') as { t: 'h'; n: string; es: s
               </figure>
             );
             case 'glance': return (
-              <div class="k-glance rise">
+              <div class="k-glance">
                 <span class="mono" data-es={b.label.es} data-en={b.label.en}>{b.label.es}</span>
                 <ul>
                   {b.items.map((it) => (
@@ -192,7 +192,7 @@ const navItems = blocks.filter((b) => b.t === 'h') as { t: 'h'; n: string; es: s
                 {b.items.map((pe) => (
                   <article class={`k-pe rise ${pe.tone}`}>
                     <header>
-                      <div class="k-arch" aria-hidden="true"><span>{pe.name.charAt(0)}</span></div>
+                      <div class="k-arch"><img src={link(`/${pe.photo}`)} alt={pe.name} width="96" height="96" loading="lazy" decoding="async" /></div>
                       <div>
                         <h4>{pe.name}</h4>
                         <p class="k-role"><span data-es={pe.role.es} data-en={pe.role.en}>{pe.role.es}</span></p>
@@ -377,7 +377,7 @@ const navItems = blocks.filter((b) => b.t === 'h') as { t: 'h'; n: string; es: s
             );
             case 'gallery': return (
               <figure class="c-figure k-fig k-gallery">
-                <div class="k-gal-grid">
+                <div class="k-gal-grid" style={`--n:${b.items.length}`}>
                   {b.items.map((it) => (
                     <div class="frame reveal">
                       <img class="revfill" src={link(`/${it.src}`)} alt={it.alt} loading="lazy" decoding="async" />
@@ -641,9 +641,9 @@ const navItems = blocks.filter((b) => b.t === 'h') as { t: 'h'; n: string; es: s
   .k-personas { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(14px, 2vw, 24px); margin-top: clamp(32px, 5vh, 56px); }
   .k-pe { background: var(--lk-cream, #fff9ed); border: 1px solid var(--ink-12); border-radius: var(--k-r, 16px); padding: clamp(22px, 2.6vw, 34px); display: grid; gap: 22px; align-content: start; }
   .k-pe header { display: flex; align-items: flex-end; gap: 18px; }
-  .k-arch { flex: none; width: 84px; height: 108px; border-radius: 42px 42px 14px 14px; display: grid; place-items: center; font-family: var(--serif); font-size: 2rem; color: var(--lk-cream, #fff9ed); }
-  .k-pe.coral .k-arch { background: linear-gradient(170deg, #e8a07b, var(--lk-coral, #ce6c3f)); }
-  .k-pe.wine .k-arch { background: linear-gradient(170deg, #d27580, var(--lk-wine, #a92f3c)); }
+  .k-arch { flex: none; width: 96px; height: 96px; border-radius: 50%; padding: 4px; background: var(--lk-coral, #ce6c3f); }
+  .k-pe.wine .k-arch { background: var(--lk-wine, #a92f3c); }
+  .k-arch img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; border: 3px solid var(--lk-cream, #fff9ed); display: block; }
   .k-pe h4 { font-family: var(--serif); font-weight: 500; font-size: var(--t-title); line-height: 1.05; }
   .k-role { font-family: var(--sans); font-size: var(--t-body); color: var(--ink-80); margin-top: 4px; }
   .k-pm { margin-top: 8px; color: var(--ink-60); font-size: var(--t-xs); }
@@ -719,9 +719,9 @@ const navItems = blocks.filter((b) => b.t === 'h') as { t: 'h'; n: string; es: s
   .k-stat.alt { background: var(--lk-coral, #ce6c3f); }
   .k-n { display: block; font-family: var(--serif); font-weight: 400; font-size: var(--t-num); line-height: 0.9; letter-spacing: -0.04em; }
   .k-sd { font-family: var(--sans); font-size: var(--t-body); line-height: 1.6; }
-  .k-pair { margin-top: 6px; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; }
-  .k-pair span { background: var(--lk-cream, #fff9ed); color: var(--lk-night, #1f0a0e); font-family: var(--sans); font-size: var(--t-sm); font-weight: 500; line-height: 1.3; padding: 9px 14px; border-radius: 99px; }
-  .k-pair i { font-style: normal; font-family: var(--sans); font-size: 16px; line-height: 1; padding-left: 14px; opacity: 0.85; }
+  .k-pair { margin-top: 10px; display: flex; flex-direction: column; align-items: stretch; gap: 10px; }
+  .k-pair span { background: var(--lk-cream, #fff9ed); color: var(--lk-night, #1f0a0e); font-family: var(--sans); font-size: var(--t-sm); font-weight: 500; line-height: 1.3; padding: 11px 16px; border-radius: 99px; text-align: center; }
+  .k-pair i { align-self: center; width: 46px; height: 46px; border-radius: 50%; border: 1.5px solid rgba(255, 249, 237, 0.7); box-shadow: 0 0 0 7px rgba(255, 249, 237, 0.14); display: grid; place-items: center; font-style: normal; font-family: var(--sans); font-weight: 300; font-size: 30px; line-height: 1; padding-bottom: 3px; }
 
   .k-find { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(14px, 2vw, 24px); margin-top: clamp(40px, 7vh, 80px); }
   .k-fbox { border-radius: var(--k-r, 16px); padding: clamp(24px, 3vw, 40px); display: flex; flex-direction: column; gap: 16px; }
@@ -741,7 +741,7 @@ const navItems = blocks.filter((b) => b.t === 'h') as { t: 'h'; n: string; es: s
   .k-fig .frame > img, .k-fig .frame > video { width: 100%; height: auto; display: block; border-radius: var(--k-r, 16px); }
   .k-fig.narrow { max-width: 760px; margin-left: auto; margin-right: auto; }
 
-  .k-gal-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(10px, 1.6vw, 22px); }
+  .k-gal-grid { display: grid; grid-template-columns: repeat(var(--n, 3), 1fr); gap: clamp(10px, 1.6vw, 22px); }
   .k-gallery .frame { aspect-ratio: 4 / 5; }
   .k-gallery .frame > img { height: 100%; object-fit: cover; }
   .k-split { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr); gap: clamp(24px, 4vw, 64px); align-items: center; margin-top: clamp(32px, 5vh, 56px); }
@@ -893,8 +893,9 @@ const navItems = blocks.filter((b) => b.t === 'h') as { t: 'h'; n: string; es: s
     .lk-flow { grid-template-columns: 1fr; }
     .lk-flow li { padding: 0 0 38px; }
     .lk-flow li:last-child { padding-bottom: 0; }
-    .lk-flow li:not(:last-child)::before { right: auto; left: 30px; top: auto; bottom: 8px; width: 2px; height: 26px; transform: none; }
-    .lk-flow li:not(:last-child)::after { right: auto; left: 25px; top: auto; bottom: 6px; transform: rotate(135deg); }
+    .lk-flow li:not(:last-child)::before { right: auto; left: 37px; top: auto; bottom: 8px; width: 2px; height: 26px; transform: none; }
+    .lk-flow li:not(:last-child)::after { right: auto; left: 33px; top: auto; bottom: 6px; transform: rotate(135deg); }
+    .k-nav { top: 64px; }
     .k-stats, .k-find, .k-personas, .k-feat { grid-template-columns: 1fr; }
     .k-glance ul { grid-template-columns: 1fr 1fr; }
     .k-nav a { padding: 9px 12px; }
