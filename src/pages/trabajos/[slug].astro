@@ -191,8 +191,8 @@ const navItems = blocks.filter((b) => b.t === 'h') as { t: 'h'; n: string; es: s
             case 'glance': return (
               <div class="k-glance">
                 <ul>
-                  {b.items.map((it) => (
-                    <li><b>{it.n}</b><span data-es={it.es} data-en={it.en}>{it.es}</span></li>
+                  {b.items.map((it, i) => (
+                    <li class="rise" style={`--i:${i}`}><b>{it.n}</b><span data-es={it.es} data-en={it.en}>{it.es}</span></li>
                   ))}
                 </ul>
               </div>
@@ -723,7 +723,11 @@ const navItems = blocks.filter((b) => b.t === 'h') as { t: 'h'; n: string; es: s
   /* de un vistazo: cifras grandes */
   .k-glance { margin-top: clamp(48px, 8vh, 88px); }
   .k-glance ul { list-style: none; display: grid; grid-template-columns: repeat(4, 1fr); gap: clamp(16px, 3vw, 40px); margin: 0; padding: 0; }
-  .k-glance li { border-top: 2px solid var(--lk-wine, #a92f3c); padding-top: 14px; }
+  .k-glance li { display: flex; flex-direction: column; transition-delay: calc(var(--i, 0) * 0.14s); }
+  .k-glance li span { flex: 1; }
+  .k-glance li::after { content: ''; display: block; width: 56%; height: 2px; margin-top: 18px; background: var(--lk-wine, #a92f3c); transform: scaleX(0); transform-origin: left center; transition: transform 0.9s var(--ease-out) calc(0.3s + var(--i, 0) * 0.14s); }
+  .k-glance li.in::after { transform: scaleX(1); }
+  @media (prefers-reduced-motion: reduce) { .k-glance li::after { transform: none; transition: none; } }
   .k-glance li b { display: block; font-family: var(--serif); font-weight: 400; font-size: var(--t-num); line-height: 1; letter-spacing: -0.03em; color: var(--lk-wine, #a92f3c); }
   .k-glance li span { display: block; margin-top: 10px; font-family: var(--sans); font-size: var(--t-body); line-height: 1.5; color: var(--ink); }
 
