@@ -178,7 +178,7 @@ const navItems = blocks.filter((b) => b.t === 'h') as { t: 'h'; n: string; es: s
               </figure>
             );
             case 'video': return (
-              <figure class="c-figure k-fig">
+              <figure class="c-figure k-fig k-bleed">
                 <div class="frame reveal">
                   <video class="revfill" src={link(`/${b.src}`)} autoplay muted loop playsinline preload="metadata" aria-label={b.es}></video>
                 </div>
@@ -399,7 +399,7 @@ const navItems = blocks.filter((b) => b.t === 'h') as { t: 'h'; n: string; es: s
               </figure>
             );
             case 'gallery': return (
-              <figure class="c-figure k-fig k-gallery">
+              <figure class="c-figure k-fig k-gallery k-bleed">
                 <div class="k-gal-grid" style={`--n:${b.items.length}`}>
                   {b.items.map((it) => (
                     <div class="frame reveal">
@@ -422,7 +422,7 @@ const navItems = blocks.filter((b) => b.t === 'h') as { t: 'h'; n: string; es: s
               </div>
             );
             case 'break': return (
-              <div class={`k-break ${b.w === 'narrow' ? 'narrow' : ''}`}>
+              <div class={`k-break ${b.w === 'narrow' ? 'narrow' : 'k-bleed'}`}>
                 <div class="frame reveal">
                   {b.kind === 'video'
                     ? <video class="revfill" src={link(`/${b.src}`)} autoplay muted loop playsinline preload="metadata" aria-label={b.alt}></video>
@@ -833,6 +833,13 @@ const navItems = blocks.filter((b) => b.t === 'h') as { t: 'h'; n: string; es: s
   .k-fig .frame > img, .k-fig .frame > video { width: 100%; height: auto; display: block; border-radius: var(--k-r, 16px); }
   .k-fig.narrow { max-width: 760px; margin-left: auto; margin-right: auto; }
 
+  /* fotos y videos a sangre (borde a borde de la pantalla) */
+  .k-bleed { width: 100vw; max-width: none; margin-left: calc(50% - 50vw); }
+  .k-bleed .frame, .k-bleed .frame > img, .k-bleed .frame > video { border-radius: 0; }
+  .k-bleed .frame > video { max-height: 88vh; object-fit: cover; }
+  .k-bleed figcaption { padding-inline: max(var(--pad), calc((100vw - 980px) / 2 + var(--pad))); }
+  .k-bleed .k-gal-grid { gap: 4px; }
+  .k-bleed.k-gallery .frame { aspect-ratio: 1 / 1; }
   .k-gal-grid { display: grid; grid-template-columns: repeat(var(--n, 3), 1fr); gap: clamp(10px, 1.6vw, 22px); }
   .k-gallery .frame { aspect-ratio: 4 / 5; }
   .k-gallery .frame > img { height: 100%; object-fit: cover; }
