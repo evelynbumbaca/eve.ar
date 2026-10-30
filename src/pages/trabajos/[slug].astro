@@ -433,7 +433,20 @@ const navItems = blocks.filter((b) => b.t === 'h') as { t: 'h'; n: string; es: s
             case 'proto': return (
               <figure class="c-figure k-fig lk-proto">
                 <h3 class="lk-ptitle"><span data-es={b.title.es} data-en={b.title.en}>{b.title.es}</span></h3>
+                <div class="lk-ptick" aria-hidden="true">
+                  <div class="lk-ptrack">
+                    {[0, 1].map(() => (
+                      <div class="lk-pgrp">
+                        {[0, 1, 2, 3, 4, 5].map(() => <span data-es={b.veil.es} data-en={b.veil.en}>{b.veil.es}</span>)}
+                      </div>
+                    ))}
+                  </div>
+                </div>
                 <div class="lk-pbox">
+                  <div class="lk-pveil" aria-hidden="true">
+                    <span data-es={b.veil.es} data-en={b.veil.en}>{b.veil.es}</span>
+                    <small data-es={b.hint.es} data-en={b.hint.en}>{b.hint.es}</small>
+                  </div>
                   <iframe src={figmaEmbed(b.url)} title="Prototipo de Lookap en Figma" loading="lazy" allowfullscreen></iframe>
                 </div>
                 <p class="lk-pfall">
@@ -675,6 +688,22 @@ const navItems = blocks.filter((b) => b.t === 'h') as { t: 'h'; n: string; es: s
   .k-fig.lk-proto { margin-top: clamp(40px, 7vh, 80px); }
   .lk-ptitle { font-family: var(--serif); font-weight: 400; font-size: var(--t-lead); line-height: 1.2; letter-spacing: -0.01em; margin-bottom: 18px; }
   .lk-pbox { position: relative; aspect-ratio: 16 / 9; min-height: 340px; border: 1px solid var(--ink-18); background: #fff; }
+  /* velo sobre el prototipo (escritorio) y línea que pasa (celu y tablet) */
+  .lk-pveil { position: absolute; inset: 0; z-index: 3; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; text-align: center; padding: 20px; background: rgba(250, 249, 245, 0.52); backdrop-filter: blur(7px); -webkit-backdrop-filter: blur(7px); transition: opacity 0.55s var(--ease); }
+  .lk-pveil span { font-family: var(--serif); font-size: var(--t-h2); line-height: 1.1; letter-spacing: -0.02em; color: var(--ink); }
+  .lk-pveil small { font-family: var(--sans); font-size: var(--t-sm); color: var(--ink-60); }
+  .lk-pbox:hover .lk-pveil, .lk-pbox:focus-within .lk-pveil { opacity: 0; pointer-events: none; }
+  .lk-ptick { display: none; overflow: hidden; background: var(--lk-night, #1f0a0e); color: var(--lk-cream, #fff9ed); margin-bottom: 14px; padding: 13px 0; }
+  .lk-ptrack { display: flex; width: max-content; animation: lkTick 30s linear infinite; }
+  .lk-pgrp { display: flex; flex: none; }
+  .lk-pgrp span { display: inline-flex; align-items: center; gap: 34px; padding-left: 34px; white-space: nowrap; font-family: var(--serif); font-size: var(--t-title); line-height: 1; }
+  .lk-pgrp span::after { content: ''; width: 8px; height: 8px; background: var(--lk-coral, #ce6c3f); transform: rotate(45deg); }
+  @keyframes lkTick { to { transform: translateX(-50%); } }
+  @media (hover: none), (max-width: 1024px) {
+    .lk-pveil { display: none; }
+    .lk-ptick { display: block; }
+  }
+  @media (prefers-reduced-motion: reduce) { .lk-ptrack { animation: none; } }
   .lk-pbox iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
   .lk-pfall { margin-top: 12px; font-family: var(--sans); font-size: var(--t-sm); color: var(--ink-60); }
   .lk-pfall a { margin-left: 8px; border-bottom: 1px solid var(--ink-35); color: var(--ink); }

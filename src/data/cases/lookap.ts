@@ -43,6 +43,8 @@ export const lookap: CaseContent = {
     {
       t: 'proto',
       title: { es: 'Probá el prototipo funcional', en: 'Try the working prototype' },
+      veil: { es: 'Probá el prototipo', en: 'Try the prototype' },
+      hint: { es: 'Pasá el mouse para usarlo', en: 'Hover to use it' },
       open: { es: 'Abrir en Figma', en: 'Open in Figma' },
       fallback: { es: '¿No carga? Abrilo directamente en Figma.', en: 'Not loading? Open it directly in Figma.' },
       url: 'https://www.figma.com/proto/tmesKsrV5FW1vJ73ifa5jv/Atomic-Grilla-y-Layout-Evelyn-Bumbaca?page-id=0%3A1&node-id=183%3A2990&viewport=-2764%2C-2466%2C0.5108493566513062&scaling=scale-down',
