@@ -696,7 +696,7 @@ const navItems = blocks.filter((b) => b.t === 'h') as { t: 'h'; n: string; es: s
   .lk-ptick { display: none; overflow: hidden; background: var(--lk-night, #1f0a0e); color: var(--lk-cream, #fff9ed); margin-bottom: 14px; padding: 13px 0; }
   .lk-ptrack { display: flex; width: max-content; animation: lkTick 30s linear infinite; }
   .lk-pgrp { display: flex; flex: none; }
-  .lk-pgrp span { display: inline-flex; align-items: center; gap: 34px; padding-left: 34px; white-space: nowrap; font-family: var(--serif); font-size: var(--t-title); line-height: 1; }
+  .lk-pgrp span { display: inline-flex; align-items: center; gap: 34px; padding-left: 34px; white-space: nowrap; font-family: var(--serif); font-size: var(--t-title); font-weight: 500; line-height: 1; text-transform: uppercase; letter-spacing: 0.08em; }
   .lk-pgrp span::after { content: ''; width: 8px; height: 8px; background: var(--lk-coral, #ce6c3f); transform: rotate(45deg); }
   @keyframes lkTick { to { transform: translateX(-50%); } }
   @media (hover: none), (max-width: 1024px) {
