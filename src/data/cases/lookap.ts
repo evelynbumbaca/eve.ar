@@ -262,7 +262,7 @@ export const lookap: CaseContent = {
         { kind: 'sketch', title: { es: 'Papel', en: 'Paper' }, text: { es: 'Bocetos a mano de las pantallas clave.', en: 'Hand sketches of the key screens.' } },
         { kind: 'wire', title: { es: 'Baja digital', en: 'Low digital' }, text: { es: 'Wireframes: estructura y jerarquía.', en: 'Wireframes: structure and hierarchy.' } },
         { kind: 'mid', title: { es: 'Media', en: 'Mid' }, text: { es: 'Navegación y etiquetas, todavía en grises.', en: 'Navigation and labels, still in grey.' } },
-        { kind: 'hi', title: { es: 'Alta', en: 'High' }, text: { es: 'Identidad aplicada y prototipo interactivo.', en: 'Identity applied and interactive prototype.' } },
+        { kind: 'hi', shot: `${P}/login-alta.jpg`, title: { es: 'Alta', en: 'High' }, text: { es: 'Identidad aplicada y prototipo interactivo.', en: 'Identity applied and interactive prototype.' } },
       ],
     },
     { t: 'h', n: '04', es: 'Pruebas', en: 'Testing' },
