@@ -3,7 +3,11 @@ import type { Bilingual } from '../site';
 export interface TreeNode { es: string; en: string; kids?: TreeNode[] }
 
 export type Block =
-  | { t: 'h'; n: string; es: string; en: string }
+  | { t: 'h'; n: string; es: string; en: string; nav?: Bilingual }
+  | { t: 'glance'; label: Bilingual; items: { n: string; es: string; en: string }[] }
+  | { t: 'personas'; labels: { why: Bilingual; motivation: Bilingual; frustration: Bilingual }; items: { name: string; role: Bilingual; meta: Bilingual; why: Bilingual; motivation: Bilingual; frustration: Bilingual; tone: 'coral' | 'wine' }[] }
+  | { t: 'features'; title: Bilingual; items: Bilingual[]; mvpTitle: Bilingual; mvp: Bilingual[] }
+  | { t: 'metrics'; es: string; en: string; note: Bilingual; heads: { task: Bilingual; done: Bilingual; time: Bilingual; steps: Bilingual }; rows: { task: Bilingual; done: number; time: string; steps: string; hot?: boolean }[] }
   | { t: 'p'; es: string; en: string }
   | { t: 'note'; es: string; en: string }
   | { t: 'os'; items: { label: Bilingual; es: string; en: string }[] }

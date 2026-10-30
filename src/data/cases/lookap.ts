@@ -40,6 +40,16 @@ export const lookap: CaseContent = {
         },
       ],
     },
+    {
+      t: 'glance',
+      label: { es: 'De un vistazo', en: 'At a glance' },
+      items: [
+        { n: '3', es: 'apps analizadas', en: 'apps analyzed' },
+        { n: '7', es: 'secciones en la app', en: 'sections in the app' },
+        { n: '4', es: 'niveles de fidelidad', en: 'levels of fidelity' },
+        { n: '5', es: 'personas en las pruebas', en: 'people in the tests' },
+      ],
+    },
     { t: 'video', src: `${P}/app-en-uso.mp4`, es: 'La app en uso', en: 'The app in use' },
 
     /* ---------- 01 · Research ---------- */
@@ -47,8 +57,55 @@ export const lookap: CaseContent = {
     { t: 'h', n: '01', es: 'Research', en: 'Research' },
     {
       t: 'p',
-      es: 'Empecé por las personas: Camila, 28, administrativa con poco espacio en su placard, y Belén, 40, asesora de imagen y mamá de dos. Necesitan lo mismo: ahorrar tiempo al vestirse y poder mostrar y recordar looks.',
-      en: 'I started with people: Camila, 28, an office worker with little closet space, and Belén, 40, an image consultant and mother of two. They need the same thing: save time getting dressed and be able to show and recall looks.',
+      es: 'Empecé por las personas. Dos arquetipos marcaron las necesidades: ahorrar tiempo al vestirse y poder mostrar, recordar y compartir looks.',
+      en: 'I started with people. Two archetypes set the needs: save time when getting dressed, and be able to show, recall and share looks.',
+    },
+    {
+      t: 'personas',
+      labels: {
+        why: { es: '¿Por qué este usuario?', en: 'Why this user?' },
+        motivation: { es: 'Motivaciones', en: 'Motivations' },
+        frustration: { es: 'Frustraciones', en: 'Frustrations' },
+      },
+      items: [
+        {
+          name: 'Camila',
+          tone: 'coral',
+          role: { es: 'Administrativa', en: 'Office worker' },
+          meta: { es: '28 años · Vicente López · Soltera', en: '28 · Vicente López · Single' },
+          why: { es: 'Está abierta a nuevas experiencias, tiene sentido de la moda y poco espacio en su placard.', en: 'She is open to new experiences, has a sense of fashion and little closet space.' },
+          motivation: { es: 'Viajar por el mundo y conocer la cultura y la moda de cada lugar.', en: 'Traveling the world and discovering the culture and fashion of each place.' },
+          frustration: { es: 'Tiene tan poco espacio que siempre sacrifica ropa y nunca sabe qué dejar o qué regalar.', en: 'She has so little space that she always sacrifices clothes and never knows what to keep or give away.' },
+        },
+        {
+          name: 'Belén',
+          tone: 'wine',
+          role: { es: 'Asesora de imagen', en: 'Image consultant' },
+          meta: { es: '40 años · Córdoba · Casada · 2 hijos', en: '40 · Córdoba · Married · 2 kids' },
+          why: { es: 'Necesita optimizar el tiempo de elegir su vestuario, organizar su vestidor y compartirlo con sus clientes. Algo fácil de usar.', en: 'She needs to optimize the time she spends choosing outfits, organize her wardrobe and share it with her clients. Something easy to use.' },
+          motivation: { es: 'Su profesión la apasiona y sus hijos la motivan a cumplir sus metas. Siempre busca las últimas tendencias.', en: 'She loves her profession and her kids motivate her to reach her goals. She is always after the latest trends.' },
+          frustration: { es: 'Odia tener poco tiempo para elegir qué ponerse o repetir dos looks en una semana.', en: 'She hates having little time to decide what to wear, or repeating two looks in one week.' },
+        },
+      ],
+    },
+    {
+      t: 'features',
+      title: { es: 'Funcionalidades', en: 'Features' },
+      items: [
+        { es: 'Sacar fotos a las prendas y hacer combinaciones', en: 'Photograph garments and build combinations' },
+        { es: 'Organizar por estilo, color, estación y categorías propias', en: 'Organize by style, color, season and custom categories' },
+        { es: 'Guardar fotos de los looks', en: 'Save photos of your looks' },
+        { es: 'Encuestas rápidas en historias', en: 'Quick polls in stories' },
+        { es: 'Compartir prendas o looks con amigos o en redes', en: 'Share pieces or looks with friends or on social media' },
+        { es: 'Comprar productos sugeridos para completar looks', en: 'Buy suggested products to complete looks' },
+        { es: 'Obtener códigos de descuento de distintas marcas', en: 'Get discount codes from different brands' },
+      ],
+      mvpTitle: { es: 'MVP', en: 'MVP' },
+      mvp: [
+        { es: 'Guardar fotos de toda tu ropa', en: 'Save photos of all your clothes' },
+        { es: 'Combinar ropa', en: 'Combine clothes' },
+        { es: 'Conectar usuarios', en: 'Connect users' },
+      ],
     },
     {
       t: 'compare',
@@ -172,7 +229,7 @@ export const lookap: CaseContent = {
     },
 
     /* ---------- 03 · Prototipo y pruebas ---------- */
-    { t: 'h', n: '03', es: 'Prototipo y pruebas', en: 'Prototype and testing' },
+    { t: 'h', n: '03', es: 'Prototipo y pruebas', en: 'Prototype and testing', nav: { es: 'Prototipo', en: 'Prototype' } },
     {
       t: 'p',
       es: 'Fui subiendo la fidelidad de a poco. Esta es la pantalla de ingreso en cada etapa, del boceto en papel al prototipo con la identidad aplicada.',
@@ -210,6 +267,24 @@ export const lookap: CaseContent = {
         { q: { es: 'Hacer una combinación', en: 'Making a combination' }, parts: [{ key: 'a', pct: 20 }, { key: 'b', pct: 80 }] },
         { q: { es: 'Compartir el look con amigos', en: 'Sharing the look with friends' }, hot: true, parts: [{ key: 'c', pct: 80 }, { key: 'd', pct: 20 }] },
         { q: { es: 'Ir al perfil', en: 'Going to the profile' }, parts: [{ key: 'a', pct: 60 }, { key: 'b', pct: 20 }, { key: 'c', pct: 20 }] },
+      ],
+    },
+    {
+      t: 'metrics',
+      es: 'Tareas de las pruebas · promedio de quienes las completaron',
+      en: 'Test tasks · average of those who completed them',
+      note: { es: 'Compartir el look fue la única tarea que ninguna persona completó sin dudas: 3 de 5 la completaron a medias.', en: 'Sharing the look was the only task nobody completed cleanly: 3 of 5 only half-completed it.' },
+      heads: {
+        task: { es: 'Tarea', en: 'Task' },
+        done: { es: 'La completaron', en: 'Completed it' },
+        time: { es: 'Tiempo', en: 'Time' },
+        steps: { es: 'Pasos', en: 'Steps' },
+      },
+      rows: [
+        { task: { es: 'Sacar una foto', en: 'Take a photo' }, done: 4, time: '24 s', steps: '8' },
+        { task: { es: 'Hacer una combinación', en: 'Make a combination' }, done: 5, time: '25 s', steps: '8' },
+        { task: { es: 'Compartir el look', en: 'Share the look' }, done: 2.5, time: '48 s', steps: '12', hot: true },
+        { task: { es: 'Ir al perfil', en: 'Go to the profile' }, done: 5, time: '11 s', steps: '3' },
       ],
     },
     {
@@ -264,6 +339,27 @@ export const lookap: CaseContent = {
           { es: 'Botón', en: 'Button', size: 16, weight: 700 },
         ],
       },
+    },
+    { t: 'h', n: '05', es: 'Aprendizajes', en: 'Takeaways' },
+    {
+      t: 'os',
+      items: [
+        {
+          label: { es: 'Probar temprano', en: 'Test early' },
+          es: 'Con solo cinco personas apareció el punto crítico: compartir el look. Detectarlo a tiempo evitó rediseñar después.',
+          en: 'With just five people the critical point showed up: sharing the look. Catching it early avoided a redesign later.',
+        },
+        {
+          label: { es: 'La función principal, al centro', en: 'Main function, front and center' },
+          es: 'Sacar la foto de la prenda define la app, así que pasó al centro de la tab bar, donde se la espera.',
+          en: 'Taking the garment photo defines the app, so it moved to the center of the tab bar, where people expect it.',
+        },
+        {
+          label: { es: 'Ordenar antes de dibujar', en: 'Organize before drawing' },
+          es: 'El benchmarking y el card sorting fijaron las secciones antes de diseñar una sola pantalla.',
+          en: 'Benchmarking and card sorting set the sections before a single screen was designed.',
+        },
+      ],
     },
     {
       t: 'links',
