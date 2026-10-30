@@ -17,11 +17,12 @@ const { nodes } = Astro.props;
 </ul>
 
 <style is:global>
-  .lk-tl { list-style: none; margin: 12px 0 0 14px; padding: 0 0 0 14px; border-left: 1px solid rgba(206, 108, 63, 0.55); display: grid; gap: 10px; }
-  .lk-tl .lk-tl { margin-top: 10px; margin-left: 8px; }
-  .lk-tl li { position: relative; }
-  .lk-tl li::before { content: ''; position: absolute; left: -14px; top: 20px; width: 12px; height: 1px; background: rgba(206, 108, 63, 0.55); }
-  .lk-nd { background: #fff; border: 1px solid rgba(22, 21, 15, 0.14); border-radius: 12px; padding: 9px 11px; font-family: var(--sans); font-size: var(--t-sm); line-height: 1.35; color: var(--lk-night, #1f0a0e); }
+  .lk-tl { list-style: none; margin: 12px 0 0 12px; padding: 0 0 0 14px; border-left: 2px solid rgba(206, 108, 63, 0.85); display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; }
+  .lk-tl .lk-tl { margin-left: 4px; padding-left: 12px; }
+  .lk-tl li { position: relative; min-width: 0; }
+  .lk-tl li::before { content: ''; position: absolute; left: -14px; top: 20px; width: 14px; height: 2px; background: rgba(206, 108, 63, 0.85); }
+  .lk-tl .lk-tl li::before { left: -12px; width: 12px; }
+  .lk-nd { background: #fff; border: 1px solid rgba(22, 21, 15, 0.22); border-radius: 2px; padding: 9px 11px; font-family: var(--sans); font-size: var(--t-sm); line-height: 1.35; color: var(--lk-night, #1f0a0e); overflow-wrap: anywhere; min-width: 0; }
   .lk-tl .lk-tl .lk-nd { background: var(--lk-cream, #fff9ed); }
-  .lk-nd.head { background: var(--lk-wine, #a92f3c); border-color: var(--lk-wine, #a92f3c); color: var(--lk-cream, #fff9ed); text-align: center; font-weight: 500; font-size: var(--t-sm); padding: 11px 8px; }
+  .lk-nd.head { background: var(--lk-wine, #a92f3c); border-color: var(--lk-wine, #a92f3c); color: var(--lk-cream, #fff9ed); text-align: center; font-weight: 500; padding: 11px 8px; }
 </style>

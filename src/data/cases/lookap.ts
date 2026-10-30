@@ -42,20 +42,13 @@ export const lookap: CaseContent = {
     },
     {
       t: 'proto',
-      tag: { es: 'Prototipo interactivo', en: 'Interactive prototype' },
-      title: { es: 'Probalo vos', en: 'Try it yourself' },
-      text: {
-        es: 'Este es el prototipo real, hecho en Figma. Tocá las pantallas y recorré la app como lo harías en el celular.',
-        en: 'This is the real prototype, built in Figma. Tap the screens and move through the app as you would on your phone.',
-      },
-      cta: { es: 'Probar el prototipo', en: 'Try the prototype' },
+      title: { es: 'Probá el prototipo funcional', en: 'Try the working prototype' },
       open: { es: 'Abrir en Figma', en: 'Open in Figma' },
+      fallback: { es: '¿No carga? Abrilo directamente en Figma.', en: 'Not loading? Open it directly in Figma.' },
       url: 'https://www.figma.com/proto/tmesKsrV5FW1vJ73ifa5jv/Atomic-Grilla-y-Layout-Evelyn-Bumbaca?page-id=0%3A1&node-id=183%3A2990&viewport=-2764%2C-2466%2C0.5108493566513062&scaling=scale-down',
-      poster: `${P}/ctx-jean.jpg`,
     },
     {
       t: 'glance',
-      label: { es: 'De un vistazo', en: 'At a glance' },
       items: [
         { n: '3', es: 'apps analizadas', en: 'apps analyzed' },
         { n: '7', es: 'secciones en la app', en: 'sections in the app' },
@@ -194,7 +187,8 @@ export const lookap: CaseContent = {
       t: 'sitemap',
       es: 'Arquitectura de la información',
       en: 'Information architecture',
-      root: 'LOOKAP',
+      root: 'Lookap',
+      rootLogo: `${P}/logo-lookap.png`,
       branches: [
         { title: { es: 'Buscar', en: 'Search' }, kids: [{ es: 'Buscar prendas', en: 'Search garments' }, { es: 'Filtros', en: 'Filters' }] },
         { title: { es: 'Home', en: 'Home' }, kids: [{ es: 'Favoritos', en: 'Favorites' }, { es: 'Looks favoritos', en: 'Favorite looks' }, { es: 'Prendas favoritas', en: 'Favorite garments' }] },
@@ -253,7 +247,7 @@ export const lookap: CaseContent = {
     },
 
     /* ---------- 03 · Prototipo y pruebas ---------- */
-    { t: 'h', n: '03', es: 'Prototipo y pruebas', en: 'Prototype and testing', nav: { es: 'Prototipo', en: 'Prototype' } },
+    { t: 'h', n: '03', es: 'Prototipo', en: 'Prototype' },
     {
       t: 'p',
       es: 'Fui subiendo la fidelidad de a poco. Esta es la pantalla de ingreso en cada etapa, del boceto en papel al prototipo con la identidad aplicada.',
@@ -271,6 +265,7 @@ export const lookap: CaseContent = {
         { kind: 'hi', title: { es: 'Alta', en: 'High' }, text: { es: 'Identidad aplicada y prototipo interactivo.', en: 'Identity applied and interactive prototype.' } },
       ],
     },
+    { t: 'h', n: '04', es: 'Pruebas', en: 'Testing' },
     {
       t: 'p',
       es: 'Probé el prototipo con cinco personas y medí qué tan sencilla les resultó cada tarea.',
@@ -289,7 +284,7 @@ export const lookap: CaseContent = {
       items: [
         { q: { es: 'Sacar una foto de una prenda', en: 'Taking a photo of a garment' }, parts: [{ key: 'b', pct: 80 }, { key: 'c', pct: 20 }] },
         { q: { es: 'Hacer una combinación', en: 'Making a combination' }, parts: [{ key: 'a', pct: 20 }, { key: 'b', pct: 80 }] },
-        { q: { es: 'Compartir el look con amigos', en: 'Sharing the look with friends' }, hot: true, parts: [{ key: 'c', pct: 80 }, { key: 'd', pct: 20 }] },
+        { q: { es: 'Compartir el look con amigos', en: 'Sharing the look with friends' }, hot: true, why: { es: 'Fue la tarea que más costó: 80% la calificó “más o menos” y nadie la sintió fácil.', en: 'It was the hardest task: 80% rated it “so-so” and nobody found it easy.' }, parts: [{ key: 'c', pct: 80 }, { key: 'd', pct: 20 }] },
         { q: { es: 'Ir al perfil', en: 'Going to the profile' }, parts: [{ key: 'a', pct: 60 }, { key: 'b', pct: 20 }, { key: 'c', pct: 20 }] },
       ],
     },
@@ -297,7 +292,8 @@ export const lookap: CaseContent = {
       t: 'metrics',
       es: 'Tareas de las pruebas · promedio de quienes las completaron',
       en: 'Test tasks · average of those who completed them',
-      note: { es: 'Compartir el look fue la única tarea que ninguna persona completó sin dudas: 3 de 5 la completaron a medias.', en: 'Sharing the look was the only task nobody completed cleanly: 3 of 5 only half-completed it.' },
+      hotTag: { es: 'Punto crítico', en: 'Critical point' },
+      note: { es: 'Compartir el look fue la tarea más difícil: solo 1 de 5 personas la completó sin dudas, 3 la completaron a medias y 1 no pudo hacerla.', en: 'Sharing the look was the hardest task: only 1 of 5 people completed it cleanly, 3 half-completed it and 1 could not do it.' },
       heads: {
         task: { es: 'Tarea', en: 'Task' },
         done: { es: 'La completaron', en: 'Completed it' },
@@ -307,7 +303,7 @@ export const lookap: CaseContent = {
       rows: [
         { task: { es: 'Sacar una foto', en: 'Take a photo' }, done: 4, time: '24 s', steps: '8' },
         { task: { es: 'Hacer una combinación', en: 'Make a combination' }, done: 5, time: '25 s', steps: '8' },
-        { task: { es: 'Compartir el look', en: 'Share the look' }, done: 2.5, time: '48 s', steps: '12', hot: true },
+        { task: { es: 'Compartir el look', en: 'Share the look' }, done: 2.5, time: '48 s', steps: '12', hot: true, why: { es: 'Casi el doble de pasos que las demás.', en: 'Almost twice the steps of the others.' } },
         { task: { es: 'Ir al perfil', en: 'Go to the profile' }, done: 5, time: '11 s', steps: '3' },
       ],
     },
@@ -329,7 +325,7 @@ export const lookap: CaseContent = {
     },
 
     /* ---------- 04 · Identidad ---------- */
-    { t: 'h', n: '04', es: 'Identidad', en: 'Identity' },
+    { t: 'h', n: '05', es: 'Identidad', en: 'Identity' },
     {
       t: 'split',
       src: `${P}/textura.jpg`,
@@ -364,7 +360,7 @@ export const lookap: CaseContent = {
         ],
       },
     },
-    { t: 'h', n: '05', es: 'Aprendizajes', en: 'Takeaways' },
+    { t: 'h', n: '06', es: 'Aprendizajes', en: 'Takeaways' },
     {
       t: 'os',
       items: [
