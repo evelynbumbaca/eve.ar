@@ -332,8 +332,8 @@ export const lookap: CaseContent = {
       t: 'split',
       src: `${P}/textura.jpg`,
       alt: 'Tejido, lana y jean apilados junto a una ventana',
-      es: 'La estética de Lookap parte de la moda editorial: tonos cálidos y texturas de tela como la lana, el algodón y el jean. Un logo con una tipografía display de trazo elegante, y una interfaz limpia en Roboto para que la ropa sea la protagonista.',
-      en: 'Lookap’s look comes from editorial fashion: warm tones and fabric textures like wool, cotton and denim. A logo set in an elegant display typeface, and a clean Roboto interface so the clothes are the stars.',
+      es: 'Una interfaz atractiva pero limpia de elementos innecesarios, para que usarla sea cómodo y práctico. El UI Kit reúne tres colores (primario, secundario y de acento), una sola tipografía, Roboto, y los componentes de la app: inputs, botones, tab bar y cards. Todo partió de un moodboard de moda, con tipografías de trazo elegante y prendas sobre telas.',
+      en: 'An attractive interface, free of unnecessary elements, so that using it feels comfortable and practical. The UI Kit brings together three colors (primary, secondary and accent), a single typeface, Roboto, and the app components: inputs, buttons, tab bar and cards. It all started from a fashion moodboard, with elegant typefaces and garments on fabrics.',
     },
     {
       t: 'brand',
