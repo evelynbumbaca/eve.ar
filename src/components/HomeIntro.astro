@@ -20,7 +20,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 <section class="intro" data-banner data-intro style={`--n:${works.length}`}>
   <div class="stage" data-stage>
     {works.map((p, i) => (
-      <a class="card" href={link(`/trabajos/${p.id}`)} data-glow-dock data-card>
+      <a class="card" href={link(`/trabajos/${p.id}`)} data-card>
         {p.hero
           ? <img src={`${base}/${p.hero}`} alt="" loading="eager" decoding="async" />
           : (
