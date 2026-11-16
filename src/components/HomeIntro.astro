@@ -1,0 +1,309 @@
+---
+/* ============================================================
+   HomeIntro — portada del inicio.
+   · Logo grande al centro + trabajos sueltos alrededor (parallax
+     con el cursor). Con el scroll se juntan en una PILA y van
+     pasando de a uno; cada tarjeta es un link al caso.
+   · El logo vuela al menú con la lógica de index.astro
+     (.bn-name-slot / [data-name-fly] / [data-banner]).
+   · Al terminar la pila, sigue la página normal.
+   · Sin movimiento (reduced-motion): composición fija + lista.
+   ============================================================ */
+import { projects, social } from '../data/site';
+import { link } from '../lib/link';
+import LogoEve from './LogoEve.astro';
+
+const works = projects.slice(0, 6);
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<section class="intro" data-banner data-intro style={`--n:${works.length}`}>
+  <div class="stage" data-stage>
+    {works.map((p, i) => (
+      <a class="card" href={link(`/trabajos/${p.id}`)} data-glow-dock data-card>
+        {p.hero
+          ? <img src={`${base}/${p.hero}`} alt="" loading="eager" decoding="async" />
+          : (
+            <span class="ficha">
+              <span class="f-idx mono">{String(i + 1).padStart(2, '0')}</span>
+              <span class="f-title">{p.title}</span>
+            </span>
+          )}
+        <span class:list={['ccap', { 'on-photo': !!p.hero }]}>
+          <span class="ccap-t">
+            {p.hero && <b>{p.title}</b>}
+            <span class="ccap-m"><span data-es={p.disc.es} data-en={p.disc.en}>{p.disc.es}</span> · {p.year}</span>
+          </span>
+          <i><span data-es="Ver proyecto" data-en="View project">Ver proyecto</span> →</i>
+        </span>
+      </a>
+    ))}
+
+    <div class="center">
+      <h1 class="bn-name-slot" aria-label="eve"><LogoEve /></h1>
+    </div>
+    <span class="bn-name-fly" data-name-fly aria-hidden="true"><LogoEve /></span>
+
+    <p class="meta m-tr mono" data-es="Buenos Aires, AR" data-en="Buenos Aires, AR">Buenos Aires, AR</p>
+    <p class="meta m-bl mono" data-intro-role data-es="Diseñadora multimedia & UX/UI · motion" data-en="Multimedia & UX/UI designer · motion">Diseñadora multimedia &amp; UX/UI · motion</p>
+    <p class="meta m-bl m-count mono" data-intro-count><span data-es="Trabajos" data-en="Works">Trabajos</span> <b data-intro-num>01</b> — {String(works.length).padStart(2, '0')}</p>
+    <p class="meta m-br mono" data-intro-cue><span data-es="Scroll" data-en="Scroll">Scroll</span> <i></i></p>
+  </div>
+</section>
+
+<section class="hi-after" id="trabajos">
+  <div class="wrap hi-wrap">
+    <p class="hi-lead rise"
+      data-es="Diseñadora multimedia & UX/UI especializada en motion. Diseño identidades y experiencias con intención, claridad y carácter: marca, editorial, producto digital y movimiento."
+      data-en="Multimedia & UX/UI designer specialized in motion. I design identities and experiences with intent, clarity and character: brand, editorial, digital product and motion."
+    >Diseñadora multimedia &amp; UX/UI especializada en motion. Diseño identidades y experiencias con intención, claridad y carácter: marca, editorial, producto digital y movimiento.</p>
+
+    <ol class="hi-works rise rise-delay-1">
+      {works.map((p, i) => (
+        <li>
+          <a href={link(`/trabajos/${p.id}`)}>
+            <span class="n mono">{String(i + 1).padStart(2, '0')}</span>
+            <b>{p.title}</b>
+            <span class="d mono"><span data-es={p.disc.es} data-en={p.disc.en}>{p.disc.es}</span> · {p.year}</span>
+          </a>
+        </li>
+      ))}
+    </ol>
+
+    <div class="hi-foot rise rise-delay-2">
+      <nav class="hi-social" aria-label="Redes">
+        {social.map((s) => <a href={s.href} target="_blank" rel="noopener noreferrer">{s.label}</a>)}
+      </nav>
+      <a class="hi-all" href={link('/trabajos')}>
+        <span data-es="Ver todos los trabajos" data-en="See all works">Ver todos los trabajos</span>
+        <span aria-hidden="true">→</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* altura del tramo: llegada (1 pantalla) + 0,75 por trabajo + colchón */
+  .intro { position: relative; height: calc((var(--n) * 0.75 + 1.6) * 100svh); --cw: 320px; }
+  .stage { position: sticky; top: 0; height: 100svh; overflow: hidden; }
+
+  .center { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; }
+  .bn-name-slot { margin: 0; }
+  .bn-name-slot :global(svg), .bn-name-fly :global(svg) {
+    display: block; height: clamp(70px, 15vw, 230px); width: auto; color: var(--ink); overflow: visible;
+  }
+  .bn-name-fly { position: absolute; left: 0; top: 0; pointer-events: none; }
+  .bn-name-fly :global(.ltr) { transform-box: fill-box; transform-origin: 50% 62%; }
+  :global(html.morph-on) .bn-name-slot { visibility: hidden; }
+  :global(html:not(.morph-on)) .bn-name-fly { display: none; }
+  :global(html.morph-on) .bn-name-fly {
+    position: fixed; left: 0; top: 0; transform-origin: left top; z-index: 45;
+    transition: opacity 0.12s var(--ease-quint);
+  }
+
+  /* ---------- tarjetas ---------- */
+  .card {
+    position: absolute; left: 50%; top: 50%; width: var(--cw); aspect-ratio: 4 / 3;
+    margin: calc(var(--cw) * -0.375) 0 0 calc(var(--cw) * -0.5);
+    display: block; overflow: hidden; border-radius: 4px; color: #fff; background: #e9e4d9;
+    will-change: transform, opacity;
+    box-shadow: 0 1px 2px rgba(22, 21, 15, 0.14), 0 22px 50px -16px rgba(22, 21, 15, 0.4);
+  }
+  .card img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .card::after { content: ''; position: absolute; inset: 0; background: var(--paper); opacity: var(--dim, 0); pointer-events: none; }
+  .card:focus-visible { outline: 2px solid var(--orange); outline-offset: 4px; }
+
+  .ficha {
+    position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: flex-start; gap: clamp(8px, 1.4vw, 16px);
+    padding: clamp(14px, 2.2vw, 26px); background: #efece4; box-shadow: inset 0 0 0 1px var(--ink-12);
+  }
+  .f-idx { color: var(--ink-35); }
+  .f-title { font-family: var(--serif); font-size: clamp(1.5rem, 3.4vw, 2.8rem); line-height: 1.04; letter-spacing: -0.015em; color: var(--ink); }
+
+  .ccap {
+    position: absolute; inset: auto 0 0 0; display: flex; align-items: flex-end; justify-content: space-between; gap: 6px 16px;
+    padding: clamp(10px, 1.6vw, 20px); opacity: var(--cap, 0); color: var(--ink);
+  }
+  .ccap.on-photo { padding-top: clamp(28px, 5vw, 56px); color: #fff; background: linear-gradient(to top, rgba(14, 13, 10, 0.74), rgba(14, 13, 10, 0)); }
+  .ccap b { display: block; font-family: var(--serif); font-weight: 400; font-size: clamp(1.35rem, 3.1vw, 2.5rem); line-height: 1.04; letter-spacing: -0.015em; }
+  .ccap-m { display: block; margin-top: 6px; font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.8; }
+  .ccap:not(.on-photo) .ccap-m { margin-top: 0; }
+  .ccap i { font: 500 0.8125rem var(--sans); font-style: normal; white-space: nowrap; border-bottom: 1px solid currentColor; padding-bottom: 2px; }
+
+  /* ---------- meta ---------- */
+  .meta {
+    position: absolute; z-index: 5; color: var(--ink-60); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+    will-change: opacity; pointer-events: none;
+  }
+  .m-tr { right: var(--pad); top: clamp(60px, 9vh, 84px); }
+  .m-bl { left: var(--pad); bottom: clamp(18px, 3.4vh, 34px); max-width: 62vw; }
+  .m-count { opacity: 0; color: var(--ink); font-variant-numeric: tabular-nums; }
+  .m-count b { font-weight: 500; }
+  .m-br { right: var(--pad); bottom: clamp(18px, 3.4vh, 34px); display: flex; align-items: center; gap: 10px; }
+  .m-br i { display: block; width: 1px; height: 34px; background: linear-gradient(to bottom, transparent, var(--ink)); transform-origin: top; }
+  @media (prefers-reduced-motion: no-preference) {
+    .m-br i { animation: cue 2.2s ease-in-out infinite; }
+    @keyframes cue { 0%, 100% { transform: scaleY(0.35); opacity: 0.4; } 50% { transform: scaleY(1); opacity: 1; } }
+  }
+
+  /* ---------- lo que sigue ---------- */
+  .hi-after { padding-block: clamp(48px, 10vh, 120px) clamp(40px, 8vh, 100px); }
+  .hi-wrap { display: grid; gap: clamp(32px, 6vh, 64px); }
+  .hi-lead {
+    font-family: var(--serif); font-weight: 300; font-size: clamp(1.5rem, 3.4vw, 2.9rem);
+    line-height: 1.14; letter-spacing: -0.02em; max-width: 26ch; text-wrap: balance; color: var(--ink);
+  }
+  .hi-works { display: none; list-style: none; border-top: 1px solid var(--line); }
+  .hi-works li { border-bottom: 1px solid var(--line); }
+  .hi-works a { display: grid; grid-template-columns: 3ch minmax(0, 1fr) auto; align-items: baseline; gap: 4px 18px; padding-block: 16px; }
+  .hi-works b { font-family: var(--serif); font-weight: 400; font-size: clamp(1.3rem, 2.6vw, 2rem); }
+  .hi-works .n, .hi-works .d { color: var(--ink-45); text-transform: uppercase; }
+  .hi-foot { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 14px 24px; border-top: 1px solid var(--line); padding-top: 18px; }
+  .hi-social { display: flex; flex-wrap: wrap; gap: 18px; }
+  .hi-social a { font-size: var(--fs-small); color: var(--ink-60); transition: color var(--dur-micro) var(--ease-quint); }
+  .hi-social a:hover { color: var(--ink); }
+  .hi-all {
+    display: inline-flex; align-items: baseline; gap: 10px; font-weight: 500; font-size: clamp(1rem, 1.3vw, 1.25rem);
+    border-bottom: 1px solid var(--ink-35); padding-bottom: 3px;
+    transition: border-color var(--dur-micro) var(--ease-quint), opacity var(--dur-micro) var(--ease-quint);
+  }
+  .hi-all:hover { opacity: 0.7; border-color: var(--ink); }
+  .hi-all span[aria-hidden] { transition: transform var(--dur-ui) var(--ease-out); display: inline-block; }
+  .hi-all:hover span[aria-hidden] { transform: translateX(5px); }
+
+  @media (max-width: 700px) {
+    .ccap i { display: none; }
+    .hi-works a { grid-template-columns: 3ch minmax(0, 1fr); }
+    .hi-works .d { grid-column: 2; }
+  }
+
+  /* sin movimiento: portada fija (tarjetas sueltas) y los trabajos como lista */
+  :global(html.intro-static) .intro { height: 100svh; }
+  :global(html.intro-static) .stage { position: relative; }
+  :global(html.intro-static) .m-br { display: none; }
+  :global(html.intro-static) .hi-works { display: block; }
+</style>
+
+<script>
+  const intro = document.querySelector<HTMLElement>('[data-intro]');
+  const stage = document.querySelector<HTMLElement>('[data-stage]');
+  const cards = Array.from(document.querySelectorAll<HTMLElement>('[data-card]'));
+  const roleEl = document.querySelector<HTMLElement>('[data-intro-role]');
+  const countEl = document.querySelector<HTMLElement>('[data-intro-count]');
+  const numEl = document.querySelector<HTMLElement>('[data-intro-num]');
+  const cueEl = document.querySelector<HTMLElement>('[data-intro-cue]');
+
+  if (intro && stage && cards.length) {
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
+    const N = cards.length;
+    const GATHER = 1, STEP = 0.75;
+
+    // posición suelta de cada pieza (fracción del escenario desde el centro), escala, giro y profundidad
+    const loose = [
+      { fx: -0.33, fy: -0.20, s: 0.44, rot: -4, depth: 0.35 },
+      { fx:  0.32, fy: -0.25, s: 0.56, rot:  3, depth: 0.80 },
+      { fx:  0.28, fy:  0.27, s: 0.38, rot: -2, depth: 1.25 },
+      { fx: -0.27, fy:  0.27, s: 0.36, rot:  5, depth: 0.60 },
+      { fx: -0.02, fy:  0.37, s: 0.30, rot: -6, depth: 1.00 },
+      { fx:  0.04, fy: -0.34, s: 0.32, rot:  4, depth: 0.50 },
+    ];
+
+    let W = 0, H = 0, ch = 0, lastNum = 0;
+    const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
+    const ease = (t: number) => 1 - Math.pow(1 - t, 3);
+    const smooth = (t: number) => t * t * (3 - 2 * t);
+    const mix = (a: number, b: number, t: number) => a + (b - a) * t;
+
+    const measure = () => {
+      W = stage.clientWidth; H = stage.clientHeight;
+      const cw = Math.min(W * 0.78, 600, H * 0.46 * 4 / 3);
+      intro.style.setProperty('--cw', cw.toFixed(1) + 'px');
+      ch = cw * 0.75;
+    };
+
+    // u = scroll en alturas de pantalla; sx, sy = puntero suavizado (-1..1)
+    const render = (u: number, sx: number, sy: number) => {
+      const g = ease(clamp01(u / 0.9));
+      const q = Math.max(0, Math.min(N - 1, (u - GATHER) / STEP));
+      const fi = Math.floor(q);
+      const q2 = fi + smooth(clamp01((q - fi - 0.22) / 0.56)); // cada tarjeta descansa un rato al frente
+      const behind = Math.max(0, Math.min(4, N - 1 - q2));
+      const front = ch * 0.0425 * behind - H * 0.015;      // la pila se recentra sola
+
+      for (let i = 0; i < N; i++) {
+        const L = loose[i % loose.length];
+        const r = i - q2;
+        let X: number, Y: number, S: number, R: number, O: number, dim: number, cap: number;
+        if (r >= 0) {            // en la pila: más atrás = más chica, más arriba, más velada
+          X = -sx * r * 7; Y = front - r * ch * 0.13 - sy * r * 4;
+          S = Math.max(0.5, 1 - 0.09 * r); R = 0;
+          O = 1 - clamp01(r - 3.6); dim = Math.min(0.55, r * 0.13); cap = clamp01(1 - r * 2.2);
+        } else {                 // saliendo: cae hacia adelante y se va
+          const t = -r;
+          X = 0; Y = front + t * t * H * 0.85; S = 1 + 0.05 * t; R = t * 5;
+          O = 1 - clamp01((t - 0.2) / 0.6); dim = 0; cap = 1 - clamp01(t * 2);
+        }
+        const x = mix(L.fx * W - sx * L.depth * 30, X, g);
+        const y = mix(L.fy * H - sy * L.depth * 30, Y, g);
+        const s = mix(L.s, S, g), rot = mix(L.rot, R, g), o = mix(1, O, g);
+        const el = cards[i];
+        el.style.transform = `translate3d(${x.toFixed(1)}px,${y.toFixed(1)}px,0) rotate(${rot.toFixed(2)}deg) scale(${s.toFixed(4)})`;
+        el.style.opacity = o.toFixed(3);
+        el.style.zIndex = String(50 - Math.round(r * 10));
+        el.style.pointerEvents = o < 0.3 ? 'none' : 'auto';
+        el.style.setProperty('--dim', (dim * g).toFixed(3));
+        el.style.setProperty('--cap', (cap * clamp01((g - 0.7) / 0.3)).toFixed(3));
+      }
+
+      if (roleEl) roleEl.style.opacity = (1 - clamp01(u / 0.25)).toFixed(3);
+      if (countEl) countEl.style.opacity = clamp01((u - 0.7) / 0.3).toFixed(3);
+      if (cueEl) cueEl.style.opacity = (1 - clamp01((u - (GATHER + (N - 1) * STEP - 0.1)) / 0.3)).toFixed(3);
+      const n = Math.min(N, Math.round(q2) + 1);
+      if (n !== lastNum && numEl) { lastNum = n; numEl.textContent = (n < 10 ? '0' : '') + n; }
+    };
+
+    if (reduce) {
+      document.documentElement.classList.add('intro-static');
+      measure(); render(0, 0, 0);
+      addEventListener('resize', () => { measure(); render(0, 0, 0); }, { passive: true });
+    } else {
+      let mx = 0, my = 0, sx = 0, sy = 0, su = 0, raf = 0, running = false;
+      const scrollU = () => Math.max(0, (scrollY - intro.offsetTop) / (H || 1));
+
+      const frame = () => {
+        const u = scrollU();
+        su += (u - su) * 0.14;
+        sx += (mx - sx) * 0.08; sy += (my - sy) * 0.08;
+        render(su, sx, sy);
+        const moving = Math.abs(u - su) > 0.0008 || Math.abs(mx - sx) > 0.002 || Math.abs(my - sy) > 0.002;
+        if (moving) raf = requestAnimationFrame(frame); else running = false;
+      };
+      const kick = () => { if (!running) { running = true; raf = requestAnimationFrame(frame); } };
+
+      if (fine) {
+        stage.addEventListener('pointermove', (ev) => {
+          const b = stage.getBoundingClientRect();
+          mx = ((ev.clientX - b.left) / b.width) * 2 - 1;
+          my = ((ev.clientY - b.top) / b.height) * 2 - 1;
+          kick();
+        }, { passive: true });
+        stage.addEventListener('pointerleave', () => { mx = 0; my = 0; kick(); }, { passive: true });
+      }
+      // con teclado: al enfocar una tarjeta, el scroll la trae al frente
+      cards.forEach((el, i) => {
+        el.addEventListener('focus', () => {
+          if (!el.matches(':focus-visible')) return;
+          const want = GATHER + i * STEP + 0.02;
+          if (Math.abs(scrollU() - want) > 0.3) scrollTo({ top: intro.offsetTop + want * H, behavior: 'smooth' });
+        });
+      });
+      addEventListener('scroll', kick, { passive: true });
+      let rt = 0;
+      addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { measure(); kick(); }, 120); }, { passive: true });
+      document.addEventListener('visibilitychange', () => { if (document.hidden) { cancelAnimationFrame(raf); running = false; } else kick(); });
+      addEventListener('load', () => { measure(); kick(); }, { once: true });
+      measure(); render(0, 0, 0); kick();
+    }
+  }
+</script>

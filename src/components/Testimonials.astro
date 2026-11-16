@@ -40,10 +40,10 @@ const items = [
   <div class="wrap">
     <div class="ts-head">
       <p class="ts-kicker mono cap rise"><T es="Lo que dicen" en="What they say" /></p>
-      <div class="ts-score rise rise-delay-1" role="img" aria-label="Valoración 5 de 5 estrellas">
-        <span class="ts-num">5,0</span>
+      <div class="ts-score" role="img" aria-label="Valoración 5 de 5 estrellas" data-score>
+        <span class="ts-num" aria-hidden="true" data-count>5,0</span>
         <span class="ts-score-right">
-          <span class="ts-stars big" aria-hidden="true">★★★★★</span>
+          <span class="ts-stars big" aria-hidden="true"><i>★</i><i>★</i><i>★</i><i>★</i><i>★</i></span>
           <span class="ts-score-sub mono"><T es="Valoración de clientes · 2023–2025" en="Client rating · 2023–2025" /></span>
         </span>
       </div>
@@ -51,8 +51,9 @@ const items = [
 
     <div class="ts-grid">
       {items.map((t, i) => (
-        <figure class:list={['ts-card', 'rise', `rise-delay-${i + 1}`, { 'is-featured': i === 1 }]}>
-          <p class="ts-stars" aria-label="5 de 5 estrellas · 5 out of 5 stars">★★★★★</p>
+        <figure class:list={['ts-card', { 'is-featured': i === 1 }]} data-ts-card style={`--i:${i}`}>
+          <span class="ts-mark" aria-hidden="true">“</span>
+          <p class="ts-stars" aria-label="5 de 5 estrellas · 5 out of 5 stars"><i>★</i><i>★</i><i>★</i><i>★</i><i>★</i></p>
           <blockquote class="ts-quote">
             <span data-es={`“${t.quote.es}”`} data-en={`“${t.quote.en}”`}>“{t.quote.es}”</span>
           </blockquote>
@@ -63,7 +64,7 @@ const items = [
       ))}
     </div>
 
-    <p class="ts-cta rise">
+    <p class="ts-cta">
       <T es="¿Tu marca es la próxima?" en="Is your brand next?" />
       <a href="#contacto" data-open-contact>
         <T es="Escribime" en="Write me" /> <span aria-hidden="true">→</span>
@@ -100,6 +101,7 @@ const items = [
     letter-spacing: 5px;
     line-height: 1;
   }
+  .ts-stars i, .ts-stars.big i { font-style: normal; display: inline-block; }
   .ts-stars.big { font-size: clamp(15px, 1.6vw, 19px); letter-spacing: 6px; }
   .ts-score-sub { color: var(--ink-45); font-size: 10px !important; letter-spacing: 0.1em; text-transform: uppercase; }
 
@@ -116,9 +118,16 @@ const items = [
     border-radius: 6px;
     padding: clamp(22px, 2.4vw, 34px);
     background: color-mix(in srgb, #ffffff 45%, transparent);
-    transition: transform var(--dur-ui) var(--ease-out), border-color var(--dur-ui) var(--ease-quint);
+    position: relative; overflow: hidden;
+    transition: translate var(--dur-ui) var(--ease-out), border-color var(--dur-ui) var(--ease-quint);
   }
-  .ts-card:hover { transform: translateY(-4px); border-color: var(--ink-45); }
+  .ts-card:hover { translate: 0 -4px; border-color: var(--ink-45); }
+  .ts-mark {
+    position: absolute; right: 14px; top: -22px; pointer-events: none;
+    font-family: var(--serif); font-size: clamp(7rem, 10vw, 10rem); line-height: 1; color: var(--ink-06);
+  }
+  .ts-card.is-featured .ts-mark { color: rgba(250, 249, 245, 0.07); }
+  .ts-quote, .ts-who, .ts-stars { position: relative; }
   .ts-quote {
     font-family: var(--serif);
     font-weight: 300;
@@ -140,9 +149,9 @@ const items = [
   .ts-card.is-featured {
     background: var(--ink);
     border-color: var(--ink);
-    transform: translateY(-6px);
+    translate: 0 -6px;
   }
-  .ts-card.is-featured:hover { transform: translateY(-10px); }
+  .ts-card.is-featured:hover { translate: 0 -10px; }
   .ts-card.is-featured .ts-quote { color: var(--paper); }
   .ts-card.is-featured .ts-who { color: rgba(250, 249, 245, 0.55); }
 
@@ -167,9 +176,84 @@ const items = [
   .ts-cta a span { display: inline-block; transition: transform var(--dur-ui) var(--ease-out); }
   .ts-cta a:hover span { transform: translateX(5px); }
 
+
+  /* ---------- animación: se repite cada vez que entra en pantalla ---------- */
+  @media (prefers-reduced-motion: no-preference) {
+    /* las tarjetas entran desde abajo, inclinadas, una tras otra */
+    .ts-card { opacity: 0; transform: translateY(64px) rotate(var(--r, 2deg)) scale(0.94); transform-origin: 50% 100%;
+      transition: opacity 0.7s var(--ease-out), transform 1.1s var(--ease-out), translate var(--dur-ui) var(--ease-out), border-color var(--dur-ui) var(--ease-quint);
+      transition-delay: calc(var(--i) * 140ms + 120ms), calc(var(--i) * 140ms + 120ms), 0s, 0s; }
+    .ts-card:nth-child(1) { --r: -2.5deg; } .ts-card:nth-child(3) { --r: 2.5deg; } .ts-card:nth-child(2) { --r: 0deg; }
+    .ts-grid.in .ts-card { opacity: 1; transform: none; }
+
+    /* estrellas: se encienden de a una, con un pequeño rebote */
+    .ts-stars i { color: var(--ink-18); transform: translateY(8px) scale(0.5); }
+    .ts-card.is-featured .ts-stars i { color: rgba(250, 249, 245, 0.2); }
+    .ts-grid.in .ts-card .ts-stars i, .ts-score.in .ts-stars i {
+      color: var(--orange); transform: none;
+      transition: color 0.3s var(--ease-quint), transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transition-delay: calc(var(--i, 0) * 140ms + 480ms + var(--s) * 90ms);
+    }
+    .ts-score.in .ts-stars i { transition-delay: calc(0.35s + var(--s) * 110ms); }
+    .ts-stars i:nth-child(1) { --s: 0; } .ts-stars i:nth-child(2) { --s: 1; } .ts-stars i:nth-child(3) { --s: 2; }
+    .ts-stars i:nth-child(4) { --s: 3; } .ts-stars i:nth-child(5) { --s: 4; }
+
+    /* el texto se despeja como una máscara */
+    .ts-quote, .ts-who { clip-path: inset(0 0 100% 0); transform: translateY(14px); opacity: 0;
+      transition: clip-path 0.9s var(--ease-out), transform 0.9s var(--ease-out), opacity 0.6s var(--ease-out);
+      transition-delay: calc(var(--i) * 140ms + 600ms); }
+    .ts-who { transition-delay: calc(var(--i) * 140ms + 760ms); }
+    .ts-grid.in .ts-quote, .ts-grid.in .ts-who { clip-path: inset(0 0 -20% 0); transform: none; opacity: 1; }
+
+    /* comillas gigantes que bajan despacio */
+    .ts-mark { transform: translateY(-30px); opacity: 0; transition: transform 1.4s var(--ease-out), opacity 1s var(--ease-out); transition-delay: calc(var(--i) * 140ms + 300ms); }
+    .ts-grid.in .ts-mark { transform: none; opacity: 1; }
+
+    .ts-cta { opacity: 0; transform: translateY(16px); transition: opacity 0.7s var(--ease-out) 0.2s, transform 0.7s var(--ease-out) 0.2s; }
+    .ts-cta.in { opacity: 1; transform: none; }
+  }
+
   @media (max-width: 860px) {
     .ts-grid { grid-template-columns: 1fr; max-width: 560px; }
-    .ts-card.is-featured { transform: none; }
-    .ts-card.is-featured:hover { transform: translateY(-4px); }
+    .ts-card.is-featured { translate: 0 0; }
+    .ts-card.is-featured:hover { translate: 0 -4px; }
   }
 </style>
+
+<script>
+  /* Entrada repetible: al entrar al viewport se activa; al salir del todo se rearma.
+     Además, el 5,0 cuenta desde 0 cada vez que la valoración aparece. */
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const grid = document.querySelector<HTMLElement>('.ts-grid');
+  const score = document.querySelector<HTMLElement>('[data-score]');
+  const cta = document.querySelector<HTMLElement>('.ts-cta');
+  const num = document.querySelector<HTMLElement>('[data-count]');
+
+  if (!reduce && 'IntersectionObserver' in window) {
+    let raf = 0;
+    const count = () => {
+      if (!num) return;
+      cancelAnimationFrame(raf);
+      const t0 = performance.now(), D = 1300;
+      const tick = (now: number) => {
+        const p = Math.min(1, (now - t0) / D);
+        const v = 5 * (1 - Math.pow(1 - p, 3));
+        num.textContent = v.toFixed(1).replace('.', ',');
+        if (p < 1) raf = requestAnimationFrame(tick);
+      };
+      num.textContent = '0,0';
+      raf = requestAnimationFrame(tick);
+    };
+    const watch = (el: HTMLElement | null, onIn?: () => void) => {
+      if (!el) return;
+      new IntersectionObserver((es) => es.forEach((e) => {
+        el.classList.toggle('in', e.isIntersecting);
+        if (e.isIntersecting) onIn?.();
+        else if (el === score && num) { cancelAnimationFrame(raf); num.textContent = '5,0'; }
+      }), { threshold: 0.08, rootMargin: '0px 0px -6% 0px' }).observe(el);
+    };
+    watch(grid); watch(score, count); watch(cta);
+  } else {
+    grid?.classList.add('in'); score?.classList.add('in'); cta?.classList.add('in');
+  }
+</script>
