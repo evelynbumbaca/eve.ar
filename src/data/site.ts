@@ -52,7 +52,7 @@ export const social: { label: string; href: string }[] = [
    las páginas de detalle (archivo, casos, tienda) siguen debajo */
 export const nav: NavItem[] = [
   { es: 'Inicio', en: 'Index', href: '/' },
-  { es: 'Trabajos', en: 'Work', href: '/trabajos' },
+  { es: 'Proyectos', en: 'Projects', href: '/trabajos' },
   { es: 'Packs', en: 'Packs', href: '/#packs' },
   { es: 'Sobre mí', en: 'About', href: '/estudio' },
   { es: 'Tienda', en: 'Shop', href: '/tienda', tagEs: 'Pronto', tagEn: 'Soon' },

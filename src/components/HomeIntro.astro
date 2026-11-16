@@ -46,7 +46,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
     <p class="meta m-tr mono" data-es="Buenos Aires, AR" data-en="Buenos Aires, AR">Buenos Aires, AR</p>
     <p class="meta m-bl mono" data-intro-role data-es="Diseñadora multimedia & UX/UI · motion" data-en="Multimedia & UX/UI designer · motion">Diseñadora multimedia &amp; UX/UI · motion</p>
-    <p class="meta m-bl m-count mono" data-intro-count><span data-es="Trabajos" data-en="Works">Trabajos</span> <b data-intro-num>01</b> — {String(works.length).padStart(2, '0')}</p>
+    <p class="meta m-bl m-count mono" data-intro-count><span data-es="Proyectos" data-en="Projects">Proyectos</span> <b data-intro-num>01</b> — {String(works.length).padStart(2, '0')}</p>
     <p class="meta m-br mono" data-intro-cue><span data-es="Scroll" data-en="Scroll">Scroll</span> <i></i></p>
   </div>
 </section>
@@ -75,7 +75,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         {social.map((s) => <a href={s.href} target="_blank" rel="noopener noreferrer">{s.label}</a>)}
       </nav>
       <a class="hi-all" href={link('/trabajos')}>
-        <span data-es="Ver todos los trabajos" data-en="See all works">Ver todos los trabajos</span>
+        <span data-es="Ver todos los proyectos" data-en="See all projects">Ver todos los proyectos</span>
         <span aria-hidden="true">→</span>
       </a>
     </div>
@@ -217,7 +217,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
     const measure = () => {
       W = stage.clientWidth; H = stage.clientHeight;
-      const cw = Math.min(W * 0.78, 600, H * 0.46 * 4 / 3);
+      const cw = Math.min(W * 0.88, 860, H * 0.6 * 4 / 3);
       intro.style.setProperty('--cw', cw.toFixed(1) + 'px');
       ch = cw * 0.75;
     };
