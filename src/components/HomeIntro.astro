@@ -4,8 +4,9 @@
    · Logo grande al centro + trabajos sueltos alrededor (parallax
      con el cursor). Con el scroll se juntan en una PILA y van
      pasando de a uno; cada tarjeta es un link al caso.
-   · El logo vuela al menú con la lógica de index.astro
-     (.bn-name-slot / [data-name-fly] / [data-banner]).
+   · Primer scroll: el logo grande se contrae y se difumina en su
+     lugar; recién cuando desapareció aparece el del menú, y después
+     la frase. Un gesto = un paso (también en la pila).
    · Al terminar la pila, sigue la página normal.
    · Sin movimiento (reduced-motion): composición fija + lista.
    ============================================================ */
@@ -37,7 +38,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
             {p.hero && <b>{p.title}</b>}
             <span class="ccap-m"><span data-es={p.disc.es} data-en={p.disc.en}>{p.disc.es}</span> · {p.year}</span>
           </span>
-          <i><span data-es="Ver proyecto" data-en="View project">Ver proyecto</span> →</i>
+          <i><span data-es="Ver caso de estudio" data-en="View case study">Ver caso de estudio</span> →</i>
         </span>
       </a>
     ))}
@@ -49,14 +50,11 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     </div>
 
     <div class="center">
-      <h1 class="bn-name-slot" aria-label="eve"><LogoEve /></h1>
+      <h1 class="bn-name-slot" aria-label="eve" data-eve><LogoEve /></h1>
     </div>
-    <span class="bn-name-fly" data-name-fly aria-hidden="true"><LogoEve /></span>
 
-    <p class="meta m-tr mono" data-es="Buenos Aires, AR" data-en="Buenos Aires, AR">Buenos Aires, AR</p>
     <p class="meta m-bl mono" data-intro-role data-es="Diseñadora multimedia & UX/UI · motion" data-en="Multimedia & UX/UI designer · motion">Diseñadora multimedia &amp; UX/UI · motion</p>
-    <p class="meta m-bl m-count mono" data-intro-count><span data-es="Proyectos" data-en="Projects">Proyectos</span> <b data-intro-num>01</b> — {String(works.length).padStart(2, '0')}</p>
-    <p class="meta m-br mono" data-intro-cue><span data-es="Scroll" data-en="Scroll">Scroll</span> <i></i></p>
+    <p class="meta m-bl m-count mono" data-intro-count><span data-es="Caso de estudio" data-en="Case study">Caso de estudio</span> <b data-intro-num>01</b> — {String(works.length).padStart(2, '0')}</p>
   </div>
 </section>
 
@@ -84,7 +82,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         {social.map((s) => <a href={s.href} target="_blank" rel="noopener noreferrer">{s.label}</a>)}
       </nav>
       <a class="hi-all" href={link('/trabajos')}>
-        <span data-es="Ver todos los proyectos" data-en="See all projects">Ver todos los proyectos</span>
+        <span data-es="Ver todos los casos de estudio" data-en="See all case studies">Ver todos los casos de estudio</span>
         <span aria-hidden="true">→</span>
       </a>
     </div>
@@ -112,17 +110,10 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   }
   .center { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; }
   .bn-name-slot { margin: 0; }
-  .bn-name-slot :global(svg), .bn-name-fly :global(svg) {
+  .bn-name-slot :global(svg) {
     display: block; height: clamp(58px, 11.5vw, 184px); width: auto; color: var(--ink); overflow: visible;
   }
-  .bn-name-fly { position: absolute; left: 0; top: 0; pointer-events: none; }
-  .bn-name-fly :global(.ltr) { transform-box: fill-box; transform-origin: 50% 62%; }
-  :global(html.morph-on) .bn-name-slot { visibility: hidden; }
-  :global(html:not(.morph-on)) .bn-name-fly { display: none; }
-  :global(html.morph-on) .bn-name-fly {
-    position: fixed; left: 0; top: 0; transform-origin: left top; z-index: 45;
-    transition: opacity 0.12s var(--ease-quint);
-  }
+  .bn-name-slot :global(.ltr) { transform-box: fill-box; transform-origin: 50% 62%; }
 
   /* ---------- tarjetas ---------- */
   .card {
@@ -158,15 +149,11 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     position: absolute; z-index: 5; color: var(--ink-60); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
     will-change: opacity; pointer-events: none;
   }
-  .m-tr { right: var(--pad); top: clamp(60px, 9vh, 84px); }
   .m-bl { left: var(--pad); bottom: clamp(18px, 3.4vh, 34px); max-width: 62vw; }
   .m-count { opacity: 0; color: var(--ink); font-variant-numeric: tabular-nums; }
   .m-count b { font-weight: 500; }
-  .m-br { right: var(--pad); bottom: clamp(18px, 3.4vh, 34px); display: flex; align-items: center; gap: 10px; }
-  .m-br i { display: block; width: 1px; height: 34px; background: linear-gradient(to bottom, transparent, var(--ink)); transform-origin: top; }
   @media (prefers-reduced-motion: no-preference) {
-    .m-br i { animation: cue 2.2s ease-in-out infinite; }
-    @keyframes cue { 0%, 100% { transform: scaleY(0.35); opacity: 0.4; } 50% { transform: scaleY(1); opacity: 1; } }
+      @keyframes cue { 0%, 100% { transform: scaleY(0.35); opacity: 0.4; } 50% { transform: scaleY(1); opacity: 1; } }
   }
 
   /* ---------- lo que sigue ---------- */
@@ -204,7 +191,6 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   /* sin movimiento: portada fija (tarjetas sueltas) y los trabajos como lista */
   :global(html.intro-static) .intro { height: 100svh; }
   :global(html.intro-static) .stage { position: relative; }
-  :global(html.intro-static) .m-br { display: none; }
   :global(html.intro-static) .bigs
   :global(html.intro-static) .hi-works { display: block; }
   :global(html.intro-static) .hi-lead { display: block; }
@@ -218,8 +204,10 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   const roleEl = document.querySelector<HTMLElement>('[data-intro-role]');
   const countEl = document.querySelector<HTMLElement>('[data-intro-count]');
   const numEl = document.querySelector<HTMLElement>('[data-intro-num]');
-  const cueEl = document.querySelector<HTMLElement>('[data-intro-cue]');
   const stmt = document.querySelector<HTMLElement>('[data-statement]');
+  const eve = document.querySelector<HTMLElement>('[data-eve]');
+  const mark = document.querySelector<HTMLElement>('[data-name-target]');
+  const letters = eve ? Array.from(eve.querySelectorAll<SVGGElement>('.ltr')) : [];
   const bigs = Array.from(document.querySelectorAll<HTMLElement>('[data-big]'));
 
   if (intro && stage && cards.length) {
@@ -242,6 +230,8 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     let W = 0, H = 0, ch = 0, lastNum = 0;
     const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
     const smooth = (t: number) => t * t * (3 - 2 * t);
+    const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
+    let opening = 0;                  // 0 = logo grande · 1 = logo en el menú y frase visible
     const mix = (a: number, b: number, t: number) => a + (b - a) * t;
 
     const measure = () => {
@@ -269,10 +259,10 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     // u = scroll en alturas de pantalla; gd = avance de la pila; q2 = tarjeta al frente; sx, sy = puntero (-1..1)
     const render = (u: number, gd: number, q2: number, sx: number, sy: number) => {
       const g = gd * gd * (3 - 2 * gd) * 0.35 + gd * 0.65;  // casi lineal: la respuesta la da el tiempo
-      if (stmt) {                     // la frase aparece con el primer scroll y se va antes de que se junten
-        const si = smooth(clamp01((u - 0.3) / 0.4)), so = smooth(clamp01((u - 0.95) / 0.3));
+      if (stmt) {                     // la frase entra cuando el logo ya se fue, y se va antes de que se junten
+        const si = easeOut(clamp01((opening - 0.45) / 0.55)), so = smooth(clamp01((u - 0.95) / 0.3));
         stmt.style.opacity = (si * (1 - so)).toFixed(3);
-        stmt.style.transform = `translate3d(0,${((1 - si) * 36 - so * 28).toFixed(1)}px,0)`;
+        stmt.style.transform = `translate3d(0,${((1 - si) * 30 - so * 28).toFixed(1)}px,0)`;
       }
       const behind = Math.max(0, Math.min(4, N - 1 - q2));
       const front = ch * 0.0425 * behind - H * 0.015;      // la pila se recentra sola
@@ -314,9 +304,8 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         el.style.opacity = (clamp01(1 - a * 1.15) * 0.92 * clamp01((g - 0.6) / 0.4)).toFixed(3);
         el.style.transform = `translate(calc(-50% + ${(r * W * 0.62 - sx * 24).toFixed(1)}px), -50%)`;
       }
-      if (roleEl) roleEl.style.opacity = (1 - clamp01(u / 0.25)).toFixed(3);
+      if (roleEl) roleEl.style.opacity = (1 - clamp01(opening / 0.3)).toFixed(3);
       if (countEl) countEl.style.opacity = clamp01((g - 0.7) / 0.3).toFixed(3);
-      if (cueEl) cueEl.style.opacity = (1 - clamp01((u - (GATHER + (N - 1) * STEP - 0.1)) / 0.3)).toFixed(3);
       const n = Math.min(N, Math.round(q2) + 1);
       if (n !== lastNum && numEl) { lastNum = n; numEl.textContent = (n < 10 ? '0' : '') + n; }
     };
@@ -327,6 +316,31 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       addEventListener('resize', () => { measure(); render(0, 0, 0, 0, 0); }, { passive: true });
     } else {
       let mx = 0, my = 0, sx = 0, sy = 0, su = 0, gd = 0, qd = 0, raf = 0, running = false, last = 0;
+      let op = 0, px = -1e5, py = -1e5;
+      const OPEN_DUR = 0.95;                       // segundos que dura la apertura completa
+      const openTarget = (u: number) => (u > 0.4 ? 1 : 0);
+      const lsx = letters.map(() => 1), lcx: number[] = [], lcy: number[] = [];
+
+      const renderOpen = () => {
+        const e = easeOut(clamp01(op / 0.4));      // el logo se contrae y se difumina en su lugar
+        if (eve) {
+          if (e < 0.001) { eve.style.opacity = ''; eve.style.transform = ''; eve.style.filter = ''; }
+          else {
+            eve.style.opacity = (1 - e).toFixed(3);
+            eve.style.transform = `scale(${(1 - 0.3 * e).toFixed(4)})`;
+            eve.style.filter = `blur(${(18 * e).toFixed(2)}px)`;
+          }
+        }
+        const w = easeOut(clamp01((op - 0.42) / 0.26)); // el del menú aparece recién cuando el grande ya no está
+        if (mark) {
+          mark.style.opacity = w.toFixed(3);
+          mark.style.filter = w > 0.999 || w < 0.001 ? '' : `blur(${(5 * (1 - w)).toFixed(2)}px)`;
+        }
+      };
+      const measureLetters = () => {
+        if (op > 0.01) return;
+        letters.forEach((l, i) => { const r = l.getBoundingClientRect(); lcx[i] = r.left + r.width / 2; lcy[i] = r.top + r.height / 2; });
+      };
       const scrollU = () => Math.max(0, (scrollY - intro.offsetTop) / (H || 1));
       // acercamiento exponencial: máxima velocidad al arrancar, frena suave al llegar (independiente de los Hz)
       const k = (rate: number, dt: number) => 1 - Math.exp(-rate * dt);
@@ -334,12 +348,28 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       const frame = (now: number) => {
         const dt = Math.min(0.05, Math.max(0.001, (now - last) / 1000)); last = now;
         const u = scrollU();
+        const ot = openTarget(u);
+        op += Math.sign(ot - op) * Math.min(Math.abs(ot - op), dt / OPEN_DUR);
+        opening = op;
         su += (u - su) * k(9, dt);
         gd += (gatherTarget(u) - gd) * k(6, dt);
         qd += (cardTarget(u) - qd) * k(6.5, dt);
         sx += (mx - sx) * k(5, dt); sy += (my - sy) * k(5, dt);
+        renderOpen();
         render(su, gd, qd, sx, sy);
-        const moving = Math.abs(u - su) > 0.0008 || Math.abs(gatherTarget(u) - gd) > 0.0008 || Math.abs(cardTarget(u) - qd) > 0.0008 ||
+        // letras del logo: se estiran cerca del cursor (solo con puntero fino y el logo en reposo)
+        let lettersMoving = false;
+        if (fine && letters.length) {
+          const active = op < 0.02 && lcx.length === letters.length;
+          letters.forEach((l, i) => {
+            let tg = 1;
+            if (active) tg = 1 + 0.12 * smooth(clamp01(1 - Math.hypot(px - lcx[i], py - lcy[i]) / 300));
+            lsx[i] += (tg - lsx[i]) * k(10, dt);
+            if (Math.abs(tg - lsx[i]) > 0.002) lettersMoving = true;
+            l.style.transform = `scaleX(${lsx[i].toFixed(4)})`;
+          });
+        }
+        const moving = Math.abs(ot - op) > 0.0005 || lettersMoving || Math.abs(u - su) > 0.0008 || Math.abs(gatherTarget(u) - gd) > 0.0008 || Math.abs(cardTarget(u) - qd) > 0.0008 ||
                        Math.abs(mx - sx) > 0.002 || Math.abs(my - sy) > 0.002;
         if (moving) raf = requestAnimationFrame(frame); else running = false;
       };
@@ -350,17 +380,18 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
           const b = stage.getBoundingClientRect();
           mx = ((ev.clientX - b.left) / b.width) * 2 - 1;
           my = ((ev.clientY - b.top) / b.height) * 2 - 1;
+          px = ev.clientX; py = ev.clientY;
           kick();
         }, { passive: true });
-        stage.addEventListener('pointerleave', () => { mx = 0; my = 0; kick(); }, { passive: true });
+        stage.addEventListener('pointerleave', () => { mx = 0; my = 0; px = py = -1e5; kick(); }, { passive: true });
       }
       /* ---------- pasador: un gesto = un paso ----------
-         Paradas: la frase de presentación y cada proyecto al frente. Dentro de esa zona,
+         Paradas: arriba de todo, la frase de presentación y cada proyecto al frente. Dentro de esa zona,
          cada gesto (rueda, trackpad, deslizar, teclado) salta a la parada siguiente; la
          animación la hace el suavizado en el tiempo. En los extremos, el scroll sigue normal. */
       const STMT_REST = 0.82;
-      const ZONE_LO = 0.6;
-      const rests = () => [STMT_REST, ...cards.map((_, i) => GATHER + (i + 0.02) * STEP)];
+      const ZONE_LO = 0;
+      const rests = () => [0, STMT_REST, ...cards.map((_, i) => GATHER + (i + 0.02) * STEP)];
       const uMax = () => intro.offsetHeight / (H || 1) - 1;
       const inZone = (u: number) => u >= ZONE_LO && u <= uMax() + 0.001;
       const nextRest = (u: number, dir: number) => {
@@ -454,10 +485,11 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       });
       addEventListener('scroll', kick, { passive: true });
       let rt = 0;
-      addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { measure(); kick(); }, 120); }, { passive: true });
+      addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { measure(); measureLetters(); kick(); }, 120); }, { passive: true });
       document.addEventListener('visibilitychange', () => { if (document.hidden) { cancelAnimationFrame(raf); running = false; } else kick(); });
-      addEventListener('load', () => { measure(); kick(); }, { once: true });
-      measure(); su = scrollU(); gd = gatherTarget(su); qd = cardTarget(su); render(su, gd, qd, 0, 0); kick();
+      addEventListener('load', () => { measure(); measureLetters(); kick(); }, { once: true });
+      measure(); su = scrollU(); op = opening = openTarget(su); gd = gatherTarget(su); qd = cardTarget(su);
+      renderOpen(); render(su, gd, qd, 0, 0); measureLetters(); kick();
     }
   }
 </script>

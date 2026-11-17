@@ -10,11 +10,11 @@ export type Lang = 'es' | 'en';
 
 export const ui: Record<Lang, Record<string, string>> = {
   es: {
-    'footer.work': 'Proyectos seleccionados — 2023 / 2025',
+    'footer.work': 'Casos de estudio — 2023 / 2025',
     'footer.rights': 'Todos los derechos reservados',
   },
   en: {
-    'footer.work': 'Selected projects — 2023 / 2025',
+    'footer.work': 'Case studies — 2023 / 2025',
     'footer.rights': 'All rights reserved',
   },
 };
