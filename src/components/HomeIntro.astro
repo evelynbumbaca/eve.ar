@@ -43,19 +43,15 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     ))}
 
     <div class="statement" data-statement>
-      <p data-es="Diseñadora multimedia & UX/UI especializada en motion. Diseño identidades y experiencias con intención, claridad y carácter: marca, editorial, producto digital y movimiento."
-         data-en="Multimedia & UX/UI designer specialized in motion. I design identities and experiences with intent, clarity and character: brand, editorial, digital product and motion."
-      >Diseñadora multimedia &amp; UX/UI especializada en motion. Diseño identidades y experiencias con intención, claridad y carácter: marca, editorial, producto digital y movimiento.</p>
+      <p data-es="Diseñadora multimedia & UX/UI especializada en motion. Diseño identidades y experiencias con intención, claridad y carácter."
+         data-en="Multimedia & UX/UI designer specialized in motion. I design identities and experiences with intent, clarity and character."
+      >Diseñadora multimedia &amp; UX/UI especializada en motion. Diseño identidades y experiencias con intención, claridad y carácter.</p>
     </div>
 
     <div class="center">
       <h1 class="bn-name-slot" aria-label="eve"><LogoEve /></h1>
     </div>
     <span class="bn-name-fly" data-name-fly aria-hidden="true"><LogoEve /></span>
-
-    <nav class="dots" data-dots aria-label="Proyectos">
-      {works.map((p, i) => <button type="button" data-dot={i} aria-label={p.title}><span></span></button>)}
-    </nav>
 
     <p class="meta m-tr mono" data-es="Buenos Aires, AR" data-en="Buenos Aires, AR">Buenos Aires, AR</p>
     <p class="meta m-bl mono" data-intro-role data-es="Diseñadora multimedia & UX/UI · motion" data-en="Multimedia & UX/UI designer · motion">Diseñadora multimedia &amp; UX/UI · motion</p>
@@ -67,9 +63,9 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 <section class="hi-after" id="trabajos">
   <div class="wrap hi-wrap">
     <p class="hi-lead"
-      data-es="Diseñadora multimedia & UX/UI especializada en motion. Diseño identidades y experiencias con intención, claridad y carácter: marca, editorial, producto digital y movimiento."
-      data-en="Multimedia & UX/UI designer specialized in motion. I design identities and experiences with intent, clarity and character: brand, editorial, digital product and motion."
-    >Diseñadora multimedia &amp; UX/UI especializada en motion. Diseño identidades y experiencias con intención, claridad y carácter: marca, editorial, producto digital y movimiento.</p>
+      data-es="Diseñadora multimedia & UX/UI especializada en motion. Diseño identidades y experiencias con intención, claridad y carácter."
+      data-en="Multimedia & UX/UI designer specialized in motion. I design identities and experiences with intent, clarity and character."
+    >Diseñadora multimedia &amp; UX/UI especializada en motion. Diseño identidades y experiencias con intención, claridad y carácter.</p>
 
     <ol class="hi-works rise rise-delay-1">
       {works.map((p, i) => (
@@ -106,21 +102,13 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     font-family: var(--serif); font-weight: 300; font-size: clamp(5rem, 15vw, 15rem); line-height: 1;
     letter-spacing: -0.045em; color: var(--ink); opacity: 0; will-change: transform, opacity;
   }
-  .dots { position: absolute; z-index: 60; right: var(--pad); top: 50%; display: grid; gap: 2px; transform: translateY(-50%); opacity: 0; }
-  .dots button { width: 22px; height: 22px; display: grid; place-items: center; cursor: pointer; }
-  .dots button span { width: 6px; height: 6px; border-radius: 50%; background: var(--ink-35); transition: transform 0.35s var(--ease-out), background 0.3s; }
-  .dots button.on span { background: var(--orange); transform: scale(1.9); }
-  .dots button:hover span { background: var(--ink); }
-  .dots button:focus-visible { outline: 2px solid var(--orange); border-radius: 50%; }
-  @media (max-width: 700px) { .dots { right: 4px; } }
-
   .statement {
     position: absolute; inset: 0; z-index: 60; display: grid; place-items: center; padding-inline: var(--pad);
     opacity: 0; pointer-events: none; will-change: transform, opacity;
   }
   .statement p {
-    margin: 0; max-width: min(20ch, 88%); text-align: center; text-wrap: balance;
-    font-family: var(--serif); font-weight: 300; font-size: clamp(1.6rem, 3.2vw, 3rem); line-height: 1.12; letter-spacing: -0.02em; color: var(--ink);
+    margin: 0; max-width: min(27ch, 88%); text-align: center; text-wrap: balance;
+    font-family: var(--serif); font-weight: 300; font-size: clamp(1.2rem, 2.1vw, 2rem); line-height: 1.2; letter-spacing: -0.02em; color: var(--ink);
   }
   .center { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; }
   .bn-name-slot { margin: 0; }
@@ -217,7 +205,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   :global(html.intro-static) .intro { height: 100svh; }
   :global(html.intro-static) .stage { position: relative; }
   :global(html.intro-static) .m-br { display: none; }
-  :global(html.intro-static) .bigs, :global(html.intro-static) .dots { display: none; }
+  :global(html.intro-static) .bigs
   :global(html.intro-static) .hi-works { display: block; }
   :global(html.intro-static) .hi-lead { display: block; }
   :global(html.intro-static) .statement { display: none; }
@@ -233,8 +221,6 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   const cueEl = document.querySelector<HTMLElement>('[data-intro-cue]');
   const stmt = document.querySelector<HTMLElement>('[data-statement]');
   const bigs = Array.from(document.querySelectorAll<HTMLElement>('[data-big]'));
-  const dotsEl = document.querySelector<HTMLElement>('[data-dots]');
-  const dotBtns = Array.from(document.querySelectorAll<HTMLElement>('[data-dot]'));
 
   if (intro && stage && cards.length) {
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -323,8 +309,6 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         el.style.opacity = (clamp01(1 - a * 1.15) * 0.92 * clamp01((g - 0.6) / 0.4)).toFixed(3);
         el.style.transform = `translate(calc(-50% + ${(r * W * 0.62 - sx * 24).toFixed(1)}px), -50%)`;
       }
-      if (dotsEl) dotsEl.style.opacity = clamp01((g - 0.7) / 0.3).toFixed(3);
-      dotBtns.forEach((d, i) => d.classList.toggle('on', i === Math.min(N - 1, Math.round(q2))));
       if (roleEl) roleEl.style.opacity = (1 - clamp01(u / 0.25)).toFixed(3);
       if (countEl) countEl.style.opacity = clamp01((g - 0.7) / 0.3).toFixed(3);
       if (cueEl) cueEl.style.opacity = (1 - clamp01((u - (GATHER + (N - 1) * STEP - 0.1)) / 0.3)).toFixed(3);
@@ -359,9 +343,6 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         }, { passive: true });
         stage.addEventListener('pointerleave', () => { mx = 0; my = 0; kick(); }, { passive: true });
       }
-      dotBtns.forEach((d, i) => d.addEventListener('click', () => {
-        scrollTo({ top: intro.offsetTop + (GATHER + i * STEP + 0.02) * H, behavior: 'smooth' });
-      }));
       // con teclado: al enfocar una tarjeta, el scroll la trae al frente
       cards.forEach((el, i) => {
         el.addEventListener('focus', () => {
