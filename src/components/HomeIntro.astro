@@ -93,7 +93,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 <style>
   /* altura del tramo: llegada (1 pantalla) + 0,75 por trabajo + colchón */
-  .intro { position: relative; height: calc((var(--n) * 0.75 + 2.7) * 100svh); --cw: 320px; }
+  .intro { position: relative; height: calc((var(--n) * 0.75 + 2.45) * 100svh); --cw: 320px; }
   .stage { position: sticky; top: 0; height: 100svh; overflow: hidden; }
 
   .bigs { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
@@ -336,7 +336,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         const u = scrollU();
         su += (u - su) * k(9, dt);
         gd += (gatherTarget(u) - gd) * k(6, dt);
-        qd += (cardTarget(u) - qd) * k(5.5, dt);
+        qd += (cardTarget(u) - qd) * k(6.5, dt);
         sx += (mx - sx) * k(5, dt); sy += (my - sy) * k(5, dt);
         render(su, gd, qd, sx, sy);
         const moving = Math.abs(u - su) > 0.0008 || Math.abs(gatherTarget(u) - gd) > 0.0008 || Math.abs(cardTarget(u) - qd) > 0.0008 ||
@@ -354,12 +354,102 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         }, { passive: true });
         stage.addEventListener('pointerleave', () => { mx = 0; my = 0; kick(); }, { passive: true });
       }
-      // con teclado: al enfocar una tarjeta, el scroll la trae al frente
+      /* ---------- pasador: un gesto = un paso ----------
+         Paradas: la frase de presentación y cada proyecto al frente. Dentro de esa zona,
+         cada gesto (rueda, trackpad, deslizar, teclado) salta a la parada siguiente; la
+         animación la hace el suavizado en el tiempo. En los extremos, el scroll sigue normal. */
+      const STMT_REST = 0.82;
+      const ZONE_LO = 0.6;
+      const rests = () => [STMT_REST, ...cards.map((_, i) => GATHER + (i + 0.02) * STEP)];
+      const uMax = () => intro.offsetHeight / (H || 1) - 1;
+      const inZone = (u: number) => u >= ZONE_LO && u <= uMax() + 0.001;
+      const nextRest = (u: number, dir: number) => {
+        const r = rests(), eps = 0.02;
+        if (dir > 0) { for (const x of r) if (x > u + eps) return x; }
+        else { for (let i = r.length - 1; i >= 0; i--) if (r[i] < u - eps) return r[i]; }
+        return null;
+      };
+      const jumpTo = (u: number) => {
+        scrollTo({ top: Math.round(intro.offsetTop + u * H), behavior: 'instant' as ScrollBehavior });
+        kick();
+      };
+
+      // rueda y trackpad: la inercia de un mismo gesto no avanza más de un paso
+      let locked = false, lockT = 0, lastT = 0, lastAbs = 0, lastSign = 0;
+      addEventListener('wheel', (e) => {
+        if (e.ctrlKey || e.deltaY === 0 || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+        const now = performance.now(), abs = Math.abs(e.deltaY), sign = e.deltaY > 0 ? 1 : -1;
+        const fresh = now - lastT > 160 || sign !== lastSign ||
+          (now - lockT > 320 && abs > lastAbs * 1.6 + 2);
+        lastT = now; lastAbs = abs; lastSign = sign;
+        const u = scrollU();
+        if (!inZone(u)) { locked = false; return; }
+        if (locked && !fresh) { e.preventDefault(); return; }
+        locked = false;
+        const target = nextRest(u, sign);
+        if (target === null) return;                 // extremo: sigue el scroll normal
+        e.preventDefault();
+        jumpTo(target); locked = true; lockT = now;
+      }, { passive: false });
+
+      // deslizar en pantallas táctiles
+      let ty0 = 0, tdy = 0, tmode = '';
+      addEventListener('touchstart', (e) => {
+        if (e.touches.length !== 1) { tmode = 'native'; return; }
+        ty0 = e.touches[0].clientY; tdy = 0; tmode = '';
+      }, { passive: true });
+      addEventListener('touchmove', (e) => {
+        if (tmode === 'native' || e.touches.length !== 1) return;
+        tdy = ty0 - e.touches[0].clientY;
+        if (!tmode) {
+          if (tdy === 0) return;
+          const u = scrollU();
+          tmode = inZone(u) && nextRest(u, tdy > 0 ? 1 : -1) !== null ? 'page' : 'native';
+        }
+        if (tmode === 'page' && e.cancelable) e.preventDefault();
+      }, { passive: false });
+      addEventListener('touchend', () => {
+        if (tmode === 'page' && Math.abs(tdy) > 30) {
+          const target = nextRest(scrollU(), tdy > 0 ? 1 : -1);
+          if (target !== null) jumpTo(target);
+        }
+        tmode = '';
+      }, { passive: true });
+
+      // teclado
+      addEventListener('keydown', (e) => {
+        if (e.altKey || e.ctrlKey || e.metaKey) return;
+        const el = e.target as HTMLElement | null;
+        if (el && (el.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName))) return;
+        const down = e.key === 'ArrowDown' || e.key === 'PageDown' || (e.key === ' ' && !e.shiftKey);
+        const up = e.key === 'ArrowUp' || e.key === 'PageUp' || (e.key === ' ' && e.shiftKey);
+        if (!down && !up) return;
+        const u = scrollU();
+        if (!inZone(u)) return;
+        const target = nextRest(u, down ? 1 : -1);
+        if (target === null) return;
+        e.preventDefault(); jumpTo(target);
+      });
+
+      // si el scroll queda entre dos paradas (barra de scroll, recarga), se acomoda a la más cercana
+      let settle = 0;
+      addEventListener('scroll', () => {
+        clearTimeout(settle);
+        settle = window.setTimeout(() => {
+          const u = scrollU(), r = rests();
+          if (u <= r[0] || u >= r[r.length - 1]) return;
+          let best = r[0];
+          for (const x of r) if (Math.abs(x - u) < Math.abs(best - u)) best = x;
+          if (Math.abs(best - u) > 0.01) jumpTo(best);
+        }, 180);
+      }, { passive: true });
+
+      // con teclado: al enfocar una tarjeta, salta a ese proyecto
       cards.forEach((el, i) => {
         el.addEventListener('focus', () => {
           if (!el.matches(':focus-visible')) return;
-          const want = GATHER + i * STEP + 0.02;
-          if (Math.abs(scrollU() - want) > 0.3) scrollTo({ top: intro.offsetTop + want * H, behavior: 'smooth' });
+          const want = GATHER + (i + 0.02) * STEP;
+          if (Math.abs(scrollU() - want) > 0.05) jumpTo(want);
         });
       });
       addEventListener('scroll', kick, { passive: true });
