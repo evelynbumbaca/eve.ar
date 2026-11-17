@@ -23,13 +23,17 @@
   --orange: #e2552d;
 
   /* ---------- tipografia ----------
-     Disciplina editorial: 2 familias + mono.
-     · Spectral  -> display/editorial (serif protagonista)
-     · Inter     -> interfaz, etiquetas, navegacion (grotesca neutra)
-     · Plex Mono -> meta, fechas, tags, numeracion ("pienso en sistemas") */
-  --serif: 'Spectral', Georgia, 'Times New Roman', serif;
-  --sans: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+     Tres familias de Google Fonts (se cargan en Base.astro):
+     · Lora           -> títulos y display editorial (400/500, normal e itálica), tracking -0.02em
+     · DM Sans        -> base: párrafos, interfaz, enlaces y botones (400/500)
+     · IBM Plex Mono  -> etiquetas, categorías, fechas y numeración: MAYÚSCULAS, 11–12px, 0.08em
+       (para probar Space Mono: cambiar la familia acá y en el <link> de Base.astro) */
+  --serif: 'Lora', Georgia, 'Times New Roman', serif;
+  --sans: 'DM Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   --mono: 'IBM Plex Mono', 'SFMono-Regular', ui-monospace, 'SF Mono', 'Menlo', monospace;
+  --serif-tracking: -0.02em;
+  --mono-tracking: 0.08em;
+  --mono-size: 11px;
 
   /* escala tipografica fluida */
   --fs-display: clamp(3.2rem, 11vw, 11rem);

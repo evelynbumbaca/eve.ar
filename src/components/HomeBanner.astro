@@ -226,12 +226,12 @@ const works = projects.slice(0, 6);
     font-family: var(--serif);
     font-size: clamp(1.15rem, 1.7vw, 1.7rem);
     line-height: 1.08;
-    letter-spacing: -0.01em;
+    letter-spacing: var(--serif-tracking);
     color: var(--ink);
   }
   .bn-cell-ph-meta {
     display: block; margin-top: 7px;
-    font-family: var(--mono); font-size: 10px; letter-spacing: 0.06em;
+    font-family: var(--mono); font-size: 11px; letter-spacing: var(--mono-tracking);
     text-transform: uppercase; color: var(--ink-45);
   }
 
@@ -245,9 +245,9 @@ const works = projects.slice(0, 6);
   }
   .bn-cell:hover .bn-cell-cap,
   .bn-cell:focus-visible .bn-cell-cap { opacity: 1; transform: translateY(0); }
-  .bn-cell-title { font-family: var(--serif); font-size: 1.05rem; color: #fff; line-height: 1.1; }
+  .bn-cell-title { font-family: var(--serif); font-size: 1.05rem; color: #fff; line-height: 1.1; letter-spacing: var(--serif-tracking); }
   .bn-cell-disc {
-    font-family: var(--mono); font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase;
+    font-family: var(--mono); font-size: 11px; letter-spacing: var(--mono-tracking); text-transform: uppercase;
     color: rgba(255,255,255,0.8);
   }
 

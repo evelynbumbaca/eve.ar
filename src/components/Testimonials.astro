@@ -89,10 +89,10 @@ const items = [
   .ts-score { display: inline-flex; align-items: center; gap: 18px; }
   .ts-num {
     font-family: var(--serif);
-    font-weight: 300;
+    font-weight: 400;
     font-size: clamp(3rem, 6vw, 5rem);
     line-height: 0.9;
-    letter-spacing: -0.03em;
+    letter-spacing: var(--serif-tracking);
   }
   .ts-score-right { display: grid; gap: 7px; }
   .ts-stars {
@@ -103,7 +103,7 @@ const items = [
   }
   .ts-stars i, .ts-stars.big i { font-style: normal; display: inline-block; }
   .ts-stars.big { font-size: clamp(15px, 1.6vw, 19px); letter-spacing: 6px; }
-  .ts-score-sub { color: var(--ink-45); font-size: 10px !important; letter-spacing: 0.1em; text-transform: uppercase; }
+  .ts-score-sub { color: var(--ink-45); font-size: 11px !important; letter-spacing: 0.1em; text-transform: uppercase; }
 
   /* ---------- tarjetas ---------- */
   .ts-grid {
@@ -124,16 +124,16 @@ const items = [
   .ts-card:hover { translate: 0 -4px; border-color: var(--ink-45); }
   .ts-mark {
     position: absolute; right: 14px; top: -22px; pointer-events: none;
-    font-family: var(--serif); font-size: clamp(7rem, 10vw, 10rem); line-height: 1; color: var(--ink-06);
+    font-family: var(--serif); font-size: clamp(7rem, 10vw, 10rem); line-height: 1; color: var(--ink-06); letter-spacing: var(--serif-tracking);
   }
   .ts-card.is-featured .ts-mark { color: rgba(250, 249, 245, 0.07); }
   .ts-quote, .ts-who, .ts-stars { position: relative; }
   .ts-quote {
     font-family: var(--serif);
-    font-weight: 300;
+    font-weight: 400;
     font-size: clamp(1.05rem, 1.4vw, 1.3rem);
     line-height: 1.42;
-    letter-spacing: -0.005em;
+    letter-spacing: var(--serif-tracking);
     color: var(--ink);
     text-wrap: pretty;
   }
@@ -160,9 +160,9 @@ const items = [
     margin-top: clamp(32px, 5vh, 56px);
     text-align: center;
     font-family: var(--serif);
-    font-weight: 300;
+    font-weight: 400;
     font-size: clamp(1.15rem, 1.8vw, 1.6rem);
-    letter-spacing: -0.01em;
+    letter-spacing: var(--serif-tracking);
     color: var(--ink-60);
     display: flex; flex-wrap: wrap; justify-content: center; align-items: baseline; gap: 10px 14px;
   }

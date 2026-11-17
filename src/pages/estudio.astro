@@ -156,10 +156,10 @@ const toolGroups = [
   .portrait .ph { width: 100%; height: 100%; }
   .bio .lead {
     font-family: var(--serif);
-    font-weight: 300;
+    font-weight: 400;
     font-size: var(--fs-lead);
     line-height: 1.34;
-    letter-spacing: -0.01em;
+    letter-spacing: var(--serif-tracking);
     margin-bottom: 1.2em;
   }
   .bio p { max-width: 52ch; color: var(--ink-80); }
@@ -178,14 +178,14 @@ const toolGroups = [
     font-weight: 400;
     font-size: clamp(1.7rem, 3.4vw, 2.9rem);
     line-height: 1.02;
-    letter-spacing: -0.02em;
+    letter-spacing: var(--serif-tracking);
   }
   .disc-lead {
     font-family: var(--serif);
-    font-weight: 300;
+    font-weight: 400;
     font-size: clamp(1.15rem, 1.7vw, 1.5rem);
     line-height: 1.4;
-    letter-spacing: -0.01em;
+    letter-spacing: var(--serif-tracking);
     color: var(--ink);
     max-width: 48ch;
   }
@@ -213,12 +213,12 @@ const toolGroups = [
 
   .tools { display: grid; gap: 16px; }
   .tool-group { display: grid; gap: 5px; padding-bottom: 12px; border-bottom: 1px solid var(--ink-12); }
-  .tool-label { color: var(--ink-45); font-size: 10px !important; letter-spacing: 0.1em; text-transform: uppercase; }
+  .tool-label { color: var(--ink-45); font-size: 11px !important; letter-spacing: 0.1em; text-transform: uppercase; }
   .tool-items {
     font-family: var(--serif);
     font-size: clamp(1rem, 1.2vw, 1.2rem);
     line-height: 1.35;
-    color: var(--ink);
+    color: var(--ink); letter-spacing: var(--serif-tracking);
   }
   .tool-note { display: block; margin-top: 5px; color: var(--ink-45); font-size: 11px !important; letter-spacing: 0.02em; }
 

@@ -68,9 +68,9 @@ import { site, social } from '../data/site';
     margin-bottom: clamp(28px, 4vh, 44px);
     color: var(--ink-80);
     font-family: var(--serif);
-    font-weight: 300;
+    font-weight: 400;
     font-size: clamp(1.3rem, 2vw, 1.7rem);
-    line-height: 1.4;
+    line-height: 1.4; letter-spacing: var(--serif-tracking);
   }
 
   .contacto-grid {
@@ -102,7 +102,7 @@ import { site, social } from '../data/site';
     font-family: var(--serif);
     font-size: clamp(1.1rem, 1.6vw, 1.4rem);
     color: var(--ink);
-    transition: border-color 0.25s var(--ease);
+    transition: border-color 0.25s var(--ease); letter-spacing: var(--serif-tracking);
   }
   .field input:focus,
   .field textarea:focus {
@@ -138,7 +138,7 @@ import { site, social } from '../data/site';
   .direct-row a,
   .direct-row span:not(.mono) {
     font-family: var(--serif);
-    font-size: clamp(1.05rem, 1.4vw, 1.25rem);
+    font-size: clamp(1.05rem, 1.4vw, 1.25rem); letter-spacing: var(--serif-tracking);
   }
   .direct-row a { transition: opacity 0.2s var(--ease); }
   .direct-row a:hover { opacity: 0.6; }
