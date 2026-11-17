@@ -241,7 +241,6 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
     let W = 0, H = 0, ch = 0, lastNum = 0;
     const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
-    const ease = (t: number) => 1 - Math.pow(1 - t, 3);
     const smooth = (t: number) => t * t * (3 - 2 * t);
     const mix = (a: number, b: number, t: number) => a + (b - a) * t;
 
@@ -258,17 +257,23 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       });
     };
 
-    // u = scroll en alturas de pantalla; sx, sy = puntero suavizado (-1..1)
-    const render = (u: number, sx: number, sy: number) => {
-      const g = ease(clamp01((u - GS) / 0.9));
+    // Objetivos según el scroll (sin suavizar). El suavizado va en el tiempo (frame), así cada
+    // gesto empuja rápido al principio y se acomoda despacio, igual hacia arriba que hacia abajo.
+    const gatherTarget = (u: number) => clamp01((u - GS) / 0.9);
+    const cardTarget = (u: number) => {
+      const q = Math.max(0, Math.min(N - 1, (u - GATHER) / STEP));
+      const fi = Math.floor(q);
+      return fi + clamp01((q - fi - 0.12) / 0.5);   // cada tarjeta descansa un rato al frente
+    };
+
+    // u = scroll en alturas de pantalla; gd = avance de la pila; q2 = tarjeta al frente; sx, sy = puntero (-1..1)
+    const render = (u: number, gd: number, q2: number, sx: number, sy: number) => {
+      const g = gd * gd * (3 - 2 * gd) * 0.35 + gd * 0.65;  // casi lineal: la respuesta la da el tiempo
       if (stmt) {                     // la frase aparece con el primer scroll y se va antes de que se junten
         const si = smooth(clamp01((u - 0.3) / 0.4)), so = smooth(clamp01((u - 0.95) / 0.3));
         stmt.style.opacity = (si * (1 - so)).toFixed(3);
         stmt.style.transform = `translate3d(0,${((1 - si) * 36 - so * 28).toFixed(1)}px,0)`;
       }
-      const q = Math.max(0, Math.min(N - 1, (u - GATHER) / STEP));
-      const fi = Math.floor(q);
-      const q2 = fi + smooth(clamp01((q - fi - 0.22) / 0.56)); // cada tarjeta descansa un rato al frente
       const behind = Math.max(0, Math.min(4, N - 1 - q2));
       const front = ch * 0.0425 * behind - H * 0.015;      // la pila se recentra sola
 
@@ -318,21 +323,27 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
     if (reduce) {
       document.documentElement.classList.add('intro-static');
-      measure(); render(0, 0, 0);
-      addEventListener('resize', () => { measure(); render(0, 0, 0); }, { passive: true });
+      measure(); render(0, 0, 0, 0, 0);
+      addEventListener('resize', () => { measure(); render(0, 0, 0, 0, 0); }, { passive: true });
     } else {
-      let mx = 0, my = 0, sx = 0, sy = 0, su = 0, raf = 0, running = false;
+      let mx = 0, my = 0, sx = 0, sy = 0, su = 0, gd = 0, qd = 0, raf = 0, running = false, last = 0;
       const scrollU = () => Math.max(0, (scrollY - intro.offsetTop) / (H || 1));
+      // acercamiento exponencial: máxima velocidad al arrancar, frena suave al llegar (independiente de los Hz)
+      const k = (rate: number, dt: number) => 1 - Math.exp(-rate * dt);
 
-      const frame = () => {
+      const frame = (now: number) => {
+        const dt = Math.min(0.05, Math.max(0.001, (now - last) / 1000)); last = now;
         const u = scrollU();
-        su += (u - su) * 0.14;
-        sx += (mx - sx) * 0.08; sy += (my - sy) * 0.08;
-        render(su, sx, sy);
-        const moving = Math.abs(u - su) > 0.0008 || Math.abs(mx - sx) > 0.002 || Math.abs(my - sy) > 0.002;
+        su += (u - su) * k(9, dt);
+        gd += (gatherTarget(u) - gd) * k(6, dt);
+        qd += (cardTarget(u) - qd) * k(5.5, dt);
+        sx += (mx - sx) * k(5, dt); sy += (my - sy) * k(5, dt);
+        render(su, gd, qd, sx, sy);
+        const moving = Math.abs(u - su) > 0.0008 || Math.abs(gatherTarget(u) - gd) > 0.0008 || Math.abs(cardTarget(u) - qd) > 0.0008 ||
+                       Math.abs(mx - sx) > 0.002 || Math.abs(my - sy) > 0.002;
         if (moving) raf = requestAnimationFrame(frame); else running = false;
       };
-      const kick = () => { if (!running) { running = true; raf = requestAnimationFrame(frame); } };
+      const kick = () => { if (!running) { running = true; last = performance.now(); raf = requestAnimationFrame(frame); } };
 
       if (fine) {
         stage.addEventListener('pointermove', (ev) => {
@@ -356,7 +367,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { measure(); kick(); }, 120); }, { passive: true });
       document.addEventListener('visibilitychange', () => { if (document.hidden) { cancelAnimationFrame(raf); running = false; } else kick(); });
       addEventListener('load', () => { measure(); kick(); }, { once: true });
-      measure(); render(0, 0, 0); kick();
+      measure(); su = scrollU(); gd = gatherTarget(su); qd = cardTarget(su); render(su, gd, qd, 0, 0); kick();
     }
   }
 </script>
