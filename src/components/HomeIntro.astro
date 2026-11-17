@@ -42,6 +42,12 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       </a>
     ))}
 
+    <div class="statement" data-statement>
+      <p data-es="Diseñadora multimedia & UX/UI especializada en motion. Diseño identidades y experiencias con intención, claridad y carácter: marca, editorial, producto digital y movimiento."
+         data-en="Multimedia & UX/UI designer specialized in motion. I design identities and experiences with intent, clarity and character: brand, editorial, digital product and motion."
+      >Diseñadora multimedia &amp; UX/UI especializada en motion. Diseño identidades y experiencias con intención, claridad y carácter: marca, editorial, producto digital y movimiento.</p>
+    </div>
+
     <div class="center">
       <h1 class="bn-name-slot" aria-label="eve"><LogoEve /></h1>
     </div>
@@ -60,7 +66,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 <section class="hi-after" id="trabajos">
   <div class="wrap hi-wrap">
-    <p class="hi-lead rise"
+    <p class="hi-lead"
       data-es="Diseñadora multimedia & UX/UI especializada en motion. Diseño identidades y experiencias con intención, claridad y carácter: marca, editorial, producto digital y movimiento."
       data-en="Multimedia & UX/UI designer specialized in motion. I design identities and experiences with intent, clarity and character: brand, editorial, digital product and motion."
     >Diseñadora multimedia &amp; UX/UI especializada en motion. Diseño identidades y experiencias con intención, claridad y carácter: marca, editorial, producto digital y movimiento.</p>
@@ -91,7 +97,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 <style>
   /* altura del tramo: llegada (1 pantalla) + 0,75 por trabajo + colchón */
-  .intro { position: relative; height: calc((var(--n) * 0.75 + 1.6) * 100svh); --cw: 320px; }
+  .intro { position: relative; height: calc((var(--n) * 0.75 + 2.7) * 100svh); --cw: 320px; }
   .stage { position: sticky; top: 0; height: 100svh; overflow: hidden; }
 
   .bigs { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
@@ -108,10 +114,18 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   .dots button:focus-visible { outline: 2px solid var(--orange); border-radius: 50%; }
   @media (max-width: 700px) { .dots { right: 4px; } }
 
+  .statement {
+    position: absolute; inset: 0; z-index: 60; display: grid; place-items: center; padding-inline: var(--pad);
+    opacity: 0; pointer-events: none; will-change: transform, opacity;
+  }
+  .statement p {
+    margin: 0; max-width: min(20ch, 88%); text-align: center; text-wrap: balance;
+    font-family: var(--serif); font-weight: 300; font-size: clamp(1.6rem, 3.2vw, 3rem); line-height: 1.12; letter-spacing: -0.02em; color: var(--ink);
+  }
   .center { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; }
   .bn-name-slot { margin: 0; }
   .bn-name-slot :global(svg), .bn-name-fly :global(svg) {
-    display: block; height: clamp(70px, 15vw, 230px); width: auto; color: var(--ink); overflow: visible;
+    display: block; height: clamp(58px, 11.5vw, 184px); width: auto; color: var(--ink); overflow: visible;
   }
   .bn-name-fly { position: absolute; left: 0; top: 0; pointer-events: none; }
   .bn-name-fly :global(.ltr) { transform-box: fill-box; transform-origin: 50% 62%; }
@@ -170,7 +184,8 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   /* ---------- lo que sigue ---------- */
   .hi-after { padding-block: clamp(48px, 10vh, 120px) clamp(40px, 8vh, 100px); }
   .hi-wrap { display: grid; gap: clamp(32px, 6vh, 64px); }
-  .hi-lead {
+  .hi-lead { display: none;
+   
     font-family: var(--serif); font-weight: 300; font-size: clamp(1.5rem, 3.4vw, 2.9rem);
     line-height: 1.14; letter-spacing: -0.02em; max-width: 26ch; text-wrap: balance; color: var(--ink);
   }
@@ -204,6 +219,8 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   :global(html.intro-static) .m-br { display: none; }
   :global(html.intro-static) .bigs, :global(html.intro-static) .dots { display: none; }
   :global(html.intro-static) .hi-works { display: block; }
+  :global(html.intro-static) .hi-lead { display: block; }
+  :global(html.intro-static) .statement { display: none; }
 </style>
 
 <script>
@@ -214,6 +231,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   const countEl = document.querySelector<HTMLElement>('[data-intro-count]');
   const numEl = document.querySelector<HTMLElement>('[data-intro-num]');
   const cueEl = document.querySelector<HTMLElement>('[data-intro-cue]');
+  const stmt = document.querySelector<HTMLElement>('[data-statement]');
   const bigs = Array.from(document.querySelectorAll<HTMLElement>('[data-big]'));
   const dotsEl = document.querySelector<HTMLElement>('[data-dots]');
   const dotBtns = Array.from(document.querySelectorAll<HTMLElement>('[data-dot]'));
@@ -222,7 +240,8 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
     const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
     const N = cards.length;
-    const GATHER = 1, STEP = 0.75;
+    const GS = 1.15;                 // empiezan a juntarse (después de la frase)
+    const GATHER = GS + 0.9, STEP = 0.75;
 
     // posición suelta de cada pieza (fracción del escenario desde el centro), escala, giro y profundidad
     const loose = [
@@ -255,7 +274,12 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
     // u = scroll en alturas de pantalla; sx, sy = puntero suavizado (-1..1)
     const render = (u: number, sx: number, sy: number) => {
-      const g = ease(clamp01(u / 0.9));
+      const g = ease(clamp01((u - GS) / 0.9));
+      if (stmt) {                     // la frase aparece con el primer scroll y se va antes de que se junten
+        const si = smooth(clamp01((u - 0.3) / 0.4)), so = smooth(clamp01((u - 0.95) / 0.3));
+        stmt.style.opacity = (si * (1 - so)).toFixed(3);
+        stmt.style.transform = `translate3d(0,${((1 - si) * 36 - so * 28).toFixed(1)}px,0)`;
+      }
       const q = Math.max(0, Math.min(N - 1, (u - GATHER) / STEP));
       const fi = Math.floor(q);
       const q2 = fi + smooth(clamp01((q - fi - 0.22) / 0.56)); // cada tarjeta descansa un rato al frente
@@ -302,7 +326,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       if (dotsEl) dotsEl.style.opacity = clamp01((g - 0.7) / 0.3).toFixed(3);
       dotBtns.forEach((d, i) => d.classList.toggle('on', i === Math.min(N - 1, Math.round(q2))));
       if (roleEl) roleEl.style.opacity = (1 - clamp01(u / 0.25)).toFixed(3);
-      if (countEl) countEl.style.opacity = clamp01((u - 0.7) / 0.3).toFixed(3);
+      if (countEl) countEl.style.opacity = clamp01((g - 0.7) / 0.3).toFixed(3);
       if (cueEl) cueEl.style.opacity = (1 - clamp01((u - (GATHER + (N - 1) * STEP - 0.1)) / 0.3)).toFixed(3);
       const n = Math.min(N, Math.round(q2) + 1);
       if (n !== lastNum && numEl) { lastNum = n; numEl.textContent = (n < 10 ? '0' : '') + n; }
