@@ -82,10 +82,10 @@ import T from './T.astro';
   .foot-kicker { color: var(--ink-45); margin-bottom: clamp(16px, 2.5vh, 26px); display: block; }
   .foot-line {
     font-family: var(--serif);
-    font-weight: 400;
+    font-weight: 300;
     font-size: clamp(1.9rem, 4.6vw, 3.8rem);
     line-height: 1.04;
-    letter-spacing: var(--serif-tracking);
+    letter-spacing: -0.02em;
     color: var(--ink);
     max-width: 22ch;
   }
@@ -194,8 +194,8 @@ import T from './T.astro';
     margin-top: clamp(40px, 7vh, 72px);
     font-family: var(--mono);
     font-size: 11px;
-    letter-spacing: var(--mono-tracking);
-    color: var(--ink-35); text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--ink-35);
   }
 
   @media (max-width: 560px) {

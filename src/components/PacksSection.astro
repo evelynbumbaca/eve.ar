@@ -199,7 +199,7 @@ const wa = (p: { fullName: string }) => `${site.whatsapp}?text=${encodeURICompon
     font-weight: 400;
     font-size: clamp(1.9rem, 4.2vw, 3.4rem);
     line-height: 1.05;
-    letter-spacing: var(--serif-tracking);
+    letter-spacing: -0.02em;
   }
   .pk-sub {
     margin-top: 16px;
@@ -241,7 +241,7 @@ const wa = (p: { fullName: string }) => `${site.whatsapp}?text=${encodeURICompon
     background: var(--ink); color: var(--paper);
     border: 1px solid var(--ink); /* invisible sobre tinta; aparece al invertir */
     padding: 4px 12px; border-radius: 20px;
-    font-size: 11px !important;
+    font-size: 10px !important;
     z-index: 6;
     transition: background var(--dur-ui) var(--ease-quint), color var(--dur-ui) var(--ease-quint);
   }
@@ -250,11 +250,11 @@ const wa = (p: { fullName: string }) => `${site.whatsapp}?text=${encodeURICompon
     font-family: var(--serif);
     font-weight: 400;
     font-size: clamp(1.4rem, 2vw, 1.9rem);
-    letter-spacing: var(--serif-tracking);
+    letter-spacing: -0.015em;
     margin-bottom: 8px;
     display: flex; flex-direction: column; gap: 6px;
   }
-  .pk-name-pre { color: var(--ink-45); font-size: 11px !important; letter-spacing: 0.14em; }
+  .pk-name-pre { color: var(--ink-45); font-size: 10px !important; letter-spacing: 0.14em; }
   .pk-who {
     font-family: var(--sans);
     font-size: clamp(0.9rem, 1vw, 1rem);
@@ -274,25 +274,25 @@ const wa = (p: { fullName: string }) => `${site.whatsapp}?text=${encodeURICompon
     font-family: var(--serif);
     font-weight: 400;
     font-size: clamp(1.3rem, 1.9vw, 1.7rem);
-    letter-spacing: var(--serif-tracking);
+    letter-spacing: -0.01em;
   }
   .pp-sep { color: var(--ink-35); }
-  .pp-usd { font-family: var(--mono); color: var(--ink-60); font-size: clamp(11px, 1vw, 12px); letter-spacing: var(--mono-tracking); text-transform: uppercase; }
+  .pp-usd { font-family: var(--mono); color: var(--ink-60); font-size: clamp(11px, 1vw, 13px); letter-spacing: 0.06em; }
 
   /* en inglés, el protagonista es el USD y el ARS pasa a secundario */
   :global(html[lang='en']) .pp-ars {
     order: 3;
     font-family: var(--mono);
-    font-size: clamp(11px, 1vw, 12px);
-    letter-spacing: var(--mono-tracking);
-    color: var(--ink-60); text-transform: uppercase;
+    font-size: clamp(11px, 1vw, 13px);
+    letter-spacing: 0.06em;
+    color: var(--ink-60);
   }
   :global(html[lang='en']) .pp-sep { order: 2; }
   :global(html[lang='en']) .pp-usd {
     order: 1;
     font-family: var(--serif);
     font-size: clamp(1.3rem, 1.9vw, 1.7rem);
-    letter-spacing: var(--serif-tracking);
+    letter-spacing: -0.01em;
     color: var(--ink);
   }
   .pk-items { list-style: none; margin-bottom: clamp(16px, 2.5vh, 24px); }
@@ -359,7 +359,7 @@ const wa = (p: { fullName: string }) => `${site.whatsapp}?text=${encodeURICompon
     .pk-sheet-t {
       display: block;
       color: color-mix(in srgb, var(--paper) 55%, transparent);
-      font-size: 11px !important;
+      font-size: 10px !important;
       letter-spacing: 0.12em;
       margin-bottom: 6px;
     }
@@ -430,7 +430,7 @@ const wa = (p: { fullName: string }) => `${site.whatsapp}?text=${encodeURICompon
     font-family: var(--serif);
     font-weight: 400;
     font-size: clamp(1.4rem, 2.6vw, 2.2rem);
-    letter-spacing: var(--serif-tracking);
+    letter-spacing: -0.015em;
     color: var(--ink);
   }
   .pkc-sub {
