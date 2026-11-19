@@ -511,33 +511,6 @@ const navItems = blocks.filter((b) => b.t === 'h') as { t: 'h'; n: string; es: s
   </article>
 
   <script is:inline>
-    /* el título se contrae y se difumina en su lugar al bajar, como el logo de la portada */
-    (function () {
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-      var hero = document.querySelector('.c-hero'), cap = document.querySelector('.c-hero-cap'), photo = document.querySelector('.c-hero-photo');
-      if (!hero || !cap) return;
-      var p = 0, raf = 0, last = 0;
-      var clamp = function (v) { return v < 0 ? 0 : v > 1 ? 1 : v; };
-      function target() { return clamp(window.scrollY / (hero.offsetHeight * 0.7)); }
-      function frame(now) {
-        var dt = Math.min(0.05, Math.max(0.001, (now - last) / 1000)); last = now;
-        var t = target();
-        p += (t - p) * (1 - Math.exp(-9 * dt));
-        var e = 1 - Math.pow(1 - p, 3);
-        cap.style.opacity = (1 - e).toFixed(3);
-        cap.style.transform = 'translate3d(0,' + (-e * 40).toFixed(1) + 'px,0) scale(' + (1 - 0.3 * e).toFixed(4) + ')';
-        cap.style.transformOrigin = '0 100%';
-        cap.style.filter = e > 0.001 ? 'blur(' + (16 * e).toFixed(2) + 'px)' : '';
-        if (photo) photo.style.filter = e > 0.001 ? 'brightness(' + (1 - 0.35 * e).toFixed(3) + ')' : '';
-        if (Math.abs(t - p) > 0.001) raf = requestAnimationFrame(frame); else raf = 0;
-      }
-      function kick() { if (!raf) { last = performance.now(); raf = requestAnimationFrame(frame); } }
-      window.addEventListener('scroll', kick, { passive: true });
-      kick();
-    })();
-  </script>
-
-  <script is:inline>
     /* la luz del cursor descubre las palabras fantasma de cada sección (mismo lenguaje que la portada) */
     (function () {
       if (!matchMedia('(hover: hover) and (pointer: fine)').matches || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -849,7 +822,7 @@ const navItems = blocks.filter((b) => b.t === 'h') as { t: 'h'; n: string; es: s
   .k-ghost { display: none; }
   @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
     .k-ghost {
-      display: block; position: absolute; left: 0; bottom: 100%; margin: 0 0 -0.3em; z-index: 0;
+      display: block; position: absolute; left: 0; bottom: 100%; margin: 0 0 0.02em; z-index: 0;
       width: max-content; white-space: nowrap; pointer-events: none;
       font-family: var(--serif); font-weight: 300; font-size: clamp(5rem, 15vw, 14rem); line-height: 1; letter-spacing: -0.045em;
       --bx: -9999px; --by: -9999px; --br: 0px; --ghost: rgba(22, 21, 15, 0.045);
