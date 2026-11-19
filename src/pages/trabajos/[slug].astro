@@ -97,10 +97,7 @@ const navItems = blocks.filter((b) => b.t === 'h') as { t: 'h'; n: string; es: s
         {blocks.map((b) => {
           switch (b.t) {
             case 'h': return (
-              <div class="k-hwrap">
-                <p class="k-ghost" aria-hidden="true" data-k-ghost data-es={b.es} data-en={b.en}>{b.es}</p>
-                <h2 class="k-h rise" id={`s-${b.n}`}><span class="mono">{b.n}</span><span data-es={b.es} data-en={b.en}>{b.es}</span></h2>
-              </div>
+              <h2 class="k-h rise" id={`s-${b.n}`}><span class="mono">{b.n}</span><span data-es={b.es} data-en={b.en}>{b.es}</span></h2>
             );
             case 'p': return <p class="k-p rise"><span data-es={b.es} data-en={b.en}>{b.es}</span></p>;
             case 'note': return <p class="k-note mono"><span data-es={b.es} data-en={b.en}>{b.es}</span></p>;
@@ -511,33 +508,25 @@ const navItems = blocks.filter((b) => b.t === 'h') as { t: 'h'; n: string; es: s
   </article>
 
   <script is:inline>
-    /* la luz del cursor descubre las palabras fantasma de cada sección (mismo lenguaje que la portada) */
+    /* las cifras de los casos cuentan hasta su valor al entrar en pantalla (una sola vez) */
     (function () {
-      if (!matchMedia('(hover: hover) and (pointer: fine)').matches || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-      var ghosts = Array.prototype.slice.call(document.querySelectorAll('[data-k-ghost]'));
-      if (!ghosts.length) return;
-      var px = -1e5, py = -1e5, bx = -1e5, by = -1e5, la = 0, raf = 0, last = 0;
-      function frame(now) {
-        var dt = Math.min(0.05, Math.max(0.001, (now - last) / 1000)); last = now;
-        var on = px > -9e4;
-        if (on && bx < -9e4) { bx = px; by = py; }
-        if (on) { var k = 1 - Math.exp(-9 * dt); bx += (px - bx) * k; by += (py - by) * k; }
-        la += ((on ? 1 : 0) - la) * (1 - Math.exp(-8 * dt));
-        var R = (300 * la).toFixed(1) + 'px';
-        ghosts.forEach(function (el) {
-          var r = el.getBoundingClientRect();
-          if (r.bottom < -50 || r.top > innerHeight + 50) return;
-          el.style.setProperty('--bx', (bx - r.left).toFixed(1) + 'px');
-          el.style.setProperty('--by', (by - r.top).toFixed(1) + 'px');
-          el.style.setProperty('--br', R);
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) return;
+      var els = Array.prototype.slice.call(document.querySelectorAll('.case .k-n')).filter(function (el) { return /^\d+([.,]\d+)?$/.test(el.textContent.trim()); });
+      if (!els.length) return;
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          if (!en.isIntersecting) return;
+          var el = en.target; io.unobserve(el);
+          var txt = el.textContent.trim(), comma = txt.indexOf(',') > -1, dec = (txt.split(/[.,]/)[1] || '').length, to = parseFloat(txt.replace(',', '.'));
+          var t0 = performance.now(), dur = 1100;
+          (function tick(now) {
+            var p = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - p, 3), v = (to * e).toFixed(dec);
+            el.textContent = comma ? v.replace('.', ',') : v;
+            if (p < 1) requestAnimationFrame(tick); else el.textContent = txt;
+          })(t0);
         });
-        var busy = (on && Math.hypot(px - bx, py - by) > 0.4) || Math.abs((on ? 1 : 0) - la) > 0.004;
-        raf = busy ? requestAnimationFrame(frame) : 0;
-      }
-      function kick() { if (!raf) { last = performance.now(); raf = requestAnimationFrame(frame); } }
-      addEventListener('pointermove', function (e) { px = e.clientX; py = e.clientY; kick(); }, { passive: true });
-      document.addEventListener('mouseleave', function () { px = py = -1e5; kick(); });
-      addEventListener('scroll', kick, { passive: true });
+      }, { threshold: 0.6 });
+      els.forEach(function (el) { io.observe(el); });
     })();
   </script>
 
@@ -810,28 +799,48 @@ const navItems = blocks.filter((b) => b.t === 'h') as { t: 'h'; n: string; es: s
   .k-fig.lk-metrics { margin-top: clamp(24px, 4vh, 40px); }
 
   /* ---------- caso con contenido propio (bloques) ---------- */
-  .k-hwrap { position: relative; margin-top: clamp(120px, 21vh, 240px); }
   .k-h {
-    position: relative; z-index: 1;
     display: flex; align-items: baseline; gap: 18px;
     font-family: var(--serif); font-weight: 400; font-size: var(--t-h2);
     line-height: 1.1; letter-spacing: -0.02em;
-    padding-top: 22px; border-top: 1px solid var(--ink);
+    margin-top: clamp(120px, 21vh, 240px); padding-top: 22px; border-top: 1px solid var(--ink);
   }
-  /* palabra gigante fantasma sobre cada título de sección: la luz del cursor la descubre */
-  .k-ghost { display: none; }
-  @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-    .k-ghost {
-      display: block; position: absolute; left: 0; bottom: 100%; margin: 0 0 0.02em; z-index: 0;
-      width: max-content; white-space: nowrap; pointer-events: none;
-      font-family: var(--serif); font-weight: 300; font-size: clamp(5rem, 15vw, 14rem); line-height: 1; letter-spacing: -0.045em;
-      --bx: -9999px; --by: -9999px; --br: 0px; --ghost: rgba(22, 21, 15, 0.045);
-      color: var(--ghost);
-      background-image: radial-gradient(circle var(--br) at var(--bx) var(--by), #fffdf9 0%, rgba(250, 246, 240, 0.92) 40%, var(--ghost) 100%);
-      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+  /* ---------- entrada del contenido (mismo aire que la portada: se enfoca y sube suave) ---------- */
+  @media (prefers-reduced-motion: no-preference) {
+    /* textos: suben y se enfocan */
+    .case :is(.c-intro, .k-p, .k-sub, .k-note) { filter: blur(7px); }
+    .case :is(.c-intro, .k-p, .k-sub, .k-note).in { filter: none; }
+    .case .rise {
+      transform: translate3d(0, 34px, 0);
+      transition: opacity 0.9s var(--ease-out), transform 1.15s var(--ease-out), filter 0.9s var(--ease-out);
     }
+    .case .rise.in { transform: none; }
+
+    /* títulos de sección: la línea se dibuja de izquierda a derecha y el título sube */
+    .case .k-h { border-top-color: transparent; position: relative; }
+    .case .k-h::before {
+      content: ''; position: absolute; left: 0; right: 0; top: 0; height: 1px; background: var(--ink);
+      transform: scaleX(0); transform-origin: left center; transition: transform 1.4s var(--ease-out);
+    }
+    .case .k-h.in::before { transform: scaleX(1); }
+    .case .k-h > * { transition: opacity 0.9s var(--ease-out) 0.25s, transform 1.1s var(--ease-out) 0.25s; }
+    .case .k-h:not(.in) > * { opacity: 0; transform: translateY(18px); }
+
+    /* imágenes y videos: se abren de abajo hacia arriba y se asientan (zoom que se calma) */
+    .case .reveal > .revfill {
+      transform: scale(1.14); clip-path: inset(100% 0 0 0);
+      transition: transform 1.6s var(--ease-out), clip-path 1.25s var(--ease-out);
+    }
+    .case .reveal.in > .revfill { transform: scale(1); clip-path: inset(0 0 0 0); }
+
+    /* grupos (cajas, columnas, cifras, personas): entran escalonados */
+    .case :is(.c-os, .k-cols, .k-stats, .k-glance, .k-personas, .k-feat) > .rise:nth-child(2) { transition-delay: 0.1s; }
+    .case :is(.c-os, .k-cols, .k-stats, .k-glance, .k-personas, .k-feat) > .rise:nth-child(3) { transition-delay: 0.2s; }
+    .case :is(.c-os, .k-cols, .k-stats, .k-glance, .k-personas, .k-feat) > .rise:nth-child(4) { transition-delay: 0.3s; }
+    .case :is(.c-os, .k-cols, .k-stats, .k-glance, .k-personas, .k-feat) > .rise:nth-child(5) { transition-delay: 0.4s; }
+    .case :is(.c-os, .k-cols, .k-stats, .k-glance, .k-personas, .k-feat) > .rise:nth-child(6) { transition-delay: 0.5s; }
   }
-  .k-h .mono { font-size: var(--t-xs); letter-spacing: 0.08em; color: var(--ink-60); }
+
   .k-p {
     font-family: var(--sans); font-size: var(--t-p); line-height: 1.65; color: var(--ink-80);
     max-width: 62ch; margin-top: clamp(22px, 3.2vh, 36px);
