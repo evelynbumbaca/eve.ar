@@ -81,6 +81,7 @@ export const lookap: CaseContent = {
     { t: 'break', kind: 'img', src: `${P}/textura.jpg`, alt: 'Suéteres y jean apilados: las prendas que se pierden en el placard' },
     {
       t: 'personas',
+      lead: { es: 'Arquetipos', en: 'Archetypes' },
       labels: {
         why: { es: '¿Por qué este usuario?', en: 'Why this user?' },
         motivation: { es: 'Motivaciones', en: 'Motivations' },

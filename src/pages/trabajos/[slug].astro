@@ -199,6 +199,8 @@ const navItems = blocks.filter((b) => b.t === 'h') as { t: 'h'; n: string; es: s
               </div>
             );
             case 'personas': return (
+              <>
+              {b.lead && <h3 class="k-subhead rise"><span data-es={b.lead.es} data-en={b.lead.en}>{b.lead.es}</span></h3>}
               <div class="k-personas">
                 {b.items.map((pe) => (
                   <article class={`k-pe rise ${pe.tone}`}>
@@ -218,6 +220,7 @@ const navItems = blocks.filter((b) => b.t === 'h') as { t: 'h'; n: string; es: s
                   </article>
                 ))}
               </div>
+              </>
             );
             case 'features': return (
               <>
@@ -793,7 +796,7 @@ const navItems = blocks.filter((b) => b.t === 'h') as { t: 'h'; n: string; es: s
   @media (min-width: 760px) {
     /* el MVP va debajo de la lista, con sus tres puntos en fila */
     .k-feat .mvp ol { grid-template-columns: repeat(3, 1fr); gap: clamp(16px, 2.4vw, 32px); }
-    .k-feat .mvp li { grid-template-columns: 1fr; gap: 6px; }
+    .k-feat .mvp li { grid-template-columns: 1fr; align-items: start; align-content: start; gap: 6px; }
     .k-feat .mvp li:first-child { border-top: 1px solid rgba(255, 249, 237, 0.28); padding-top: 16px; }
   }
   .k-feat .mvp li b { font-weight: 400; font-size: var(--t-xs); opacity: 0.7; }
@@ -993,11 +996,11 @@ const navItems = blocks.filter((b) => b.t === 'h') as { t: 'h'; n: string; es: s
   /* task flow: cajas con contorno, sin flechas */
   .lk-flow { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
   .lk-flow li { min-width: 0; }
-  .lk-sc { height: 100%; border: 1.5px solid var(--lk-coral, #ce6c3f); border-radius: 14px; background: transparent; padding: 18px 16px 22px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 16px; }
+  .lk-sc { height: 100%; border: 1.5px solid var(--lk-coral, #ce6c3f); border-radius: 14px; background: transparent; padding: 18px 16px 22px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; text-align: center; gap: 16px; }
   .lk-dia { width: 44px; height: 44px; display: grid; place-items: center; position: relative; }
   .lk-dia::before { content: ''; position: absolute; inset: 6px; background: var(--lk-coral, #ce6c3f); transform: rotate(45deg); border-radius: 6px; }
   .lk-dia b { position: relative; color: var(--lk-cream, #fff9ed); font-weight: 500; font-size: var(--t-xs); }
-  .lk-step { font-family: var(--sans); font-size: var(--t-body); line-height: 1.45; }
+  .lk-step { font-family: var(--sans); font-size: var(--t-body); line-height: 1.45; flex: 1; display: flex; align-items: center; justify-content: center; }
 
   /* fidelidad: la misma pantalla en 4 etapas */
   .k-fig.lk-fid { margin-top: clamp(56px, 9vh, 104px); }
