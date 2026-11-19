@@ -61,8 +61,8 @@ const pad = (n: number) => String(n).padStart(2, '0');
 
   /* nombre de la imagen: va adelante, al costado, y viaja con ella (misma entrada y salida) */
   .dk-tag {
-    position: absolute; right: calc(100% + clamp(18px, 2.4vw, 36px)); bottom: 7%;
-    display: flex; flex-direction: column; align-items: flex-end; gap: 6px; text-align: right;
+    position: absolute; left: calc(100% + clamp(18px, 2.4vw, 36px)); bottom: 7%;
+    display: flex; flex-direction: column; align-items: flex-start; gap: 6px; text-align: left;
     pointer-events: none;
     opacity: var(--tag, 0); filter: blur(calc((1 - var(--tag, 0)) * 7px));
   }
