@@ -55,12 +55,27 @@ import { link } from '../lib/link';
     letter-spacing: -0.01em;
     width: max-content;
     color: #f7f6f3;
-    opacity: 0.55;
     transform: translateY(40px);
-    transition: opacity 0.35s var(--ease), transform 0.6s var(--ease);
+    transition: transform 0.6s var(--ease);
   }
   :global(body.menu-open) .overlay nav a { transform: translateY(0); }
-  .overlay nav a:hover { opacity: 1; }
+
+  /* texto fantasma: transparente, y la luz del cursor lo descubre al pasar
+     (como los títulos gigantes de la portada). Sin mouse queda a la vista. */
+  @media (hover: hover) and (pointer: fine) {
+    .overlay nav a {
+      --mx: -9999px; --my: -9999px; --ghost: rgba(247, 246, 243, 0.24);
+      color: var(--ghost);
+      background-image: radial-gradient(circle 210px at var(--mx) var(--my), #fff4ec 0%, #f6a07c 42%, var(--ghost) 100%);
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent;
+      transition: transform 0.6s var(--ease), --ghost 0.3s;
+    }
+    .overlay nav a:hover { --ghost: rgba(247, 246, 243, 0.4); }
+    .overlay nav a:focus-visible { -webkit-text-fill-color: #f7f6f3; background-image: none; outline: none; }
+    .overlay nav .nav-tag { -webkit-text-fill-color: var(--orange); }
+  }
+  @media (hover: none), (pointer: coarse) { .overlay nav a { opacity: 0.9; } }
   .overlay nav .nav-tag {
     font-size: 11px;
     letter-spacing: 0.12em;
@@ -92,3 +107,33 @@ import { link } from '../lib/link';
   }
   :global(body.menu-open) .overlay .meta { opacity: 0.7; }
 </style>
+
+<script>
+  const links = Array.from(document.querySelectorAll<HTMLElement>('.overlay nav a'));
+  const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
+  if (links.length && fine) {
+    let tx = -9999, ty = -9999, x = -9999, y = -9999, raf = 0, running = false;
+    const paint = () => {
+      for (const a of links) {
+        const r = a.getBoundingClientRect();
+        a.style.setProperty('--mx', (x - r.left).toFixed(1) + 'px');
+        a.style.setProperty('--my', (y - r.top).toFixed(1) + 'px');
+      }
+    };
+    const frame = () => {
+      if (x < -9000) { x = tx; y = ty; }
+      x += (tx - x) * 0.16; y += (ty - y) * 0.16;
+      paint();
+      if (Math.hypot(tx - x, ty - y) > 0.4) raf = requestAnimationFrame(frame); else running = false;
+    };
+    addEventListener('pointermove', (e) => {
+      if (!document.body.classList.contains('menu-open')) return;
+      tx = e.clientX; ty = e.clientY;
+      if (!running) { running = true; raf = requestAnimationFrame(frame); }
+    }, { passive: true });
+    // al cerrar el menú, la luz se va
+    new MutationObserver(() => {
+      if (!document.body.classList.contains('menu-open')) { cancelAnimationFrame(raf); running = false; x = y = tx = ty = -9999; paint(); }
+    }).observe(document.body, { attributes: true, attributeFilter: ['class'] });
+  }
+</script>
