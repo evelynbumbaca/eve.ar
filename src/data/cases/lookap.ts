@@ -280,8 +280,8 @@ export const lookap: CaseContent = {
       t: 'split',
       src: `${P}/mockup-flatlay.jpg`,
       alt: 'Lookap en el celular, junto a ropa doblada: la interfaz con su identidad aplicada',
-      es: 'Una interfaz atractiva pero limpia de elementos innecesarios, para que usarla sea cómodo y práctico. El UI Kit reúne tres colores (primario, secundario y de acento), una sola tipografía, Roboto, y los componentes de la app: inputs, botones, tab bar y cards. Todo partió de un moodboard de moda, con tipografías de trazo elegante y prendas sobre telas.',
-      en: 'An attractive interface, free of unnecessary elements, so that using it feels comfortable and practical. The UI Kit brings together three colors (primary, secondary and accent), a single typeface, Roboto, and the app components: inputs, buttons, tab bar and cards. It all started from a fashion moodboard, with elegant typefaces and garments on fabrics.',
+      es: 'Una interfaz atractiva pero limpia de elementos innecesarios, para que usarla sea cómodo y práctico. El UI Kit reúne tres colores (primario, secundario y de acento), una sola tipografía, Roboto, y los componentes de la app: inputs, botones, tab bar y cards.',
+      en: 'An attractive interface, free of unnecessary elements, so that using it feels comfortable and practical. The UI Kit brings together three colors (primary, secondary and accent), a single typeface, Roboto, and the app components: inputs, buttons, tab bar and cards.',
     },
     {
       t: 'brand',
