@@ -88,6 +88,7 @@ const ogImage = new URL(link('/og.png'), Astro.site).href;
 
         /* ---------- menu overlay ---------- */
         const closeMenu = () => document.body.classList.remove('menu-open');
+        addEventListener('pageshow', (e) => { if (e.persisted) closeMenu(); });
 
         /* Ancla al CONTENIDO de la sección (salta el padding superior) con una
            holgura fija bajo el menú -> todas las secciones aterrizan igual,

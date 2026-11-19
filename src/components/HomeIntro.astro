@@ -100,6 +100,16 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     font-family: var(--serif); font-weight: 300; font-size: clamp(5rem, 15vw, 15rem); line-height: 1;
     letter-spacing: -0.045em; color: var(--ink); opacity: 0; will-change: transform, opacity;
   }
+  /* texto fantasma: casi invisible, solo se descubre donde pasa la luz del cursor */
+  @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    .big {
+      --bx: -9999px; --by: -9999px; --br: 0px; --ghost: rgba(22, 21, 15, 0.045);
+      color: var(--ghost);
+      background-image: radial-gradient(circle var(--br) at var(--bx) var(--by), #16150f 0%, #e2552d 38%, var(--ghost) 100%);
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+  }
   .statement {
     position: absolute; inset: 0; z-index: 60; display: grid; place-items: center; padding-inline: var(--pad);
     opacity: 0; pointer-events: none; will-change: transform, opacity;
@@ -369,6 +379,25 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       // acercamiento exponencial: máxima velocidad al arrancar, frena suave al llegar (independiente de los Hz)
       const k = (rate: number, dt: number) => 1 - Math.exp(-rate * dt);
 
+      // la luz que descubre los títulos gigantes (texto fantasma): sigue al cursor con inercia
+      let bx = -1e5, by = -1e5, la = 0, lightBusy = false;
+      const paintLight = (dt: number) => {
+        if (!fine) return;
+        const on = px > -9e4;
+        if (on && bx < -9e4) { bx = px; by = py; }
+        if (on) { bx += (px - bx) * k(9, dt); by += (py - by) * k(9, dt); }
+        la += ((on ? 1 : 0) - la) * k(8, dt);
+        lightBusy = (on && Math.hypot(px - bx, py - by) > 0.4) || Math.abs((on ? 1 : 0) - la) > 0.004;
+        const R = (300 * la).toFixed(1) + 'px';
+        for (const el of bigs) {
+          if (parseFloat(el.style.opacity || '0') < 0.01) continue;
+          const r = el.getBoundingClientRect();
+          el.style.setProperty('--bx', (bx - r.left).toFixed(1) + 'px');
+          el.style.setProperty('--by', (by - r.top).toFixed(1) + 'px');
+          el.style.setProperty('--br', R);
+        }
+      };
+
       const frame = (now: number) => {
         const dt = Math.min(0.05, Math.max(0.001, (now - last) / 1000)); last = now;
         const u = scrollU();
@@ -381,6 +410,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         sx += (mx - sx) * k(5, dt); sy += (my - sy) * k(5, dt);
         renderOpen();
         render(su, gd, qd, sx, sy);
+        paintLight(dt);
         // letras del logo: se estiran cerca del cursor (solo con puntero fino y el logo en reposo)
         let lettersMoving = false;
         if (fine && letters.length) {
@@ -393,7 +423,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
             l.style.transform = `scaleX(${lsx[i].toFixed(4)})`;
           });
         }
-        const moving = Math.abs(ot - op) > 0.0005 || lettersMoving || Math.abs(u - su) > 0.0008 || Math.abs(gatherTarget(u) - gd) > 0.0008 || Math.abs(cardTarget(u) - qd) > 0.0008 ||
+        const moving = Math.abs(ot - op) > 0.0005 || lettersMoving || lightBusy || Math.abs(u - su) > 0.0008 || Math.abs(gatherTarget(u) - gd) > 0.0008 || Math.abs(cardTarget(u) - qd) > 0.0008 ||
                        Math.abs(mx - sx) > 0.002 || Math.abs(my - sy) > 0.002;
         if (moving) raf = requestAnimationFrame(frame); else running = false;
       };
