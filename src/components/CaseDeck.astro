@@ -1,0 +1,296 @@
+---
+/* Pasador del caso: misma mecánica que la portada del home.
+   Un gesto = una imagen. Palabra gigante detrás, inclinación 3D con el mouse,
+   la imagen sale por delante de cámara. Antes y después, scroll normal. */
+import { link } from '../lib/link';
+
+interface Props {
+  title: { es: string; en: string };
+  items: { src: string; alt: string; word: { es: string; en: string } }[];
+  fig?: string;
+}
+const { title, items, fig } = Astro.props;
+const pad = (n: number) => String(n).padStart(2, '0');
+---
+
+<section class="deck" data-deck style={`--n:${items.length}`} aria-label={title.es}>
+  <div class="dk-stage" data-dk-stage>
+    <div class="dk-bigs" aria-hidden="true">
+      {items.map((it) => <p class="dk-big" data-dk-big data-es={it.word.es} data-en={it.word.en}>{it.word.es}</p>)}
+    </div>
+    {items.map((it) => (
+      <figure class="dk-card" data-dk-card>
+        <img src={link(`/${it.src}`)} alt={it.alt} loading="lazy" decoding="async" />
+      </figure>
+    ))}
+    <p class="dk-meta dk-count mono">
+      <span data-es={title.es} data-en={title.en}>{title.es}</span> <b data-dk-num>01</b> — {pad(items.length)}
+    </p>
+    {fig && <p class="dk-meta dk-fig mono">FIG {fig}</p>}
+  </div>
+</section>
+
+<style>
+  .deck {
+    position: relative;
+    /* ancho completo de pantalla, aunque el caso esté en una columna */
+    width: 100vw; margin-left: calc(50% - 50vw);
+    height: calc((var(--n) * 0.75 + 0.9) * 100svh);
+    margin-block: clamp(40px, 8vh, 100px);
+    --ch: 70svh;
+  }
+  .dk-stage { position: sticky; top: 0; height: 100svh; overflow: hidden; }
+
+  .dk-bigs { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+  .dk-big {
+    position: absolute; left: 50%; top: 50%; margin: 0; width: max-content; white-space: nowrap;
+    font-family: var(--serif); font-weight: 300; font-size: clamp(5rem, 15vw, 15rem); line-height: 1;
+    letter-spacing: -0.045em; color: var(--ink); opacity: 0; will-change: transform, opacity;
+  }
+
+  .dk-card {
+    position: absolute; left: 50%; top: 50%; margin: 0;
+    height: var(--ch); aspect-ratio: 4 / 5;
+    margin-top: calc(var(--ch) * -0.5); margin-left: calc(var(--ch) * -0.4);
+    overflow: hidden; border-radius: 4px; background: #e9e4d9;
+    box-shadow: 0 1px 2px rgba(22, 21, 15, 0.14), 0 22px 50px -16px rgba(22, 21, 15, 0.4);
+    will-change: transform, opacity;
+  }
+  .dk-card img {
+    display: block; width: 100%; height: 100%; object-fit: cover;
+    transform: translate3d(var(--ix, 0px), var(--iy, 0px), 0) scale(var(--is, 1.08)); will-change: transform;
+  }
+  .dk-card::after { content: ''; position: absolute; inset: 0; background: var(--paper); opacity: var(--dim, 0); pointer-events: none; }
+
+  .dk-meta {
+    position: absolute; z-index: 5; margin: 0; pointer-events: none;
+    color: var(--ink); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+    font-variant-numeric: tabular-nums; will-change: opacity;
+  }
+  .dk-meta b { font-weight: 500; }
+  .dk-count { left: var(--pad); bottom: clamp(18px, 3.4vh, 34px); opacity: 0; }
+  .dk-fig { right: var(--pad); bottom: clamp(18px, 3.4vh, 34px); color: var(--ink-45); opacity: 0; }
+
+  @media (max-width: 680px) {
+    .deck { --ch: 62svh; }
+  }
+  /* sin movimiento: las imágenes quedan en fila, normales */
+  :global(html.deck-static) .deck { height: auto; }
+  :global(html.deck-static) .dk-stage { position: static; height: auto; overflow: visible; display: grid; gap: 12px; padding-inline: var(--pad); }
+  :global(html.deck-static) .dk-bigs, :global(html.deck-static) .dk-meta { display: none; }
+  :global(html.deck-static) .dk-card { position: static; margin: 0; width: 100%; height: auto; }
+</style>
+
+<script>
+  const deck = document.querySelector<HTMLElement>('[data-deck]');
+  const stage = document.querySelector<HTMLElement>('[data-dk-stage]');
+  const cards = Array.from(document.querySelectorAll<HTMLElement>('[data-dk-card]'));
+  const bigs = Array.from(document.querySelectorAll<HTMLElement>('[data-dk-big]'));
+  const numEl = document.querySelector<HTMLElement>('[data-dk-num]');
+  const metas = Array.from(document.querySelectorAll<HTMLElement>('.dk-meta'));
+
+  if (deck && stage && cards.length) {
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
+    const N = cards.length;
+    const START = 0.3, STEP = 0.75;       // primera parada y distancia entre paradas (en pantallas)
+
+    let W = 0, H = 0, ch = 0, lastNum = 0;
+    const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
+    const smooth = (t: number) => t * t * (3 - 2 * t);
+    const mix = (a: number, b: number, t: number) => a + (b - a) * t;
+
+    const measure = () => {
+      W = stage.clientWidth; H = stage.clientHeight;
+      ch = Math.min(H * 0.7, (W * 0.84) * 5 / 4);
+      deck.style.setProperty('--ch', ch.toFixed(1) + 'px');
+      // cada palabra se ajusta para ocupar todo el ancho (asoma siempre a los costados de la imagen)
+      bigs.forEach((el) => {
+        el.style.fontSize = '100px';
+        const w100 = el.offsetWidth || 1;
+        el.style.fontSize = Math.min((W * 1.02 / w100) * 100, H * 0.5).toFixed(1) + 'px';
+      });
+    };
+
+    const top = () => deck.getBoundingClientRect().top + scrollY;
+    const scrollU = () => (scrollY - top()) / (H || 1);
+    const cardTarget = (u: number) => {
+      const q = Math.max(0, Math.min(N - 1, (u - START) / STEP));
+      const fi = Math.floor(q);
+      return fi + clamp01((q - fi - 0.12) / 0.5);   // cada imagen descansa un rato al frente
+    };
+
+    // q2 = imagen al frente (suavizada); sx, sy = puntero (-1..1); en = entrada de la sección (0..1)
+    const render = (q2: number, sx: number, sy: number, en: number) => {
+      const behind = Math.max(0, Math.min(4, N - 1 - q2));
+      const front = ch * 0.0425 * behind - H * 0.01;
+      for (let i = 0; i < N; i++) {
+        const r = i - q2;
+        const w = clamp01(1 - Math.abs(r) * 2.2);            // peso de la imagen que está al frente
+        let X: number, Y: number, S: number, R: number, O: number, dim: number;
+        if (r >= 0) {            // en la pila: más atrás = más chica, más arriba, más velada
+          X = -sx * r * 7; Y = front - r * ch * 0.13 - sy * r * 4;
+          S = Math.max(0.5, 1 - 0.09 * r); R = 0;
+          O = 1 - clamp01(r - 3.6); dim = Math.min(0.55, r * 0.13);
+        } else {                 // saliendo: pasa por delante de cámara, alternando lado
+          const t = -r, dir = i % 2 ? 1 : -1;
+          X = dir * t * W * 0.16; Y = front - t * H * 0.16; S = 1 + 0.55 * t; R = dir * t * 7;
+          O = 1 - clamp01((t - 0.12) / 0.5); dim = 0;
+        }
+        const s = S * mix(0.9, 1, en), o = O * en;
+        const el = cards[i];
+        const tx = sy * -7 * w, ty = sx * 9 * w;                // inclinación 3D con el cursor
+        el.style.transform = `translate3d(${X.toFixed(1)}px,${Y.toFixed(1)}px,0) perspective(1200px) rotateX(${tx.toFixed(2)}deg) rotateY(${ty.toFixed(2)}deg) rotate(${R.toFixed(2)}deg) scale(${s.toFixed(4)})`;
+        el.style.setProperty('--ix', (-sx * 22 * w + (r < 0 ? -r * 40 * (i % 2 ? 1 : -1) : 0)).toFixed(1) + 'px');
+        el.style.setProperty('--iy', (-sy * 16 * w).toFixed(1) + 'px');
+        el.style.setProperty('--is', (1.08 + 0.08 * (1 - w) + (r < 0 ? -r * 0.18 : 0)).toFixed(3));
+        el.style.opacity = o.toFixed(3);
+        el.style.zIndex = String(50 - Math.round(r * 10));
+        el.style.setProperty('--dim', dim.toFixed(3));
+      }
+      // palabras gigantes: entran de un lado, cruzan por detrás de la imagen y salen por el otro
+      for (let i = 0; i < N; i++) {
+        const r = i - q2, a = Math.abs(r), el = bigs[i];
+        el.style.opacity = (clamp01(1 - a * 1.15) * 0.92 * en).toFixed(3);
+        el.style.transform = `translate(calc(-50% + ${(r * W * 0.62 - sx * 24).toFixed(1)}px), -50%)`;
+      }
+      metas.forEach((m) => { m.style.opacity = clamp01((en - 0.6) / 0.4).toFixed(3); });
+      const n = Math.min(N, Math.round(q2) + 1);
+      if (n !== lastNum && numEl) { lastNum = n; numEl.textContent = (n < 10 ? '0' : '') + n; }
+    };
+
+    if (reduce) {
+      document.documentElement.classList.add('deck-static');
+    } else {
+      let mx = 0, my = 0, sx = 0, sy = 0, qd = 0, ed = 0, raf = 0, running = false, last = 0;
+      const k = (rate: number, dt: number) => 1 - Math.exp(-rate * dt);
+      // la sección entra mientras se acerca (u de -0.6 a 0)
+      const enterTarget = (u: number) => smooth(clamp01((u + 0.55) / 0.5));
+
+      const frame = (now: number) => {
+        const dt = Math.min(0.05, Math.max(0.001, (now - last) / 1000)); last = now;
+        const u = scrollU();
+        qd += (cardTarget(u) - qd) * k(6.5, dt);
+        ed += (enterTarget(u) - ed) * k(7, dt);
+        sx += (mx - sx) * k(5, dt); sy += (my - sy) * k(5, dt);
+        render(qd, sx, sy, ed);
+        const moving = Math.abs(cardTarget(u) - qd) > 0.0008 || Math.abs(enterTarget(u) - ed) > 0.0008 ||
+                       Math.abs(mx - sx) > 0.002 || Math.abs(my - sy) > 0.002;
+        if (moving) raf = requestAnimationFrame(frame); else running = false;
+      };
+      const kick = () => { if (!running) { running = true; last = performance.now(); raf = requestAnimationFrame(frame); } };
+
+      if (fine) {
+        stage.addEventListener('pointermove', (ev) => {
+          const b = stage.getBoundingClientRect();
+          mx = ((ev.clientX - b.left) / b.width) * 2 - 1;
+          my = ((ev.clientY - b.top) / b.height) * 2 - 1;
+          kick();
+        }, { passive: true });
+        stage.addEventListener('pointerleave', () => { mx = 0; my = 0; kick(); }, { passive: true });
+      }
+
+      /* ---------- pasador: un gesto = un paso ----------
+         Dentro del tramo, cada gesto (rueda, trackpad, deslizar, teclado) salta a la imagen siguiente.
+         Antes de la primera y después de la última, el scroll sigue normal. */
+      const rests = () => cards.map((_, i) => START + (i + 0.02) * STEP);
+      const inZone = (u: number) => {
+        const r = rests();
+        return u >= r[0] - 0.02 && u <= r[r.length - 1] + 0.02;
+      };
+      const nextRest = (u: number, dir: number) => {
+        const r = rests(), eps = 0.02;
+        if (dir > 0) { for (const x of r) if (x > u + eps) return x; }
+        else { for (let i = r.length - 1; i >= 0; i--) if (r[i] < u - eps) return r[i]; }
+        return null;
+      };
+      // cerca de la sección el primer gesto lleva a la primera imagen (hacia abajo) o a la última (hacia arriba)
+      const near = (u: number, dir: number) => {
+        const r = rests();
+        return dir > 0 ? u > -0.15 && u < r[0] - 0.02 : u > r[r.length - 1] + 0.02 && u < r[r.length - 1] + 0.35;
+      };
+      const target = (u: number, dir: number) => {
+        const r = rests();
+        if (inZone(u)) return nextRest(u, dir);
+        if (near(u, dir)) return dir > 0 ? r[0] : r[r.length - 1];
+        return null;
+      };
+      const jumpTo = (u: number) => {
+        scrollTo({ top: Math.round(top() + u * H), behavior: 'instant' as ScrollBehavior });
+        kick();
+      };
+
+      let locked = false, lockT = 0, lastT = 0, lastAbs = 0, lastSign = 0;
+      addEventListener('wheel', (e) => {
+        if (e.ctrlKey || e.deltaY === 0 || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+        const now = performance.now(), abs = Math.abs(e.deltaY), sign = e.deltaY > 0 ? 1 : -1;
+        const fresh = now - lastT > 160 || sign !== lastSign || (now - lockT > 320 && abs > lastAbs * 1.6 + 2);
+        lastT = now; lastAbs = abs; lastSign = sign;
+        const u = scrollU();
+        const t = target(u, sign);
+        if (t === null) { locked = false; return; }
+        if (locked && !fresh) { e.preventDefault(); return; }
+        locked = false;
+        e.preventDefault();
+        jumpTo(t); locked = true; lockT = now;
+      }, { passive: false });
+
+      let ty0 = 0, tdy = 0, tmode = '';
+      addEventListener('touchstart', (e) => {
+        if (e.touches.length !== 1) { tmode = 'native'; return; }
+        ty0 = e.touches[0].clientY; tdy = 0; tmode = '';
+      }, { passive: true });
+      addEventListener('touchmove', (e) => {
+        if (tmode === 'native' || e.touches.length !== 1) return;
+        tdy = ty0 - e.touches[0].clientY;
+        if (!tmode) {
+          if (tdy === 0) return;
+          tmode = target(scrollU(), tdy > 0 ? 1 : -1) !== null && inZone(scrollU()) ? 'page' : 'native';
+        }
+        if (tmode === 'page' && e.cancelable) e.preventDefault();
+      }, { passive: false });
+      addEventListener('touchend', () => {
+        if (tmode === 'page' && Math.abs(tdy) > 30) {
+          const t = target(scrollU(), tdy > 0 ? 1 : -1);
+          if (t !== null) jumpTo(t);
+        }
+        tmode = '';
+      }, { passive: true });
+
+      addEventListener('keydown', (e) => {
+        if (e.altKey || e.ctrlKey || e.metaKey) return;
+        const el = e.target as HTMLElement | null;
+        if (el && (el.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName))) return;
+        const down = e.key === 'ArrowDown' || e.key === 'PageDown' || (e.key === ' ' && !e.shiftKey);
+        const up = e.key === 'ArrowUp' || e.key === 'PageUp' || (e.key === ' ' && e.shiftKey);
+        if (!down && !up) return;
+        const t = target(scrollU(), down ? 1 : -1);
+        if (t === null) return;
+        e.preventDefault(); jumpTo(t);
+      });
+
+      // si el scroll queda entre dos paradas dentro del tramo (barra de scroll, recarga), se acomoda a la más cercana
+      let settle = 0;
+      addEventListener('scroll', () => {
+        clearTimeout(settle);
+        settle = window.setTimeout(() => {
+          const u = scrollU(), r = rests();
+          if (!inZone(u)) return;
+          let best = r[0];
+          for (const x of r) if (Math.abs(x - u) < Math.abs(best - u)) best = x;
+          if (Math.abs(best - u) > 0.01) jumpTo(best);
+        }, 180);
+      }, { passive: true });
+
+      addEventListener('scroll', kick, { passive: true });
+      let rt = 0;
+      addEventListener('resize', () => { clearTimeout(rt); rt = window.setTimeout(() => { measure(); kick(); }, 120); }, { passive: true });
+      document.addEventListener('visibilitychange', () => { if (document.hidden) { cancelAnimationFrame(raf); running = false; } else kick(); });
+      // al cambiar de idioma, las palabras vuelven a ajustarse al ancho
+      new MutationObserver(() => { measure(); kick(); }).observe(document.documentElement, { attributes: true, attributeFilter: ['lang'] });
+      addEventListener('load', () => { measure(); kick(); }, { once: true });
+      measure(); qd = cardTarget(scrollU()); ed = enterTarget(scrollU());
+      render(qd, 0, 0, ed); kick();
+    }
+  }
+</script>

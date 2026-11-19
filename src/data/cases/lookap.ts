@@ -60,12 +60,15 @@ export const lookap: CaseContent = {
     },
     { t: 'video', src: `${P}/app-en-uso.mp4`, es: 'La app en uso', en: 'The app in use' },
     {
-      t: 'gallery',
+      t: 'deck',
       es: 'La app en contexto',
       en: 'The app in context',
       items: [
-        { src: `${P}/ctx-armario.jpg`, alt: 'Lookap: pantalla de ingreso frente a un placard' },
-        { src: `${P}/ctx-flatlay.jpg`, alt: 'Lookap: combinación guardada junto a la ropa' },
+        { src: `${P}/hero.jpg`, alt: 'Prendas sobre lino: suéter, jean y accesorios', word: { es: 'Prendas', en: 'Pieces' } },
+        { src: `${P}/ctx-armario.jpg`, alt: 'Lookap: pantalla de ingreso frente a un placard', word: { es: 'Placard', en: 'Closet' } },
+        { src: `${P}/ctx-flatlay.jpg`, alt: 'Lookap: combinación guardada junto a la ropa', word: { es: 'Looks', en: 'Looks' } },
+        { src: `${P}/ctx-jean.jpg`, alt: 'Lookap: el armario digital sobre un jean', word: { es: 'Jean', en: 'Denim' } },
+        { src: `${P}/textura.jpg`, alt: 'Tejido, lana y jean apilados junto a una ventana', word: { es: 'Textura', en: 'Texture' } },
       ],
     },
 
