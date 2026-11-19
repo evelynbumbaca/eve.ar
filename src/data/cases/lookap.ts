@@ -58,7 +58,6 @@ export const lookap: CaseContent = {
         { n: '5', es: 'personas en las pruebas', en: 'people in the tests' },
       ],
     },
-    { t: 'video', src: `${P}/app-en-uso.mp4`, es: 'La app en uso', en: 'The app in use' },
     {
       t: 'deck',
       es: 'La app en contexto',
@@ -309,7 +308,7 @@ export const lookap: CaseContent = {
         ],
       },
     },
-    { t: 'break', kind: 'img', src: `${P}/mockup-flatlay.jpg`, alt: 'Lookap en el celular sobre lino, junto a un suéter, una camisa y un jean' },
+    { t: 'video', src: `${P}/app-en-uso.mp4`, es: 'La app en uso', en: 'The app in use' },
 
     /* ---------- 05 · Prototipo ---------- */
     { t: 'h', n: '05', es: 'Prototipo', en: 'Prototype' },
