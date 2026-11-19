@@ -21,6 +21,7 @@ const { project: P, next: NEXT } = Astro.props;
 const K = cases[P.id];
 let figN = 0;
 const blocks = (K?.blocks ?? []).map((b) => (b.t === 'fig' || b.t === 'video' || b.t === 'gallery' || b.t === 'deck' ? { ...b, n: ++figN } : b));
+const linkBlock = blocks.find((b) => b.t === 'links') as { t: 'links'; items: { es: string; en: string; href: string }[] } | undefined;
 const pad = (n: number) => String(n).padStart(2, '0');
 const depth = (nodes: { kids?: any[] }[]): number => (nodes.length ? 1 + Math.max(...nodes.map((n) => depth(n.kids ?? []))) : 0);
 const colWeight = (nodes: { kids?: any[] }[]) => { const d = depth(nodes); return d >= 3 ? 1.9 : d === 2 ? 1.3 : d === 1 ? 1 : 0.95; };
@@ -461,15 +462,7 @@ const navItems = blocks.filter((b) => b.t === 'h') as { t: 'h'; n: string; es: s
                 </p>
               </figure>
             );
-            case 'links': return (
-              <div class="k-links">
-                {b.items.map((it) => (
-                  <a href={it.href} target="_blank" rel="noopener noreferrer">
-                    <span data-es={it.es} data-en={it.en}>{it.es}</span> <span aria-hidden="true">↗</span>
-                  </a>
-                ))}
-              </div>
-            );
+            case 'links': return null;
           }
         })}
       </div>
@@ -505,6 +498,15 @@ const navItems = blocks.filter((b) => b.t === 'h') as { t: 'h'; n: string; es: s
     )}
 
     <div class="wrap">
+      {linkBlock && (
+        <div class="k-links">
+          {linkBlock.items.map((it) => (
+            <a href={it.href} target="_blank" rel="noopener noreferrer">
+              <span data-es={it.es} data-en={it.en}>{it.es}</span> <span aria-hidden="true">↗</span>
+            </a>
+          ))}
+        </div>
+      )}
       <div class="c-next">
         <span class="lab"><T es="Siguiente caso de estudio" en="Next case study" /></span>
         <a href={link(`/trabajos/${NEXT.id}`)}>{NEXT.title} <span aria-hidden="true">→</span></a>
