@@ -996,13 +996,11 @@ const navItems = blocks.filter((b) => b.t === 'h') as { t: 'h'; n: string; es: s
   /* task flow: cajas con contorno, sin flechas */
   .lk-flow { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
   .lk-flow li { min-width: 0; }
-  .lk-sc { height: 100%; border: 1.5px solid var(--lk-coral, #ce6c3f); border-radius: 14px; background: transparent; padding: 18px 16px 22px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; text-align: center; gap: 16px; }
-  /* en pantallas grandes los pasos van sin caja; en celu quedan con su contorno */
-  @media (min-width: 861px) { .lk-sc { border-color: transparent; } }
+  .lk-sc { height: 100%; border: 1.5px solid var(--lk-coral, #ce6c3f); border-radius: 14px; background: var(--lk-coral, #ce6c3f); color: var(--lk-cream, #fff9ed); padding: 18px 16px 22px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; text-align: center; gap: 16px; }
   .lk-dia { width: 44px; height: 44px; display: grid; place-items: center; position: relative; }
-  .lk-dia::before { content: ''; position: absolute; inset: 6px; background: var(--lk-coral, #ce6c3f); transform: rotate(45deg); border-radius: 6px; }
-  .lk-dia b { position: relative; color: var(--lk-cream, #fff9ed); font-weight: 500; font-size: var(--t-xs); }
-  .lk-step { font-family: var(--sans); font-size: var(--t-body); line-height: 1.45; flex: 1; display: flex; align-items: flex-start; justify-content: center; }
+  .lk-dia::before { content: ''; position: absolute; inset: 6px; background: var(--lk-cream, #fff9ed); transform: rotate(45deg); border-radius: 6px; }
+  .lk-dia b { position: relative; color: var(--lk-coral, #ce6c3f); font-weight: 500; font-size: var(--t-xs); }
+  .lk-step { font-family: var(--sans); font-size: var(--t-body); font-weight: 500; line-height: 1.45; flex: 1; display: flex; align-items: flex-start; justify-content: center; }
 
   /* fidelidad: la misma pantalla en 4 etapas */
   .k-fig.lk-fid { margin-top: clamp(56px, 9vh, 104px); }
