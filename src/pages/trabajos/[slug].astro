@@ -950,9 +950,9 @@ const navItems = blocks.filter((b) => b.t === 'h') as { t: 'h'; n: string; es: s
   .k-break .frame > img, .k-break .frame > video { width: 100%; height: auto; display: block; border-radius: var(--k-r, 16px); }
   .k-break.narrow { max-width: 760px; margin-left: auto; margin-right: auto; }
 
-  .k-links { display: flex; flex-wrap: wrap; gap: 14px 32px; margin-top: clamp(40px, 7vh, 80px); }
+  .k-links { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 14px 32px; margin-top: clamp(40px, 7vh, 80px); }
   .k-links a {
-    font-family: var(--serif); font-size: clamp(1.1rem, 1.7vw, 1.5rem); line-height: 1;
+    font-family: var(--serif); font-size: clamp(0.95rem, 1.15vw, 1.1rem); line-height: 1;
     border-bottom: 1px solid var(--ink-35); padding-bottom: 3px;
     transition: opacity 0.25s var(--ease), border-color 0.25s var(--ease);
   }
