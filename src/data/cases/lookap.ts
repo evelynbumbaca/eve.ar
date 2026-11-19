@@ -64,11 +64,10 @@ export const lookap: CaseContent = {
       es: 'La app en contexto',
       en: 'The app in context',
       items: [
-        { src: `${P}/hero.jpg`, alt: 'Prendas sobre lino: suéter, jean y accesorios', word: { es: 'Prendas', en: 'Pieces' } },
-        { src: `${P}/ctx-armario.jpg`, alt: 'Lookap: pantalla de ingreso frente a un placard', word: { es: 'Placard', en: 'Closet' } },
+        { src: `${P}/hero.jpg`, alt: 'Prendas sobre lino: suéter, jean y accesorios, con el celular apagado', word: { es: 'Prendas', en: 'Garments' } },
+        { src: `${P}/ctx-armario.jpg`, alt: 'Lookap: pantalla de ingreso frente a un placard', word: { es: 'Ingreso', en: 'Sign in' } },
         { src: `${P}/ctx-flatlay.jpg`, alt: 'Lookap: combinación guardada junto a la ropa', word: { es: 'Looks', en: 'Looks' } },
-        { src: `${P}/ctx-jean.jpg`, alt: 'Lookap: el armario digital sobre un jean', word: { es: 'Jean', en: 'Denim' } },
-        { src: `${P}/textura.jpg`, alt: 'Tejido, lana y jean apilados junto a una ventana', word: { es: 'Textura', en: 'Texture' } },
+        { src: `${P}/ctx-jean.jpg`, alt: 'Lookap: el armario digital sobre un jean', word: { es: 'Armario', en: 'Wardrobe' } },
       ],
     },
 
@@ -80,6 +79,7 @@ export const lookap: CaseContent = {
       es: 'Empecé por las personas. Dos arquetipos marcaron las necesidades: ahorrar tiempo al vestirse y poder mostrar, recordar y compartir looks.',
       en: 'I started with people. Two archetypes set the needs: save time when getting dressed, and be able to show, recall and share looks.',
     },
+    { t: 'break', kind: 'img', src: `${P}/textura.jpg`, alt: 'Suéteres y jean apilados: las prendas que se pierden en el placard' },
     {
       t: 'personas',
       labels: {
@@ -186,8 +186,30 @@ export const lookap: CaseContent = {
       ],
     },
 
-    /* ---------- 02 · Estructura ---------- */
-    { t: 'h', n: '02', es: 'Estructura', en: 'Structure' },
+    /* ---------- 02 · Decisiones clave ---------- */
+    { t: 'h', n: '02', es: 'Decisiones clave', en: 'Key decisions' },
+    {
+      t: 'os',
+      items: [
+        {
+          label: { es: 'Probar temprano', en: 'Test early' },
+          es: 'Con solo cinco personas apareció el punto crítico: compartir el look. Detectarlo a tiempo evitó rediseñar después.',
+          en: 'With just five people the critical point showed up: sharing the look. Catching it early avoided a redesign later.',
+        },
+        {
+          label: { es: 'La función principal, al centro', en: 'Main function, front and center' },
+          es: 'Sacar la foto de la prenda define la app, así que pasó al centro de la tab bar, donde se la espera.',
+          en: 'Taking the garment photo defines the app, so it moved to the center of the tab bar, where people expect it.',
+        },
+        {
+          label: { es: 'Ordenar antes de dibujar', en: 'Organize before drawing' },
+          es: 'El benchmarking y el card sorting fijaron las secciones antes de diseñar una sola pantalla.',
+          en: 'Benchmarking and card sorting set the sections before a single screen was designed.',
+        },
+      ],
+    },
+    /* ---------- 03 · Estructura ---------- */
+    { t: 'h', n: '03', es: 'Estructura', en: 'Structure' },
     {
       t: 'sitemap',
       es: 'Arquitectura de la información',
@@ -251,8 +273,44 @@ export const lookap: CaseContent = {
       ],
     },
 
-    /* ---------- 03 · Prototipo y pruebas ---------- */
-    { t: 'h', n: '03', es: 'Prototipo', en: 'Prototype' },
+    /* ---------- 04 · Identidad ---------- */
+    { t: 'h', n: '04', es: 'Identidad', en: 'Identity' },
+    {
+      t: 'split',
+      src: `${P}/mockup-flatlay.jpg`,
+      alt: 'Lookap en el celular, junto a ropa doblada: la interfaz con su identidad aplicada',
+      es: 'Una interfaz atractiva pero limpia de elementos innecesarios, para que usarla sea cómodo y práctico. El UI Kit reúne tres colores (primario, secundario y de acento), una sola tipografía, Roboto, y los componentes de la app: inputs, botones, tab bar y cards. Todo partió de un moodboard de moda, con tipografías de trazo elegante y prendas sobre telas.',
+      en: 'An attractive interface, free of unnecessary elements, so that using it feels comfortable and practical. The UI Kit brings together three colors (primary, secondary and accent), a single typeface, Roboto, and the app components: inputs, buttons, tab bar and cards. It all started from a fashion moodboard, with elegant typefaces and garments on fabrics.',
+    },
+    {
+      t: 'brand',
+      es: 'Logo, color y tipografía de la interfaz',
+      en: 'Logo, color and interface typography',
+      logo: `${P}/logo-lookap.png`,
+      icon: `${P}/icono-lookap.png`,
+      swatches: [
+        { name: { es: 'Primario', en: 'Primary' }, tone: 'coral', hex: '#CE6C3F' },
+        { name: { es: 'Secundario', en: 'Secondary' }, tone: 'cream', hex: '#FFF9ED' },
+        { name: { es: 'Acento', en: 'Accent' }, tone: 'wine', hex: '#A92F3C' },
+      ],
+      labels: {
+        logo: { es: 'Logo', en: 'Logo' },
+        icon: { es: 'Ícono', en: 'Icon' },
+        palette: { es: 'Paleta', en: 'Palette' },
+        type: { es: 'Tipografía', en: 'Typography' },
+      },
+      font: {
+        name: 'Roboto',
+        specs: [
+          { es: 'Título 1', en: 'Heading 1', size: 20, weight: 500 },
+          { es: 'Título 2', en: 'Heading 2', size: 18, weight: 500 },
+          { es: 'Título 3', en: 'Heading 3', size: 14, weight: 500 },
+          { es: 'Botón', en: 'Button', size: 16, weight: 700 },
+        ],
+      },
+    },
+    /* ---------- 05 · Prototipo ---------- */
+    { t: 'h', n: '05', es: 'Prototipo', en: 'Prototype' },
     {
       t: 'p',
       es: 'Fui subiendo la fidelidad de a poco. Esta es la pantalla de ingreso en cada etapa, del boceto en papel al prototipo con la identidad aplicada.',
@@ -270,7 +328,8 @@ export const lookap: CaseContent = {
         { kind: 'hi', shot: `${P}/login-alta.jpg`, title: { es: 'Alta', en: 'High' }, text: { es: 'Identidad aplicada y prototipo interactivo.', en: 'Identity applied and interactive prototype.' } },
       ],
     },
-    { t: 'h', n: '04', es: 'Pruebas', en: 'Testing' },
+    /* ---------- 06 · Pruebas ---------- */
+    { t: 'h', n: '06', es: 'Pruebas', en: 'Testing' },
     {
       t: 'p',
       es: 'Probé el prototipo con cinco personas y medí qué tan sencilla les resultó cada tarea.',
@@ -329,63 +388,6 @@ export const lookap: CaseContent = {
       },
     },
 
-    /* ---------- 04 · Identidad ---------- */
-    { t: 'h', n: '05', es: 'Identidad', en: 'Identity' },
-    {
-      t: 'split',
-      src: `${P}/textura.jpg`,
-      alt: 'Tejido, lana y jean apilados junto a una ventana',
-      es: 'Una interfaz atractiva pero limpia de elementos innecesarios, para que usarla sea cómodo y práctico. El UI Kit reúne tres colores (primario, secundario y de acento), una sola tipografía, Roboto, y los componentes de la app: inputs, botones, tab bar y cards. Todo partió de un moodboard de moda, con tipografías de trazo elegante y prendas sobre telas.',
-      en: 'An attractive interface, free of unnecessary elements, so that using it feels comfortable and practical. The UI Kit brings together three colors (primary, secondary and accent), a single typeface, Roboto, and the app components: inputs, buttons, tab bar and cards. It all started from a fashion moodboard, with elegant typefaces and garments on fabrics.',
-    },
-    {
-      t: 'brand',
-      es: 'Logo, color y tipografía de la interfaz',
-      en: 'Logo, color and interface typography',
-      logo: `${P}/logo-lookap.png`,
-      icon: `${P}/icono-lookap.png`,
-      swatches: [
-        { name: { es: 'Primario', en: 'Primary' }, tone: 'coral', hex: '#CE6C3F' },
-        { name: { es: 'Secundario', en: 'Secondary' }, tone: 'cream', hex: '#FFF9ED' },
-        { name: { es: 'Acento', en: 'Accent' }, tone: 'wine', hex: '#A92F3C' },
-      ],
-      labels: {
-        logo: { es: 'Logo', en: 'Logo' },
-        icon: { es: 'Ícono', en: 'Icon' },
-        palette: { es: 'Paleta', en: 'Palette' },
-        type: { es: 'Tipografía', en: 'Typography' },
-      },
-      font: {
-        name: 'Roboto',
-        specs: [
-          { es: 'Título 1', en: 'Heading 1', size: 20, weight: 500 },
-          { es: 'Título 2', en: 'Heading 2', size: 18, weight: 500 },
-          { es: 'Título 3', en: 'Heading 3', size: 14, weight: 500 },
-          { es: 'Botón', en: 'Button', size: 16, weight: 700 },
-        ],
-      },
-    },
-    { t: 'h', n: '06', es: 'Aprendizajes', en: 'Takeaways' },
-    {
-      t: 'os',
-      items: [
-        {
-          label: { es: 'Probar temprano', en: 'Test early' },
-          es: 'Con solo cinco personas apareció el punto crítico: compartir el look. Detectarlo a tiempo evitó rediseñar después.',
-          en: 'With just five people the critical point showed up: sharing the look. Catching it early avoided a redesign later.',
-        },
-        {
-          label: { es: 'La función principal, al centro', en: 'Main function, front and center' },
-          es: 'Sacar la foto de la prenda define la app, así que pasó al centro de la tab bar, donde se la espera.',
-          en: 'Taking the garment photo defines the app, so it moved to the center of the tab bar, where people expect it.',
-        },
-        {
-          label: { es: 'Ordenar antes de dibujar', en: 'Organize before drawing' },
-          es: 'El benchmarking y el card sorting fijaron las secciones antes de diseñar una sola pantalla.',
-          en: 'Benchmarking and card sorting set the sections before a single screen was designed.',
-        },
-      ],
-    },
     {
       t: 'links',
       items: [
