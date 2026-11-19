@@ -58,10 +58,11 @@ export const lookap: CaseContent = {
         { n: '5', es: 'personas en las pruebas', en: 'people in the tests' },
       ],
     },
+    { t: 'video', src: `${P}/app-en-uso.mp4`, es: 'App en uso', en: 'App in use' },
     {
       t: 'deck',
-      es: 'La app en contexto',
-      en: 'The app in context',
+      es: 'App en contexto',
+      en: 'App in context',
       items: [
         { src: `${P}/hero.jpg`, alt: 'Prendas sobre lino: suéter, jean y accesorios, con el celular apagado', word: { es: 'Prendas', en: 'Garments' } },
         { src: `${P}/ctx-armario.jpg`, alt: 'Lookap: pantalla de ingreso frente a un placard', word: { es: 'Ingreso', en: 'Sign in' } },
@@ -308,7 +309,7 @@ export const lookap: CaseContent = {
         ],
       },
     },
-    { t: 'video', src: `${P}/app-en-uso.mp4`, es: 'La app en uso', en: 'The app in use' },
+    { t: 'break', kind: 'img', src: `${P}/mockup-flatlay.jpg`, alt: 'Lookap en el celular sobre lino, junto a un suéter, una camisa y un jean' },
 
     /* ---------- 05 · Prototipo ---------- */
     { t: 'h', n: '05', es: 'Prototipo', en: 'Prototype' },
