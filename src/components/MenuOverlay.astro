@@ -33,9 +33,9 @@ import { link } from '../lib/link';
     justify-content: space-between;
     padding: clamp(96px, 12vh, 160px) var(--pad) clamp(28px, 5vh, 48px);
     transform: translateY(-100%);
-    pointer-events: none;
-    visibility: hidden;                       /* cerrado: no puede asomar nada */
     transition: transform 0.7s var(--ease), visibility 0s 0.7s;
+    pointer-events: none;
+    visibility: hidden;
   }
   :global(body.menu-open) .overlay {
     transform: translateY(0);
@@ -58,30 +58,12 @@ import { link } from '../lib/link';
     letter-spacing: -0.01em;
     width: max-content;
     color: #f7f6f3;
+    opacity: 0.55;
     transform: translateY(40px);
-    transition: transform 0.6s var(--ease);
+    transition: opacity 0.35s var(--ease), transform 0.6s var(--ease);
   }
   :global(body.menu-open) .overlay nav a { transform: translateY(0); }
-
-  /* texto fantasma: transparente, y la luz del cursor lo descubre al pasar
-     (como los títulos gigantes de la portada). Sin mouse queda a la vista. */
-  @media (hover: hover) and (pointer: fine) {
-    .overlay nav a {
-      --mx: -9999px; --my: -9999px; --ghost: rgba(247, 246, 243, 0.24);
-      color: var(--ghost);
-      --lit: 0;
-      background-image:
-        linear-gradient(rgba(247, 246, 243, var(--lit)), rgba(247, 246, 243, var(--lit))),
-        radial-gradient(circle 210px at var(--mx) var(--my), #fff4ec 0%, #f6a07c 42%, var(--ghost) 100%);
-      -webkit-background-clip: text; background-clip: text;
-      -webkit-text-fill-color: transparent;
-      transition: transform 0.6s var(--ease);
-    }
-    .overlay nav a:hover { --ghost: rgba(247, 246, 243, 0.4); }
-    .overlay nav a:focus-visible { -webkit-text-fill-color: #f7f6f3; background-image: none; outline: none; }
-    .overlay nav .nav-tag { -webkit-text-fill-color: var(--orange); }
-  }
-  @media (hover: none), (pointer: coarse) { .overlay nav a { opacity: 0.9; } }
+  .overlay nav a:hover { opacity: 1; }
   .overlay nav .nav-tag {
     font-size: 11px;
     letter-spacing: 0.12em;
@@ -113,47 +95,3 @@ import { link } from '../lib/link';
   }
   :global(body.menu-open) .overlay .meta { opacity: 0.7; }
 </style>
-
-<script>
-  const links = Array.from(document.querySelectorAll<HTMLElement>('.overlay nav a'));
-  const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
-  if (links.length && fine) {
-    const DWELL = 0.55;                       // segundos quieta sobre un texto para que se encienda del todo
-    const lit = links.map(() => 0), over = links.map(() => 0);
-    let tx = -9999, ty = -9999, x = -9999, y = -9999, hover = -1, last = 0, raf = 0, running = false;
-    const isOpen = () => document.body.classList.contains('menu-open');
-    const paint = () => {
-      links.forEach((a, i) => {
-        const r = a.getBoundingClientRect();
-        a.style.setProperty('--mx', (x - r.left).toFixed(1) + 'px');
-        a.style.setProperty('--my', (y - r.top).toFixed(1) + 'px');
-        a.style.setProperty('--lit', lit[i].toFixed(3));
-      });
-    };
-    const frame = (now: number) => {
-      const dt = Math.min(0.05, Math.max(0.001, (now - last) / 1000)); last = now;
-      if (x < -9000) { x = tx; y = ty; }
-      x += (tx - x) * (1 - Math.exp(-9 * dt)); y += (ty - y) * (1 - Math.exp(-9 * dt));
-      let busy = Math.hypot(tx - x, ty - y) > 0.4;
-      links.forEach((_, i) => {
-        if (i === hover) over[i] += dt; else over[i] = 0;
-        const target = over[i] > DWELL ? 1 : 0;
-        lit[i] += (target - lit[i]) * (1 - Math.exp(-(target ? 5 : 9) * dt));
-        if (Math.abs(target - lit[i]) > 0.004 || (i === hover && over[i] <= DWELL)) busy = true;
-      });
-      paint();
-      if (busy) raf = requestAnimationFrame(frame); else running = false;
-    };
-    const kick = () => { if (!running) { running = true; last = performance.now(); raf = requestAnimationFrame(frame); } };
-    addEventListener('pointermove', (e) => {
-      if (!isOpen()) return;
-      tx = e.clientX; ty = e.clientY;
-      hover = links.findIndex((a) => { const r = a.getBoundingClientRect(); return e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom; });
-      kick();
-    }, { passive: true });
-    // al cerrar el menú, la luz se va
-    new MutationObserver(() => {
-      if (!isOpen()) { cancelAnimationFrame(raf); running = false; x = y = tx = ty = -9999; hover = -1; links.forEach((_, i) => { lit[i] = 0; over[i] = 0; }); paint(); }
-    }).observe(document.body, { attributes: true, attributeFilter: ['class'] });
-  }
-</script>
