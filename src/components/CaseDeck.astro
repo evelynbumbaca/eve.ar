@@ -1,6 +1,6 @@
 ---
 /* Pasador del caso: misma mecánica que la portada del home.
-   Un gesto = una imagen. Palabra gigante detrás, inclinación 3D con el mouse,
+   Un gesto = una imagen. Pila que sube desde abajo, inclinación 3D con el mouse,
    la imagen sale por delante de cámara. Antes y después, scroll normal. */
 import { link } from '../lib/link';
 
@@ -15,15 +15,19 @@ const pad = (n: number) => String(n).padStart(2, '0');
 
 <section class="deck" data-deck style={`--n:${items.length}`} aria-label={title.es}>
   <div class="dk-stage" data-dk-stage>
-    {items.map((it, i) => (
+    {items.map((it) => (
       <figure class="dk-card" data-dk-card>
         <span class="dk-img"><img src={link(`/${it.src}`)} alt={it.alt} loading="lazy" decoding="async" /></span>
-        <figcaption class="dk-tag">
-          <span class="mono">{pad(i + 1)}</span>
-          <b data-es={it.word.es} data-en={it.word.en}>{it.word.es}</b>
-        </figcaption>
       </figure>
     ))}
+    <div class="dk-tags" aria-hidden="true">
+      {items.map((it, i) => (
+        <p class="dk-tag" data-dk-tag>
+          <span class="mono">{pad(i + 1)}</span>
+          <b data-es={it.word.es} data-en={it.word.en}>{it.word.es}</b>
+        </p>
+      ))}
+    </div>
     <p class="dk-meta dk-count mono">
       <span data-es={title.es} data-en={title.en}>{title.es}</span> <b data-dk-num>01</b> — {pad(items.length)}
     </p>
@@ -59,16 +63,19 @@ const pad = (n: number) => String(n).padStart(2, '0');
   }
   .dk-img::after { content: ''; position: absolute; inset: 0; background: var(--paper); opacity: var(--dim, 0); pointer-events: none; }
 
-  /* nombre de la imagen: va adelante, al costado, y viaja con ella (misma entrada y salida) */
+  /* nombre de la imagen: queda quieto al costado derecho; solo cambia (se enfoca) al pasar de imagen */
+  .dk-tags {
+    position: absolute; z-index: 4; pointer-events: none; display: grid;
+    left: calc(50% + var(--ch) * 0.4 + clamp(24px, 3vw, 48px));
+    bottom: calc(50% - var(--ch) * 0.5 + var(--ch) * 0.06);
+  }
   .dk-tag {
-    position: absolute; left: calc(100% + clamp(18px, 2.4vw, 36px)); bottom: 7%;
-    display: flex; flex-direction: column; align-items: flex-start; gap: 6px; text-align: left;
-    pointer-events: none;
-    opacity: var(--tag, 0); filter: blur(calc((1 - var(--tag, 0)) * 7px));
+    grid-area: 1 / 1; margin: 0; display: flex; flex-direction: column; gap: 6px; text-align: left;
+    opacity: var(--on, 0); filter: blur(calc((1 - var(--on, 0)) * 8px));
   }
   .dk-tag .mono { font-size: 11px; letter-spacing: 0.08em; color: var(--ink-45); }
   .dk-tag b {
-    font-family: var(--serif); font-weight: 300; font-size: clamp(1.6rem, 3.4vw, 3.2rem);
+    font-family: var(--serif); font-weight: 300; font-size: clamp(1.6rem, 3.2vw, 3rem);
     line-height: 1; letter-spacing: -0.03em; color: var(--ink);
   }
 
@@ -81,18 +88,15 @@ const pad = (n: number) => String(n).padStart(2, '0');
   .dk-count { left: var(--pad); bottom: clamp(18px, 3.4vh, 34px); opacity: 0; }
   .dk-fig { right: var(--pad); bottom: clamp(18px, 3.4vh, 34px); color: var(--ink-45); opacity: 0; }
 
-  @media (max-width: 900px) {
-    /* pantallas angostas: el nombre va arriba de la imagen, a la izquierda */
-    .dk-tag { right: auto; left: 0; bottom: calc(100% + 14px); align-items: flex-start; text-align: left; flex-direction: row; gap: 10px; align-items: baseline; }
-    .dk-tag b { font-size: clamp(1.3rem, 5vw, 2rem); }
-  }
+  /* pantallas angostas: sin nombre, queda limpio */
+  @media (max-width: 900px) { .dk-tags { display: none; } }
   /* sin movimiento: las imágenes quedan en fila, normales */
   :global(html.deck-static) .deck { height: auto; }
   :global(html.deck-static) .dk-stage { position: static; height: auto; overflow: visible; display: grid; gap: 12px; padding-inline: var(--pad); }
   :global(html.deck-static) .dk-meta { display: none; }
   :global(html.deck-static) .dk-card { position: static; margin: 0; width: 100%; height: auto; aspect-ratio: auto; }
   :global(html.deck-static) .dk-img { height: auto; }
-  :global(html.deck-static) .dk-tag { position: static; opacity: 1; filter: none; flex-direction: row; align-items: baseline; text-align: left; margin-top: 10px; gap: 10px; }
+  :global(html.deck-static) .dk-tags { display: none; }
 </style>
 
 <script>
@@ -101,6 +105,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
   const cards = Array.from(document.querySelectorAll<HTMLElement>('[data-dk-card]'));
   const numEl = document.querySelector<HTMLElement>('[data-dk-num]');
   const metas = Array.from(document.querySelectorAll<HTMLElement>('.dk-meta'));
+  const tags = Array.from(document.querySelectorAll<HTMLElement>('[data-dk-tag]'));
 
   if (deck && stage && cards.length) {
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -130,18 +135,18 @@ const pad = (n: number) => String(n).padStart(2, '0');
     // q2 = imagen al frente (suavizada); sx, sy = puntero (-1..1); en = entrada de la sección (0..1)
     const render = (q2: number, sx: number, sy: number, en: number) => {
       const behind = Math.max(0, Math.min(4, N - 1 - q2));
-      const front = ch * 0.0425 * behind - H * 0.01;
+      const front = -ch * 0.0425 * behind - H * 0.01;
       for (let i = 0; i < N; i++) {
         const r = i - q2;
         const w = clamp01(1 - Math.abs(r) * 2.2);            // peso de la imagen que está al frente
         let X: number, Y: number, S: number, R: number, O: number, dim: number;
         if (r >= 0) {            // en la pila: más atrás = más chica, más arriba, más velada
-          X = -sx * r * 7; Y = front - r * ch * 0.13 - sy * r * 4;
+          X = -sx * r * 7; Y = front + r * ch * 0.13 - sy * r * 4;
           S = Math.max(0.5, 1 - 0.09 * r); R = 0;
           O = 1 - clamp01(r - 3.6); dim = Math.min(0.55, r * 0.13);
         } else {                 // saliendo: pasa por delante de cámara, alternando lado
           const t = -r, dir = i % 2 ? 1 : -1;
-          X = dir * t * W * 0.16; Y = front - t * H * 0.16; S = 1 + 0.55 * t; R = dir * t * 7;
+          X = dir * t * W * 0.16; Y = front - t * H * 0.2; S = 1 + 0.55 * t; R = dir * t * 7;
           O = 1 - clamp01((t - 0.12) / 0.5); dim = 0;
         }
         const s = S * mix(0.9, 1, en), o = O * en;
@@ -154,8 +159,8 @@ const pad = (n: number) => String(n).padStart(2, '0');
         el.style.opacity = o.toFixed(3);
         el.style.zIndex = String(50 - Math.round(r * 10));
         el.style.setProperty('--dim', dim.toFixed(3));
-        el.style.setProperty('--tag', (clamp01(1 - Math.abs(r) * 2.2) * en).toFixed(3));
       }
+      tags.forEach((t, i) => t.style.setProperty('--on', (clamp01(1 - Math.abs(i - q2) * 2.2) * en).toFixed(3)));
       metas.forEach((m) => { m.style.opacity = clamp01((en - 0.6) / 0.4).toFixed(3); });
       const n = Math.min(N, Math.round(q2) + 1);
       if (n !== lastNum && numEl) { lastNum = n; numEl.textContent = (n < 10 ? '0' : '') + n; }

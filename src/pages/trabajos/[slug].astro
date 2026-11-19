@@ -808,8 +808,8 @@ const navItems = blocks.filter((b) => b.t === 'h') as { t: 'h'; n: string; es: s
   /* ---------- entrada del contenido (mismo aire que la portada: se enfoca y sube suave) ---------- */
   @media (prefers-reduced-motion: no-preference) {
     /* textos: suben y se enfocan */
-    .case :is(.c-intro, .k-p, .k-sub, .k-note) { filter: blur(7px); }
-    .case :is(.c-intro, .k-p, .k-sub, .k-note).in { filter: none; }
+    .case :is(.c-intro, .k-p).rise { filter: blur(7px); }
+    .case :is(.c-intro, .k-p).rise.in { filter: none; }
     .case .rise {
       transform: translate3d(0, 34px, 0);
       transition: opacity 0.9s var(--ease-out), transform 1.15s var(--ease-out), filter 0.9s var(--ease-out);
@@ -977,7 +977,7 @@ const navItems = blocks.filter((b) => b.t === 'h') as { t: 'h'; n: string; es: s
   /* task flow: cajas con contorno, sin flechas */
   .lk-flow { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
   .lk-flow li { min-width: 0; }
-  .lk-sc { height: 100%; border: 1.5px solid var(--lk-coral, #ce6c3f); border-radius: 14px; background: transparent; padding: 18px 16px 22px; display: flex; flex-direction: column; gap: 16px; }
+  .lk-sc { height: 100%; border: 1.5px solid var(--lk-coral, #ce6c3f); border-radius: 14px; background: transparent; padding: 18px 16px 22px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 16px; }
   .lk-dia { width: 44px; height: 44px; display: grid; place-items: center; position: relative; }
   .lk-dia::before { content: ''; position: absolute; inset: 6px; background: var(--lk-coral, #ce6c3f); transform: rotate(45deg); border-radius: 6px; }
   .lk-dia b { position: relative; color: var(--lk-cream, #fff9ed); font-weight: 500; font-size: var(--t-xs); }

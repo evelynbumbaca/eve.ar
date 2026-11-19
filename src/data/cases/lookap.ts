@@ -64,7 +64,6 @@ export const lookap: CaseContent = {
       es: 'App en contexto',
       en: 'App in context',
       items: [
-        { src: `${P}/hero.jpg`, alt: 'Prendas sobre lino: suéter, jean y accesorios, con el celular apagado', word: { es: 'Prendas', en: 'Garments' } },
         { src: `${P}/ctx-armario.jpg`, alt: 'Lookap: pantalla de ingreso frente a un placard', word: { es: 'Ingreso', en: 'Sign in' } },
         { src: `${P}/ctx-flatlay.jpg`, alt: 'Lookap: combinación guardada junto a la ropa', word: { es: 'Looks', en: 'Looks' } },
         { src: `${P}/ctx-jean.jpg`, alt: 'Lookap: el armario digital sobre un jean', word: { es: 'Armario', en: 'Wardrobe' } },
