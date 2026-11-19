@@ -97,7 +97,10 @@ const navItems = blocks.filter((b) => b.t === 'h') as { t: 'h'; n: string; es: s
         {blocks.map((b) => {
           switch (b.t) {
             case 'h': return (
-              <h2 class="k-h rise" id={`s-${b.n}`}><span class="mono">{b.n}</span><span data-es={b.es} data-en={b.en}>{b.es}</span></h2>
+              <div class="k-hwrap">
+                <p class="k-ghost" aria-hidden="true" data-k-ghost data-es={b.es} data-en={b.en}>{b.es}</p>
+                <h2 class="k-h rise" id={`s-${b.n}`}><span class="mono">{b.n}</span><span data-es={b.es} data-en={b.en}>{b.es}</span></h2>
+              </div>
             );
             case 'p': return <p class="k-p rise"><span data-es={b.es} data-en={b.en}>{b.es}</span></p>;
             case 'note': return <p class="k-note mono"><span data-es={b.es} data-en={b.en}>{b.es}</span></p>;
@@ -534,6 +537,37 @@ const navItems = blocks.filter((b) => b.t === 'h') as { t: 'h'; n: string; es: s
     })();
   </script>
 
+  <script is:inline>
+    /* la luz del cursor descubre las palabras fantasma de cada sección (mismo lenguaje que la portada) */
+    (function () {
+      if (!matchMedia('(hover: hover) and (pointer: fine)').matches || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      var ghosts = Array.prototype.slice.call(document.querySelectorAll('[data-k-ghost]'));
+      if (!ghosts.length) return;
+      var px = -1e5, py = -1e5, bx = -1e5, by = -1e5, la = 0, raf = 0, last = 0;
+      function frame(now) {
+        var dt = Math.min(0.05, Math.max(0.001, (now - last) / 1000)); last = now;
+        var on = px > -9e4;
+        if (on && bx < -9e4) { bx = px; by = py; }
+        if (on) { var k = 1 - Math.exp(-9 * dt); bx += (px - bx) * k; by += (py - by) * k; }
+        la += ((on ? 1 : 0) - la) * (1 - Math.exp(-8 * dt));
+        var R = (300 * la).toFixed(1) + 'px';
+        ghosts.forEach(function (el) {
+          var r = el.getBoundingClientRect();
+          if (r.bottom < -50 || r.top > innerHeight + 50) return;
+          el.style.setProperty('--bx', (bx - r.left).toFixed(1) + 'px');
+          el.style.setProperty('--by', (by - r.top).toFixed(1) + 'px');
+          el.style.setProperty('--br', R);
+        });
+        var busy = (on && Math.hypot(px - bx, py - by) > 0.4) || Math.abs((on ? 1 : 0) - la) > 0.004;
+        raf = busy ? requestAnimationFrame(frame) : 0;
+      }
+      function kick() { if (!raf) { last = performance.now(); raf = requestAnimationFrame(frame); } }
+      addEventListener('pointermove', function (e) { px = e.clientX; py = e.clientY; kick(); }, { passive: true });
+      document.addEventListener('mouseleave', function () { px = py = -1e5; kick(); });
+      addEventListener('scroll', kick, { passive: true });
+    })();
+  </script>
+
   {K && (
     <script is:inline>
       (function () {
@@ -803,11 +837,26 @@ const navItems = blocks.filter((b) => b.t === 'h') as { t: 'h'; n: string; es: s
   .k-fig.lk-metrics { margin-top: clamp(24px, 4vh, 40px); }
 
   /* ---------- caso con contenido propio (bloques) ---------- */
+  .k-hwrap { position: relative; margin-top: clamp(120px, 21vh, 240px); }
   .k-h {
+    position: relative; z-index: 1;
     display: flex; align-items: baseline; gap: 18px;
     font-family: var(--serif); font-weight: 400; font-size: var(--t-h2);
     line-height: 1.1; letter-spacing: -0.02em;
-    margin-top: clamp(120px, 21vh, 240px); padding-top: 22px; border-top: 1px solid var(--ink);
+    padding-top: 22px; border-top: 1px solid var(--ink);
+  }
+  /* palabra gigante fantasma sobre cada título de sección: la luz del cursor la descubre */
+  .k-ghost { display: none; }
+  @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    .k-ghost {
+      display: block; position: absolute; left: 0; bottom: 100%; margin: 0 0 -0.3em; z-index: 0;
+      width: max-content; white-space: nowrap; pointer-events: none;
+      font-family: var(--serif); font-weight: 300; font-size: clamp(5rem, 15vw, 14rem); line-height: 1; letter-spacing: -0.045em;
+      --bx: -9999px; --by: -9999px; --br: 0px; --ghost: rgba(22, 21, 15, 0.045);
+      color: var(--ghost);
+      background-image: radial-gradient(circle var(--br) at var(--bx) var(--by), #fffdf9 0%, rgba(250, 246, 240, 0.92) 40%, var(--ghost) 100%);
+      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    }
   }
   .k-h .mono { font-size: var(--t-xs); letter-spacing: 0.08em; color: var(--ink-60); }
   .k-p {
