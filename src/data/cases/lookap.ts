@@ -111,6 +111,7 @@ export const lookap: CaseContent = {
     },
     {
       t: 'features',
+      lead: { es: 'Lo que debe tener la app', en: 'What the app should have' },
       title: { es: 'Funcionalidades', en: 'Features' },
       items: [
         { es: 'Sacar fotos a las prendas y hacer combinaciones', en: 'Photograph garments and build combinations' },
