@@ -309,6 +309,8 @@ export const lookap: CaseContent = {
         ],
       },
     },
+    { t: 'break', kind: 'img', src: `${P}/mockup-flatlay.jpg`, alt: 'Lookap en el celular sobre lino, junto a un suéter, una camisa y un jean' },
+
     /* ---------- 05 · Prototipo ---------- */
     { t: 'h', n: '05', es: 'Prototipo', en: 'Prototype' },
     {

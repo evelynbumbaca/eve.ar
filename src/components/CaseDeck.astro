@@ -15,12 +15,13 @@ const pad = (n: number) => String(n).padStart(2, '0');
 
 <section class="deck" data-deck style={`--n:${items.length}`} aria-label={title.es}>
   <div class="dk-stage" data-dk-stage>
-    <div class="dk-bigs" aria-hidden="true">
-      {items.map((it) => <p class="dk-big" data-dk-big data-es={it.word.es} data-en={it.word.en}>{it.word.es}</p>)}
-    </div>
-    {items.map((it) => (
+    {items.map((it, i) => (
       <figure class="dk-card" data-dk-card>
-        <img src={link(`/${it.src}`)} alt={it.alt} loading="lazy" decoding="async" />
+        <span class="dk-img"><img src={link(`/${it.src}`)} alt={it.alt} loading="lazy" decoding="async" /></span>
+        <figcaption class="dk-tag">
+          <span class="mono">{pad(i + 1)}</span>
+          <b data-es={it.word.es} data-en={it.word.en}>{it.word.es}</b>
+        </figcaption>
       </figure>
     ))}
     <p class="dk-meta dk-count mono">
@@ -41,26 +42,35 @@ const pad = (n: number) => String(n).padStart(2, '0');
   }
   .dk-stage { position: sticky; top: 0; height: 100svh; overflow: hidden; }
 
-  .dk-bigs { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
-  .dk-big {
-    position: absolute; left: 50%; top: 50%; margin: 0; width: max-content; white-space: nowrap;
-    font-family: var(--serif); font-weight: 300; font-size: clamp(5rem, 15vw, 15rem); line-height: 1;
-    letter-spacing: -0.045em; color: var(--ink); opacity: 0; will-change: transform, opacity;
-  }
-
   .dk-card {
     position: absolute; left: 50%; top: 50%; margin: 0;
     height: var(--ch); aspect-ratio: 4 / 5;
     margin-top: calc(var(--ch) * -0.5); margin-left: calc(var(--ch) * -0.4);
-    overflow: hidden; border-radius: 4px; background: #e9e4d9;
-    box-shadow: 0 1px 2px rgba(22, 21, 15, 0.14), 0 22px 50px -16px rgba(22, 21, 15, 0.4);
     will-change: transform, opacity;
   }
-  .dk-card img {
+  .dk-img {
+    position: relative; display: block; width: 100%; height: 100%;
+    overflow: hidden; border-radius: 4px; background: #e9e4d9;
+    box-shadow: 0 1px 2px rgba(22, 21, 15, 0.14), 0 22px 50px -16px rgba(22, 21, 15, 0.4);
+  }
+  .dk-img img {
     display: block; width: 100%; height: 100%; object-fit: cover;
     transform: translate3d(var(--ix, 0px), var(--iy, 0px), 0) scale(var(--is, 1.08)); will-change: transform;
   }
-  .dk-card::after { content: ''; position: absolute; inset: 0; background: var(--paper); opacity: var(--dim, 0); pointer-events: none; }
+  .dk-img::after { content: ''; position: absolute; inset: 0; background: var(--paper); opacity: var(--dim, 0); pointer-events: none; }
+
+  /* nombre de la imagen: va adelante, al costado, y viaja con ella (misma entrada y salida) */
+  .dk-tag {
+    position: absolute; right: calc(100% + clamp(18px, 2.4vw, 36px)); bottom: 7%;
+    display: flex; flex-direction: column; align-items: flex-end; gap: 6px; text-align: right;
+    pointer-events: none;
+    opacity: var(--tag, 0); filter: blur(calc((1 - var(--tag, 0)) * 7px));
+  }
+  .dk-tag .mono { font-size: 11px; letter-spacing: 0.08em; color: var(--ink-45); }
+  .dk-tag b {
+    font-family: var(--serif); font-weight: 300; font-size: clamp(1.6rem, 3.4vw, 3.2rem);
+    line-height: 1; letter-spacing: -0.03em; color: var(--ink);
+  }
 
   .dk-meta {
     position: absolute; z-index: 5; margin: 0; pointer-events: none;
@@ -71,21 +81,24 @@ const pad = (n: number) => String(n).padStart(2, '0');
   .dk-count { left: var(--pad); bottom: clamp(18px, 3.4vh, 34px); opacity: 0; }
   .dk-fig { right: var(--pad); bottom: clamp(18px, 3.4vh, 34px); color: var(--ink-45); opacity: 0; }
 
-  @media (max-width: 680px) {
-    .deck { --ch: 62svh; }
+  @media (max-width: 900px) {
+    /* pantallas angostas: el nombre va arriba de la imagen, a la izquierda */
+    .dk-tag { right: auto; left: 0; bottom: calc(100% + 14px); align-items: flex-start; text-align: left; flex-direction: row; gap: 10px; align-items: baseline; }
+    .dk-tag b { font-size: clamp(1.3rem, 5vw, 2rem); }
   }
   /* sin movimiento: las imágenes quedan en fila, normales */
   :global(html.deck-static) .deck { height: auto; }
   :global(html.deck-static) .dk-stage { position: static; height: auto; overflow: visible; display: grid; gap: 12px; padding-inline: var(--pad); }
-  :global(html.deck-static) .dk-bigs, :global(html.deck-static) .dk-meta { display: none; }
-  :global(html.deck-static) .dk-card { position: static; margin: 0; width: 100%; height: auto; }
+  :global(html.deck-static) .dk-meta { display: none; }
+  :global(html.deck-static) .dk-card { position: static; margin: 0; width: 100%; height: auto; aspect-ratio: auto; }
+  :global(html.deck-static) .dk-img { height: auto; }
+  :global(html.deck-static) .dk-tag { position: static; opacity: 1; filter: none; flex-direction: row; align-items: baseline; text-align: left; margin-top: 10px; gap: 10px; }
 </style>
 
 <script>
   const deck = document.querySelector<HTMLElement>('[data-deck]');
   const stage = document.querySelector<HTMLElement>('[data-dk-stage]');
   const cards = Array.from(document.querySelectorAll<HTMLElement>('[data-dk-card]'));
-  const bigs = Array.from(document.querySelectorAll<HTMLElement>('[data-dk-big]'));
   const numEl = document.querySelector<HTMLElement>('[data-dk-num]');
   const metas = Array.from(document.querySelectorAll<HTMLElement>('.dk-meta'));
 
@@ -102,14 +115,8 @@ const pad = (n: number) => String(n).padStart(2, '0');
 
     const measure = () => {
       W = stage.clientWidth; H = stage.clientHeight;
-      ch = Math.min(H * 0.7, (W * 0.84) * 5 / 4);
+      ch = Math.min(H * 0.8, (W * 0.86) * 5 / 4);
       deck.style.setProperty('--ch', ch.toFixed(1) + 'px');
-      // cada palabra se ajusta para ocupar todo el ancho (asoma siempre a los costados de la imagen)
-      bigs.forEach((el) => {
-        el.style.fontSize = '100px';
-        const w100 = el.offsetWidth || 1;
-        el.style.fontSize = Math.min((W * 1.02 / w100) * 100, H * 0.5).toFixed(1) + 'px';
-      });
     };
 
     const top = () => deck.getBoundingClientRect().top + scrollY;
@@ -147,12 +154,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
         el.style.opacity = o.toFixed(3);
         el.style.zIndex = String(50 - Math.round(r * 10));
         el.style.setProperty('--dim', dim.toFixed(3));
-      }
-      // palabras gigantes: entran de un lado, cruzan por detrás de la imagen y salen por el otro
-      for (let i = 0; i < N; i++) {
-        const r = i - q2, a = Math.abs(r), el = bigs[i];
-        el.style.opacity = (clamp01(1 - a * 1.15) * 0.92 * en).toFixed(3);
-        el.style.transform = `translate(calc(-50% + ${(r * W * 0.62 - sx * 24).toFixed(1)}px), -50%)`;
+        el.style.setProperty('--tag', (clamp01(1 - Math.abs(r) * 2.2) * en).toFixed(3));
       }
       metas.forEach((m) => { m.style.opacity = clamp01((en - 0.6) / 0.4).toFixed(3); });
       const n = Math.min(N, Math.round(q2) + 1);
@@ -286,8 +288,6 @@ const pad = (n: number) => String(n).padStart(2, '0');
       let rt = 0;
       addEventListener('resize', () => { clearTimeout(rt); rt = window.setTimeout(() => { measure(); kick(); }, 120); }, { passive: true });
       document.addEventListener('visibilitychange', () => { if (document.hidden) { cancelAnimationFrame(raf); running = false; } else kick(); });
-      // al cambiar de idioma, las palabras vuelven a ajustarse al ancho
-      new MutationObserver(() => { measure(); kick(); }).observe(document.documentElement, { attributes: true, attributeFilter: ['lang'] });
       addEventListener('load', () => { measure(); kick(); }, { once: true });
       measure(); qd = cardTarget(scrollU()); ed = enterTarget(scrollU());
       render(qd, 0, 0, ed); kick();
