@@ -29,7 +29,7 @@
      · Spline Sans Mono -> meta, fechas, tags, numeracion ("pienso en sistemas") */
   --serif: 'Spectral', Georgia, 'Times New Roman', serif;
   --sans: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  --mono: 'Spline Sans Mono', 'SFMono-Regular', ui-monospace, 'SF Mono', 'Menlo', monospace;
+  --mono: 'Spline Sans Mono', 'Courier New', Courier, monospace;
 
   /* escala tipografica fluida */
   --fs-display: clamp(3.2rem, 11vw, 11rem);

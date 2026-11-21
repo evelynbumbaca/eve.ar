@@ -271,7 +271,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     const measure = () => {
       W = stage.clientWidth; H = stage.clientHeight;
       // tarjetas verticales (4:5): el alto manda, y nunca más anchas que la pantalla
-      ch = Math.min(H * 0.72, W * 0.86 * 5 / 4);
+      ch = Math.min(H * 0.72, W * 0.86 * 5 / 4, 620);
       const cw = ch * 0.8;
       intro.style.setProperty('--cw', cw.toFixed(1) + 'px');
       // cada título se ajusta para ocupar todo el ancho (asoma siempre a los costados de la tarjeta)
@@ -316,9 +316,14 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
           X = dir * t * W * 0.16; Y = front - t * H * 0.16; S = 1 + 0.55 * t; R = dir * t * 7;
           O = 1 - clamp01((t - 0.12) / 0.5); dim = 0; cap = 1 - clamp01(t * 2.4);
         }
-        const x = mix(L.fx * W - sx * L.depth * 30, X, g);
-        const y = mix(L.fy * H - sy * L.depth * 30, Y, g);
-        const s = mix(L.s * 1.15, S, g), rot = mix(L.rot, R, g), o = mix(1, O, g);
+        // escena suelta: tamaño según el ancho y dentro de una zona segura (sin pisar el logo ni el menú de arriba)
+        const ls = L.s * 1.15 * Math.min(1, Math.max(W * 0.55, 300) / ch, H * 0.62 / ch);
+        const hh = ls * ch / 2, hw = hh * 0.8, SAFE_TOP = 100, SAFE_BOT = 64, PAR = 34;
+        const lx = Math.max(-W / 2 + hw + 12 + PAR, Math.min(W / 2 - hw - 12 - PAR, L.fx * W));
+        const ly = Math.max(-H / 2 + SAFE_TOP + hh + PAR, Math.min(H / 2 - SAFE_BOT - hh - PAR, L.fy * H));
+        const x = mix(lx - sx * L.depth * 30, X, g);
+        const y = mix(ly - sy * L.depth * 30, Y, g);
+        const s = mix(ls, S, g), rot = mix(L.rot, R, g), o = mix(1, O, g);
         const el = cards[i];
         const tx = sy * -7 * w * g, ty = sx * 9 * w * g;       // inclinación 3D con el cursor
         el.style.transform = `translate3d(${x.toFixed(1)}px,${y.toFixed(1)}px,0) perspective(1200px) rotateX(${tx.toFixed(2)}deg) rotateY(${ty.toFixed(2)}deg) rotate(${rot.toFixed(2)}deg) scale(${s.toFixed(4)})`;
