@@ -53,7 +53,8 @@ const items = [
       <span class="ts-bigmark" aria-hidden="true">“</span>
       <div class="ts-slides">
         {items.map((t, i) => (
-          <figure class:list={['ts-slide', { 'is-on': i === 0 }]} data-ts-slide>
+          <figure class:list={['ts-slide', { 'is-on': i === 0 }]} data-ts-slide style={`--i:${i}`}>
+            <span class="ts-n mono" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
             <blockquote class="ts-quote">
               <span data-es={`“${t.quote.es}”`} data-en={`“${t.quote.en}”`}>“{t.quote.es}”</span>
             </blockquote>
@@ -112,7 +113,7 @@ const items = [
     font-family: var(--serif); font-weight: 300; font-size: clamp(10rem, 24vw, 22rem); line-height: 1; color: var(--ink-06);
   }
   .ts-slides { position: relative; display: grid; min-height: clamp(260px, 38vh, 420px); align-items: start; }
-  .ts-slide { grid-area: 1 / 1; margin: 0; display: flex; flex-direction: column; gap: clamp(20px, 3.4vh, 36px); visibility: hidden; opacity: 0; }
+  .ts-slide { --d: 0s; grid-area: 1 / 1; margin: 0; display: flex; flex-direction: column; gap: clamp(20px, 3.4vh, 36px); visibility: hidden; opacity: 0; }
   .ts-slide.is-on { visibility: visible; opacity: 1; }
   .ts-quote {
     position: relative; max-width: 30ch;
@@ -135,6 +136,24 @@ const items = [
   }
   .ts-btn:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
 
+
+  /* ---------- compu: las 3 reseñas a la vez, en filas grandes ---------- */
+  .ts-n { display: none; }
+  @media (min-width: 861px) {
+    .ts-slide { --d: calc(var(--i) * 0.2s); }
+    .ts-slides { display: flex; flex-direction: column; min-height: 0; border-top: 1px solid var(--ink); }
+    .ts-slide {
+      display: grid; grid-template-columns: clamp(34px, 4vw, 64px) minmax(0, 1fr) minmax(190px, 0.42fr);
+      gap: 0 clamp(16px, 3vw, 48px); align-items: start;
+      padding-block: clamp(22px, 4.4vh, 44px); border-bottom: 1px solid var(--line);
+    }
+    .ts-n { display: block; color: var(--ink-35); padding-top: 0.7em; }
+    .ts-quote { max-width: 34ch; font-size: clamp(1.4rem, 2.6vw, 2.3rem); line-height: 1.16; }
+    .ts-who { flex-direction: column; align-items: flex-start; gap: 10px; padding-top: 0.5em; }
+    .ts-nav { display: none; }
+    .ts-bigmark { display: none; }
+  }
+
   /* ---------- cierre con CTA ---------- */
   .ts-cta {
     margin-top: clamp(40px, 7vh, 72px); text-align: left;
@@ -153,8 +172,8 @@ const items = [
     .ts-slide .ts-quote { transform: translateY(26px); filter: blur(10px); transition: transform 1s var(--ease-out), filter 0.8s var(--ease-out); }
     .ts-slide .ts-who { opacity: 0; transform: translateY(14px); transition: opacity 0.7s var(--ease-out), transform 0.9s var(--ease-out); }
     .ts-slide.is-on { transition: opacity 0.6s var(--ease-out) 0.1s, visibility 0s; }
-    .ts-slide.is-on .ts-quote { transform: none; filter: none; transition-delay: 0.1s; }
-    .ts-slide.is-on .ts-who { opacity: 1; transform: none; transition-delay: 0.45s; }
+    .ts-slide.is-on .ts-quote { transform: none; filter: none; transition-delay: calc(0.1s + var(--d)); }
+    .ts-slide.is-on .ts-who { opacity: 1; transform: none; transition-delay: calc(0.45s + var(--d)); }
     .ts-slide.is-out .ts-quote { transform: translateY(-22px); filter: blur(8px); }
 
     /* estrellas: se encienden de a una cuando la frase aparece */
@@ -162,7 +181,7 @@ const items = [
     .ts-slide.is-on .ts-stars i {
       color: var(--orange); transform: none;
       transition: color 0.3s var(--ease-quint), transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-      transition-delay: calc(0.55s + var(--s) * 90ms);
+      transition-delay: calc(0.55s + var(--d) + var(--s) * 90ms);
     }
     .ts-score.in .ts-stars i { color: var(--orange); transform: none; transition: color 0.3s var(--ease-quint), transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); transition-delay: calc(0.35s + var(--s) * 110ms); }
     .ts-stars i:nth-child(1) { --s: 0; } .ts-stars i:nth-child(2) { --s: 1; } .ts-stars i:nth-child(3) { --s: 2; }
@@ -207,34 +226,45 @@ const items = [
     score?.classList.add('in'); cta?.classList.add('in');
   }
 
-  /* ---------- una frase por vez: cambia sola, se frena con el mouse, nav propia ---------- */
+  /* ---------- compu: las 3 se muestran juntas (aparecen escalonadas al entrar) · celu: una por vez, rota sola ---------- */
   const stage = document.querySelector<HTMLElement>('[data-ts]');
   const slides = Array.from(document.querySelectorAll<HTMLElement>('[data-ts-slide]'));
   const numEl = document.querySelector<HTMLElement>('[data-ts-num]');
   const bar = document.querySelector<HTMLElement>('[data-ts-bar]');
   if (stage && slides.length) {
-    const N = slides.length, DUR = 7;            // segundos por frase
-    let cur = 0, elapsed = 0, hovering = false, visible = false, raf = 0, last = 0, out = -1, outT = 0;
+    const mq = matchMedia('(min-width: 861px)');
+    const N = slides.length, DUR = 7;
+    let cur = 0, elapsed = 0, hovering = false, visible = false, raf = 0, last = 0, outT = 0;
+    const setAll = (on: boolean) => slides.forEach((el) => { el.classList.toggle('is-on', on); el.classList.remove('is-out'); });
     const show = (i: number) => {
       const prev = cur; cur = (i + N) % N; elapsed = 0;
       slides.forEach((el, k) => {
         el.classList.toggle('is-on', k === cur);
         el.classList.toggle('is-out', k === prev && k !== cur);
       });
-      clearTimeout(outT); out = prev; outT = window.setTimeout(() => slides[out]?.classList.remove('is-out'), 900);
+      clearTimeout(outT); outT = window.setTimeout(() => slides[prev]?.classList.remove('is-out'), 900);
       if (numEl) numEl.textContent = String(cur + 1).padStart(2, '0');
       bar?.style.setProperty('--p', '0');
     };
+    const applyMode = () => {
+      if (mq.matches) setAll(reduce || visible);        // compu: todas
+      else { setAll(false); slides[cur].classList.add('is-on'); }   // celu: la actual
+    };
     const frame = (now: number) => {
       const dt = Math.min(0.1, (now - last) / 1000); last = now;
-      if (!hovering && visible && !reduce) {
+      if (!mq.matches && !hovering && visible && !reduce) {
         elapsed += dt;
         bar?.style.setProperty('--p', Math.min(1, elapsed / DUR).toFixed(4));
         if (elapsed >= DUR) show(cur + 1);
       }
       raf = requestAnimationFrame(frame);
     };
-    new IntersectionObserver((es) => es.forEach((e) => { visible = e.isIntersecting; }), { threshold: 0.3 }).observe(stage);
+    new IntersectionObserver((es) => es.forEach((e) => {
+      visible = e.isIntersecting;
+      if (mq.matches && !reduce) setAll(visible);       // en compu entran al aparecer y se rearman al salir
+    }), { threshold: 0.2 }).observe(stage);
+    mq.addEventListener('change', applyMode);
+    applyMode();
     stage.addEventListener('pointerenter', () => { hovering = true; });
     stage.addEventListener('pointerleave', () => { hovering = false; });
     stage.addEventListener('focusin', () => { hovering = true; });
@@ -244,6 +274,7 @@ const items = [
     let x0 = 0;
     stage.addEventListener('touchstart', (e) => { x0 = e.touches[0].clientX; }, { passive: true });
     stage.addEventListener('touchend', (e) => {
+      if (mq.matches) return;
       const dx = e.changedTouches[0].clientX - x0;
       if (Math.abs(dx) > 40) show(cur + (dx < 0 ? 1 : -1));
     }, { passive: true });
