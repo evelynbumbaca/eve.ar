@@ -95,36 +95,17 @@ export const magnolia: CaseContent = {
     { t: 'h', n: '02', es: 'Aplicaciones', en: 'Applications' },
     {
       t: 'p',
-      es: 'La papelería pone el contacto al frente: la tarjeta lleva un QR que abre directo el chat de WhatsApp para pedir presupuesto. El sistema sigue en remeras, objetos y en el perfil de Instagram, con destacados y publicaciones en la misma paleta.',
-      en: 'The stationery puts contact first: the business card carries a QR code that opens the WhatsApp chat directly to ask for a quote. The system carries on to t-shirts, objects and the Instagram profile, with highlights and posts in the same palette.',
+      es: 'La papelería pone el contacto al frente: la tarjeta lleva un QR que abre directo el chat de WhatsApp para pedir presupuesto. El sistema sigue en remeras, objetos y piezas impresas como el flyer.',
+      en: 'The stationery puts contact first: the business card carries a QR code that opens the WhatsApp chat directly to ask for a quote. The system carries on to t-shirts, objects and printed pieces like the flyer.',
     },
     {
-      t: 'deck',
-      es: 'Magnolia en uso',
-      en: 'Magnolia in use',
+      t: 'gallery',
+      es: 'Remera, taza y flyer',
+      en: 'T-shirt, mug and flyer',
       items: [
-        { src: `${P}/remera.jpg`, alt: 'Remera negra con el logo de Magnolia en crema, en un patio con muebles de madera', word: { es: 'Indumentaria', en: 'Apparel' } },
-        { src: `${P}/taza.jpg`, alt: 'Taza enlozada blanca con el logo de Magnolia en negro', word: { es: 'Objetos', en: 'Objects' } },
-        { src: `${P}/instagram.jpg`, alt: 'Perfil de Instagram de Magnolia en un celular, con destacados en terracota', word: { es: 'Redes', en: 'Social' } },
-      ],
-    },
-
-    /* ---------- 03 · Flyer 2026 ---------- */
-    { t: 'h', n: '03', es: 'Rediseño del flyer', en: 'Flyer redesign', nav: { es: 'Flyer 2026', en: 'Flyer 2026' } },
-    {
-      t: 'p',
-      es: 'El flyer original acumulaba fotos, textos inclinados y elementos ajenos a la marca. En 2026 lo rediseñé desde el sistema de identidad: un titular dominante, los servicios ordenados y un único llamado a la acción.',
-      en: 'The original flyer piled up photos, tilted text and elements foreign to the brand. In 2026 I redesigned it from the identity system: one dominant headline, services in order and a single call to action.',
-    },
-    { t: 'fig', src: `${P}/flyer-mockup.jpg`, es: 'El flyer nuevo, en mano', en: 'The new flyer, in hand' },
-    {
-      t: 'list',
-      title: { es: 'Qué cambió', en: 'What changed' },
-      items: [
-        { es: 'Un solo mensaje dominante en lugar de ocho fotos de calidad despareja.', en: 'One dominant message instead of eight uneven photos.' },
-        { es: 'Jerarquía clara: titular, servicios y contacto, sin textos inclinados.', en: 'Clear hierarchy: headline, services and contact, no tilted text.' },
-        { es: 'Tipografía, color y símbolo de la identidad en cada elemento.', en: 'The identity’s type, color and symbol in every element.' },
-        { es: 'Presupuesto sin cargo por WhatsApp como único llamado a la acción, con QR.', en: 'A free quote via WhatsApp as the single call to action, with a QR code.' },
+        { src: `${P}/remera.jpg`, alt: 'Remera negra con el logo de Magnolia en crema, en un patio con muebles de madera' },
+        { src: `${P}/taza.jpg`, alt: 'Taza enlozada blanca con el logo de Magnolia en negro' },
+        { src: `${P}/flyer-mockup.jpg`, alt: 'Flyer A5 de Magnolia sostenido en la mano sobre el pasto' },
       ],
     },
 
