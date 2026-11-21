@@ -397,7 +397,7 @@ const wa = (p: { fullName: string }) => `${site.whatsapp}?text=${encodeURICompon
 
   .pk-time { color: var(--ink-45); margin-bottom: clamp(18px, 3vh, 28px); }
 
-  .pk-ctas { margin-top: auto; display: flex; justify-content: center; position: relative; z-index: 6; }
+  .pk-ctas { margin-top: auto; display: flex; justify-content: flex-start; position: relative; z-index: 6; }
   .pk-wa {
     display: inline-flex; align-items: center; justify-content: center; gap: 9px;
     padding: 12px 34px;
@@ -415,7 +415,7 @@ const wa = (p: { fullName: string }) => `${site.whatsapp}?text=${encodeURICompon
 
   .pk-audit {
     margin-top: clamp(24px, 4vh, 40px);
-    text-align: center;
+    text-align: left;
     color: var(--ink-45);
     font-size: 11px;
     letter-spacing: 0.08em;
@@ -424,7 +424,7 @@ const wa = (p: { fullName: string }) => `${site.whatsapp}?text=${encodeURICompon
 
   .pk-custom {
     margin-top: clamp(40px, 7vh, 72px);
-    text-align: center;
+    text-align: left;
   }
   .pkc-q {
     font-family: var(--serif);
