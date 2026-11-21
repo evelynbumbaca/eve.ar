@@ -127,8 +127,8 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
   /* ---------- tarjetas ---------- */
   .card {
-    position: absolute; left: 50%; top: 50%; width: var(--cw); aspect-ratio: 4 / 3;
-    margin: calc(var(--cw) * -0.375) 0 0 calc(var(--cw) * -0.5);
+    position: absolute; left: 50%; top: 50%; width: var(--cw); aspect-ratio: 4 / 5;
+    margin: calc(var(--cw) * -0.625) 0 0 calc(var(--cw) * -0.5);
     display: block; overflow: hidden; border-radius: 4px; color: #fff; background: #e9e4d9;
     will-change: transform, opacity;
     box-shadow: 0 1px 2px rgba(22, 21, 15, 0.14), 0 22px 50px -16px rgba(22, 21, 15, 0.4);
@@ -270,9 +270,10 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
     const measure = () => {
       W = stage.clientWidth; H = stage.clientHeight;
-      const cw = Math.min(W * 0.88, 860, H * 0.6 * 4 / 3);
+      // tarjetas verticales (4:5): el alto manda, y nunca más anchas que la pantalla
+      ch = Math.min(H * 0.72, W * 0.86 * 5 / 4);
+      const cw = ch * 0.8;
       intro.style.setProperty('--cw', cw.toFixed(1) + 'px');
-      ch = cw * 0.75;
       // cada título se ajusta para ocupar todo el ancho (asoma siempre a los costados de la tarjeta)
       bigs.forEach((el) => {
         el.style.fontSize = '100px';
@@ -317,7 +318,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         }
         const x = mix(L.fx * W - sx * L.depth * 30, X, g);
         const y = mix(L.fy * H - sy * L.depth * 30, Y, g);
-        const s = mix(L.s, S, g), rot = mix(L.rot, R, g), o = mix(1, O, g);
+        const s = mix(L.s * 1.15, S, g), rot = mix(L.rot, R, g), o = mix(1, O, g);
         const el = cards[i];
         const tx = sy * -7 * w * g, ty = sx * 9 * w * g;       // inclinación 3D con el cursor
         el.style.transform = `translate3d(${x.toFixed(1)}px,${y.toFixed(1)}px,0) perspective(1200px) rotateX(${tx.toFixed(2)}deg) rotateY(${ty.toFixed(2)}deg) rotate(${rot.toFixed(2)}deg) scale(${s.toFixed(4)})`;
