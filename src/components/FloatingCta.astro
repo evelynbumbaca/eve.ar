@@ -1,0 +1,105 @@
+---
+/* ============================================================
+   FloatingCta — invitación flotante, abajo y casi fantasma.
+   Aparece cuando terminás de ver la lista de casos de estudio, te acompaña
+   y se va al llegar al contacto. Si la cerrás, no vuelve en esa visita.
+   ============================================================ */
+import { site } from '../data/site';
+import T from './T.astro';
+
+const wa = `${site.whatsapp}?text=${encodeURIComponent('Hola Eve! Quiero arrancar un proyecto.')}`;
+---
+
+<aside class="fcta" data-fcta aria-label="Invitación a contratar">
+  <p class="fc-q"><T es="¿Arrancamos tu proyecto?" en="Shall we start your project?" /></p>
+  <a class="fc-packs mono" href="#packs" data-fc-packs><T es="Ver packs" en="See packs" /></a>
+  <a class="fc-btn" href={wa} target="_blank" rel="noopener noreferrer" data-glow-dock>
+    <T es="Escribime" en="Write me" /> <span aria-hidden="true">↗</span>
+  </a>
+  <button class="fc-x" type="button" aria-label="Cerrar · Close" data-fc-close>✕</button>
+</aside>
+
+<style>
+  .fcta {
+    position: fixed; z-index: 40; left: 50%; bottom: clamp(14px, 3vh, 28px);
+    display: flex; align-items: center; gap: 6px clamp(12px, 1.8vw, 22px);
+    padding: 8px 10px 8px clamp(18px, 2vw, 26px);
+    border-radius: 999px; border: 1px solid var(--ink-12);
+    background: color-mix(in srgb, var(--paper) 58%, transparent);
+    -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+    box-shadow: 0 10px 34px -18px rgba(22, 21, 15, 0.35);
+    opacity: 0; visibility: hidden; pointer-events: none;
+    transform: translate(-50%, 0);
+    transition: opacity 0.6s var(--ease-out), background 0.4s var(--ease-quint), transform 0.8s var(--ease-out), visibility 0s 0.6s;
+  }
+  .fcta.show { opacity: 0.55; visibility: visible; pointer-events: auto; transition-delay: 0s; }
+  .fcta.show:hover, .fcta.show:focus-within { opacity: 1; background: color-mix(in srgb, var(--paper) 90%, transparent); }
+  /* un instante antes de aparecer */
+  .fcta:not(.show) { transform: translate(-50%, 22px); }
+
+  .fc-q { font-family: var(--serif); font-weight: 300; font-size: clamp(1rem, 1.3vw, 1.2rem); letter-spacing: -0.01em; color: var(--ink); white-space: nowrap; }
+  .fc-packs { color: var(--ink-60); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; border-bottom: 1px solid var(--ink-18); padding-bottom: 1px; transition: color var(--dur-micro) var(--ease-quint); }
+  .fc-packs:hover { color: var(--ink); border-color: var(--ink); }
+  .fcta.no-packs .fc-packs { display: none; }
+  .fc-btn {
+    display: inline-flex; align-items: center; gap: 8px; padding: 10px 22px; border-radius: 999px;
+    background: var(--ink); color: var(--paper); font-family: var(--sans); font-size: 13px; letter-spacing: 0.04em; text-transform: uppercase;
+    transition: background var(--dur-micro) var(--ease-quint);
+  }
+  .fc-btn:hover { background: var(--orange); }
+  .fc-x { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; color: var(--ink-45); font-size: 11px; transition: color var(--dur-micro) var(--ease-quint), background var(--dur-micro) var(--ease-quint); }
+  .fc-x:hover { color: var(--ink); background: var(--ink-06); }
+
+  /* con el menú abierto se esconde */
+  :global(body.menu-open) .fcta { opacity: 0 !important; pointer-events: none; }
+
+  @media (max-width: 680px) {
+    .fc-q, .fc-packs { display: none; }
+    .fcta { padding: 6px 6px 6px 8px; gap: 4px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .fcta, .fcta:not(.show) { transition: opacity 0.2s ease, visibility 0s; transform: translate(-50%, 0); }
+  }
+</style>
+
+<script>
+  const el = document.querySelector<HTMLElement>('[data-fcta]');
+  const foot = document.querySelector<HTMLElement>('[data-foot]');
+  const packs = document.querySelector<HTMLElement>('#packs');
+  const contact = document.querySelector<HTMLElement>('#contacto');
+  const KEY = 'eve-cta-closed';
+  let closed = false;
+  try { closed = sessionStorage.getItem(KEY) === '1'; } catch (e) { /* sin storage: se muestra normal */ }
+
+  if (el && foot && contact && !closed) {
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const vh = innerHeight;
+      const reached = foot.getBoundingClientRect().top < vh * 0.85;      // terminó la lista de casos
+      const atContact = contact.getBoundingClientRect().top < vh * 0.7;  // ya está el formulario
+      const pastPacks = !!packs && packs.getBoundingClientRect().top < vh * 0.5;
+      el.classList.toggle('show', reached && !atContact);
+      el.classList.toggle('no-packs', pastPacks);
+    };
+    const queue = () => { if (!raf) raf = requestAnimationFrame(update); };
+    addEventListener('scroll', queue, { passive: true });
+    addEventListener('resize', queue, { passive: true });
+    update();
+
+    el.querySelector('[data-fc-close]')?.addEventListener('click', () => {
+      el.classList.remove('show');
+      try { sessionStorage.setItem(KEY, '1'); } catch (e) { /* nada */ }
+      removeEventListener('scroll', queue);
+      removeEventListener('resize', queue);
+    });
+    el.querySelector('[data-fc-packs]')?.addEventListener('click', (e) => {
+      if (!packs) return;
+      e.preventDefault();
+      const smooth = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+      scrollTo({ top: Math.round(packs.getBoundingClientRect().top + scrollY - 60), behavior: smooth ? 'smooth' : 'auto' });
+    });
+  } else if (el) {
+    el.remove();
+  }
+</script>
