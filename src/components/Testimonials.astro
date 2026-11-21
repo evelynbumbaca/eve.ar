@@ -102,9 +102,9 @@ const items = [
   .ts-score { display: inline-flex; align-items: center; gap: 18px; }
   .ts-num { font-family: var(--serif); font-weight: 300; font-size: clamp(3rem, 6vw, 5rem); line-height: 0.9; letter-spacing: -0.03em; }
   .ts-score-right { display: grid; gap: 7px; }
-  .ts-stars { color: var(--orange); font-size: 13px; letter-spacing: 5px; line-height: 1; }
+  .ts-stars { display: inline-flex; gap: 5px; color: var(--orange); font-size: 13px; letter-spacing: 0; line-height: 1; }
   .ts-stars i, .ts-stars.big i { font-style: normal; display: inline-block; }
-  .ts-stars.big { font-size: clamp(15px, 1.6vw, 19px); letter-spacing: 6px; }
+  .ts-stars.big { font-size: clamp(15px, 1.6vw, 19px); gap: 6px; }
   .ts-score-sub { color: var(--ink-45); font-size: 10px !important; letter-spacing: 0.1em; text-transform: uppercase; }
 
   /* ---------- una frase gigante por vez ---------- */
@@ -118,7 +118,7 @@ const items = [
     font-size: clamp(1.8rem, 4.4vw, 4rem); line-height: 1.12; letter-spacing: -0.025em;
     color: var(--ink); text-wrap: balance;
   }
-  .ts-who { position: relative; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px 16px; color: var(--ink-45); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; }
+  .ts-who { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 12px; color: var(--ink-45); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; }
 
   .ts-nav { display: flex; align-items: center; justify-content: center; gap: clamp(16px, 3vw, 36px); margin-top: clamp(24px, 4vh, 44px); }
   .ts-mid { display: flex; flex-direction: column; align-items: center; gap: 10px; }

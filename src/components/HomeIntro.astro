@@ -156,7 +156,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
   /* ---------- meta ---------- */
   .meta {
-    position: absolute; z-index: 5; color: var(--ink-60); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+    position: absolute; z-index: 61; color: var(--ink-60); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
     will-change: opacity; pointer-events: none;
   }
   .m-bl { left: var(--pad); bottom: clamp(18px, 3.4vh, 34px); max-width: 62vw; }
@@ -276,8 +276,8 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       intro.style.setProperty('--cw', cw.toFixed(1) + 'px');
       // zona libre alrededor del logo y de la frase (con aire), para que las tarjetas sueltas no los pisen
       const sp = stmt ? stmt.querySelector('p') : null;
-      exW = Math.max(eve ? eve.offsetWidth : 0, sp ? sp.offsetWidth : 0) / 2 + 40;
-      exH = Math.max(eve ? eve.offsetHeight : 0, sp ? sp.offsetHeight : 0) / 2 + 40;
+      exW = Math.max(eve ? eve.offsetWidth : 0, sp ? sp.offsetWidth : 0) / 2 + 56;
+      exH = Math.max(eve ? eve.offsetHeight : 0, sp ? sp.offsetHeight : 0) / 2 + 56;
       // cada título se ajusta para ocupar todo el ancho (asoma siempre a los costados de la tarjeta)
       bigs.forEach((el) => {
         el.style.fontSize = '100px';
@@ -322,7 +322,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         }
         // escena suelta: tamaño según el ancho y dentro de una zona segura (sin pisar el logo ni el menú de arriba)
         const ls = L.s * 1.15 * Math.min(1, Math.max(W * 0.55, 300) / ch, H * 0.62 / ch);
-        const hh = ls * ch / 2, hw = hh * 0.8, SAFE_TOP = 100, SAFE_BOT = 64, PAR = 34;
+        const hh = ls * ch / 2, hw = hh * 0.8, SAFE_TOP = 104, SAFE_BOT = 92, PAR = 34;
         const bx = W / 2 - hw - 12 - PAR, by0 = -H / 2 + SAFE_TOP + hh + PAR, by1 = H / 2 - SAFE_BOT - hh - PAR;
         let lx = Math.max(-bx, Math.min(bx, L.fx * W));
         let ly = Math.max(by0, Math.min(by1, L.fy * H));
