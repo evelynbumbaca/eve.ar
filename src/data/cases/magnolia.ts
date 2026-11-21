@@ -42,11 +42,10 @@ export const magnolia: CaseContent = {
     },
 
     /* ---------- 01 · Identidad ---------- */
+    { t: 'break', kind: 'img', src: `${P}/relieve.jpg`, alt: 'Logo de Magnolia impreso en relieve sobre papel texturado' },
     { t: 'h', n: '01', es: 'Identidad', en: 'Identity' },
     {
-      t: 'split',
-      src: `${P}/relieve.jpg`,
-      alt: 'Logo de Magnolia impreso en relieve sobre papel texturado',
+      t: 'p',
       es: 'Una flor de magnolia de cuatro pétalos, resuelta con formas simples y cortes limpios. Las piezas verdes que la enmarcan remiten a las tablas de un mueble de jardín: naturaleza y oficio en un mismo signo. El logotipo, en una sans condensada de trazo firme, se lee a distancia en carteles y fachadas.',
       en: 'A four-petal magnolia flower, built from simple shapes and clean cuts. The green pieces framing it recall the slats of garden furniture: nature and craft in a single mark. The wordmark, set in a firm condensed sans, reads from afar on signs and storefronts.',
     },
@@ -80,7 +79,6 @@ export const magnolia: CaseContent = {
         ],
       },
     },
-
     {
       t: 'gallery',
       es: 'Versiones del logo sobre terracota, negro y crema',
@@ -93,21 +91,21 @@ export const magnolia: CaseContent = {
     },
 
     /* ---------- 02 · Aplicaciones ---------- */
+    { t: 'break', kind: 'img', src: `${P}/tarjeta.jpg`, alt: 'Tarjeta personal de Magnolia sobre listones de madera' },
     { t: 'h', n: '02', es: 'Aplicaciones', en: 'Applications' },
     {
       t: 'p',
       es: 'La papelería pone el contacto al frente: la tarjeta lleva un QR que abre directo el chat de WhatsApp para pedir presupuesto. El sistema sigue en remeras, objetos y en el perfil de Instagram, con destacados y publicaciones en la misma paleta.',
       en: 'The stationery puts contact first: the business card carries a QR code that opens the WhatsApp chat directly to ask for a quote. The system carries on to t-shirts, objects and the Instagram profile, with highlights and posts in the same palette.',
     },
-    { t: 'fig', src: `${P}/tarjeta.jpg`, es: 'Tarjeta personal con QR a WhatsApp', en: 'Business card with a WhatsApp QR code' },
     {
-      t: 'gallery',
-      es: 'Taza, remera y perfil de Instagram',
-      en: 'Mug, t-shirt and Instagram profile',
+      t: 'deck',
+      es: 'Magnolia en uso',
+      en: 'Magnolia in use',
       items: [
-        { src: `${P}/taza.jpg`, alt: 'Taza enlozada blanca con el logo de Magnolia en negro' },
-        { src: `${P}/remera.jpg`, alt: 'Remera negra con el logo de Magnolia en crema, en un patio con muebles de madera' },
-        { src: `${P}/instagram.jpg`, alt: 'Perfil de Instagram de Magnolia en un celular, con destacados en terracota' },
+        { src: `${P}/remera.jpg`, alt: 'Remera negra con el logo de Magnolia en crema, en un patio con muebles de madera', word: { es: 'Indumentaria', en: 'Apparel' } },
+        { src: `${P}/taza.jpg`, alt: 'Taza enlozada blanca con el logo de Magnolia en negro', word: { es: 'Objetos', en: 'Objects' } },
+        { src: `${P}/instagram.jpg`, alt: 'Perfil de Instagram de Magnolia en un celular, con destacados en terracota', word: { es: 'Redes', en: 'Social' } },
       ],
     },
 
@@ -119,7 +117,6 @@ export const magnolia: CaseContent = {
       en: 'The original flyer piled up photos, tilted text and elements foreign to the brand. In 2026 I redesigned it from the identity system: one dominant headline, services in order and a single call to action.',
     },
     { t: 'fig', src: `${P}/flyer-mockup.jpg`, es: 'El flyer nuevo, en mano', en: 'The new flyer, in hand' },
-    { t: 'fig', src: `${P}/flyer-2026.jpg`, es: 'Flyer A5, frente y dorso', en: 'A5 flyer, front and back' },
     {
       t: 'list',
       title: { es: 'Qué cambió', en: 'What changed' },

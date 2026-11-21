@@ -406,7 +406,7 @@ const navItems = blocks.filter((b) => b.t === 'h') as { t: 'h'; n: string; es: s
               </figure>
             );
             case 'gallery': return (
-              <figure class="c-figure k-fig k-gallery k-bleed">
+              <figure class="c-figure k-fig k-gallery k-grid">
                 <div class="k-gal-grid" style={`--n:${b.items.length}`}>
                   {b.items.map((it) => (
                     <div class="frame reveal">
@@ -938,6 +938,9 @@ const navItems = blocks.filter((b) => b.t === 'h') as { t: 'h'; n: string; es: s
   }
   .k-break.k-bleed .frame > img { max-height: 92vh; object-fit: cover; object-position: 50% 45%; }
   .k-bleed .k-gal-grid { gap: 4px; }
+  /* galería alineada a los márgenes de la página (misma caja que .wrap) */
+  .k-grid { width: calc(min(100vw, var(--maxw)) - 2 * var(--pad)); max-width: none; margin-left: 50%; transform: translateX(-50%); }
+  .k-grid.k-gallery .frame { aspect-ratio: 1 / 1; }
   .k-bleed.k-gallery .frame { aspect-ratio: 1 / 1; }
   .k-gal-grid { display: grid; grid-template-columns: repeat(var(--n, 3), 1fr); gap: clamp(10px, 1.6vw, 22px); }
   .k-gallery .frame { aspect-ratio: 4 / 5; }
@@ -1114,6 +1117,7 @@ const navItems = blocks.filter((b) => b.t === 'h') as { t: 'h'; n: string; es: s
     .k-nav a span:not(.mono) { display: none; }
     .k-nav a.on span:not(.mono) { display: inline; }
     .k-wide { width: auto; margin-left: 0; transform: none; }
+    .k-grid { width: auto; margin-left: 0; transform: none; }
     .lk-tcols { grid-template-columns: 1fr !important; padding-top: 0; row-gap: 22px; }
     .lk-col::before, .lk-col::after, .lk-troot::after { display: none; }
     .lk-troot { padding-bottom: 22px; }
