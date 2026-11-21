@@ -351,18 +351,21 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     } else {
       let mx = 0, my = 0, sx = 0, sy = 0, su = 0, gd = 0, qd = 0, raf = 0, running = false, last = 0;
       let op = 0, px = -1e5, py = -1e5;
-      const OPEN_DUR = 0.95;                       // segundos que dura la apertura completa
+      const OPEN_DUR = 0.85;                       // segundos que dura la apertura completa
       const openTarget = (u: number) => (u > 0.4 ? 1 : 0);
       const lsx = letters.map(() => 1), lcx: number[] = [], lcy: number[] = [];
 
       const renderOpen = () => {
         const e = easeOut(clamp01(op / 0.4));      // el logo se contrae y se difumina en su lugar
         if (eve) {
-          if (e < 0.001) { eve.style.opacity = ''; eve.style.transform = ''; eve.style.filter = ''; }
+          if (e < 0.001) { eve.style.opacity = ''; eve.style.transform = ''; eve.style.filter = ''; eve.style.visibility = ''; }
           else {
-            eve.style.opacity = (1 - e).toFixed(3);
+            // se desvanece más rápido de lo que se difumina, y al terminar se oculta del todo (sin restos borrosos)
+            const fade = clamp01(e * 1.8);
+            eve.style.opacity = (1 - fade).toFixed(3);
             eve.style.transform = `scale(${(1 - 0.3 * e).toFixed(4)})`;
-            eve.style.filter = `blur(${(18 * e).toFixed(2)}px)`;
+            if (fade >= 0.999) { eve.style.filter = ''; eve.style.visibility = 'hidden'; }
+            else { eve.style.filter = `blur(${(10 * e).toFixed(2)}px)`; eve.style.visibility = ''; }
           }
         }
         const w = easeOut(clamp01((op - 0.42) / 0.26)); // el del menú aparece recién cuando el grande ya no está
