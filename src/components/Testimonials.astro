@@ -50,7 +50,6 @@ const items = [
     </div>
 
     <div class="ts-stage" data-ts>
-      <span class="ts-bigmark" aria-hidden="true">“</span>
       <div class="ts-slides">
         {items.map((t, i) => (
           <figure class:list={['ts-slide', { 'is-on': i === 0 }]} data-ts-slide style={`--i:${i}`}>
@@ -82,7 +81,7 @@ const items = [
     <p class="ts-cta">
       <T es="¿Tu marca es la próxima?" en="Is your brand next?" />
       <a href="#contacto" data-open-contact>
-        <T es="Escribime" en="Write me" /> <span aria-hidden="true">→</span>
+        <T es="Escribime" en="Write me" />
       </a>
     </p>
   </div>
@@ -110,10 +109,6 @@ const items = [
 
   /* ---------- una frase gigante por vez ---------- */
   .ts-stage { position: relative; padding-block: clamp(8px, 2vh, 24px) 0; }
-  .ts-bigmark {
-    position: absolute; left: 50%; transform: translateX(-50%); top: clamp(-70px, -6vw, -30px); pointer-events: none;
-    font-family: var(--serif); font-weight: 300; font-size: clamp(10rem, 24vw, 22rem); line-height: 1; color: var(--ink-06);
-  }
   .ts-slides { position: relative; display: grid; min-height: clamp(260px, 38vh, 420px); align-items: center; }
   .ts-slide { --d: 0s; grid-area: 1 / 1; margin: 0; display: flex; flex-direction: column; align-items: center; text-align: center; gap: clamp(20px, 3.4vh, 36px); visibility: hidden; opacity: 0; }
   .ts-slide.is-on { visibility: visible; opacity: 1; }

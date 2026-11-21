@@ -118,7 +118,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     margin: 0; max-width: min(27ch, 88%); text-align: center; text-wrap: balance;
     font-family: var(--serif); font-weight: 300; font-size: clamp(1.2rem, 2.1vw, 2rem); line-height: 1.2; letter-spacing: -0.02em; color: var(--ink);
   }
-  .center { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; }
+  .center { position: absolute; inset: 0; z-index: 60; display: grid; place-items: center; pointer-events: none; }
   .bn-name-slot { margin: 0; }
   .bn-name-slot :global(svg) {
     display: block; height: clamp(58px, 11.5vw, 184px); width: auto; color: var(--ink); overflow: visible;
@@ -261,7 +261,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       { fx:  0.04, fy: -0.34, s: 0.32, rot:  4, depth: 0.50 },
     ];
 
-    let W = 0, H = 0, ch = 0, lastNum = 0;
+    let W = 0, H = 0, ch = 0, lastNum = 0, exW = 0, exH = 0;
     const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
     const smooth = (t: number) => t * t * (3 - 2 * t);
     const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
@@ -274,6 +274,10 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       ch = Math.min(H * 0.72, W * 0.86 * 5 / 4, 620);
       const cw = ch * 0.8;
       intro.style.setProperty('--cw', cw.toFixed(1) + 'px');
+      // zona libre alrededor del logo y de la frase (con aire), para que las tarjetas sueltas no los pisen
+      const sp = stmt ? stmt.querySelector('p') : null;
+      exW = Math.max(eve ? eve.offsetWidth : 0, sp ? sp.offsetWidth : 0) / 2 + 40;
+      exH = Math.max(eve ? eve.offsetHeight : 0, sp ? sp.offsetHeight : 0) / 2 + 40;
       // cada título se ajusta para ocupar todo el ancho (asoma siempre a los costados de la tarjeta)
       bigs.forEach((el) => {
         el.style.fontSize = '100px';
@@ -319,8 +323,17 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         // escena suelta: tamaño según el ancho y dentro de una zona segura (sin pisar el logo ni el menú de arriba)
         const ls = L.s * 1.15 * Math.min(1, Math.max(W * 0.55, 300) / ch, H * 0.62 / ch);
         const hh = ls * ch / 2, hw = hh * 0.8, SAFE_TOP = 100, SAFE_BOT = 64, PAR = 34;
-        const lx = Math.max(-W / 2 + hw + 12 + PAR, Math.min(W / 2 - hw - 12 - PAR, L.fx * W));
-        const ly = Math.max(-H / 2 + SAFE_TOP + hh + PAR, Math.min(H / 2 - SAFE_BOT - hh - PAR, L.fy * H));
+        const bx = W / 2 - hw - 12 - PAR, by0 = -H / 2 + SAFE_TOP + hh + PAR, by1 = H / 2 - SAFE_BOT - hh - PAR;
+        let lx = Math.max(-bx, Math.min(bx, L.fx * W));
+        let ly = Math.max(by0, Math.min(by1, L.fy * H));
+        // si la tarjeta toca la zona del texto, se corre hacia afuera por el lado que menos le cuesta
+        const ox = exW + hw - Math.abs(lx), oy = exH + hh - Math.abs(ly);
+        if (ox > 0 && oy > 0) {
+          const nx = (lx < 0 ? -1 : 1) * (exW + hw), ny = (ly < 0 ? -1 : 1) * (exH + hh);
+          const fitsX = Math.abs(nx) <= bx, fitsY = ny >= by0 && ny <= by1;
+          if (fitsX && (ox <= oy || !fitsY)) lx = nx; else if (fitsY) ly = ny; else lx = nx;
+        }
+        lx = Math.max(-bx, Math.min(bx, lx));
         const x = mix(lx - sx * L.depth * 30, X, g);
         const y = mix(ly - sy * L.depth * 30, Y, g);
         const s = mix(ls, S, g), rot = mix(L.rot, R, g), o = mix(1, O, g);
