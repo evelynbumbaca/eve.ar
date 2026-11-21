@@ -125,47 +125,47 @@ const wa = (p: { fullName: string }) => `${site.whatsapp}?text=${encodeURICompon
       </p>
     </header>
 
-    <div class="pk-grid">
+    <div class="pk-list">
       {packs.map((p, i) => (
-        <article class:list={['pack', 'rise', `rise-delay-${i + 1}`, { 'is-featured': p.featured }]}>
-          {p.featured && (
-            <span class="pk-tag mono cap"><T es="El más elegido" en="Most chosen" /></span>
-          )}
-          <span class="pk-num mono">{p.num}</span>
-          <h3 class="pk-name">
-            <span class="pk-name-pre mono cap"><T es="Identidad Visual" en="Visual Identity" /></span>
-            {p.name}
-          </h3>
-          <p class="pk-who"><span data-es={p.who.es} data-en={p.who.en}>{p.who.es}</span></p>
-          <p class="pk-price">
-            {p.price.desde && <span class="pp-desde mono" data-es="desde" data-en="from">desde</span>}
-            <span class="pp-ars">{p.price.ars}</span>
-            <span class="pp-sep" aria-hidden="true">·</span>
-            <span class="pp-usd mono">{p.price.usd}</span>
-          </p>
-          <ul class="pk-items">
-            {p.items.map((it) => (
-              <li><span data-es={it.es} data-en={it.en}>{it.es}</span></li>
-            ))}
-          </ul>
-          <details class="pk-full">
-            <summary class="mono"><T es="Ver alcance completo" en="See full scope" /> <span aria-hidden="true">+</span></summary>
-            <div class="pk-sheet">
-              <button class="pk-close" type="button" aria-label="Cerrar · Close" data-sheet-close>✕</button>
-              <p class="pk-sheet-t mono cap"><T es="Alcance completo" en="Full scope" /></p>
-              <ul>
-                {p.full.map((it) => (
-                  <li><span data-es={it.es} data-en={it.en}>{it.es}</span></li>
-                ))}
-              </ul>
+        <article class:list={['pk-row', { 'is-featured': p.featured }]} data-pk data-open={p.featured ? 'true' : 'false'}>
+          <button class="pk-hd" type="button" aria-expanded={p.featured ? 'true' : 'false'} aria-controls={`pk-panel-${i}`}>
+            <span class="pk-num mono">{p.num}</span>
+            <span class="pk-id">
+              <span class="pk-pre mono cap">
+                <T es="Identidad Visual" en="Visual Identity" />
+                {p.featured && <span class="pk-tag"><T es="El más elegido" en="Most chosen" /></span>}
+              </span>
+              <b class="pk-name" data-pk-name>{p.name}</b>
+              <span class="pk-who"><span data-es={p.who.es} data-en={p.who.en}>{p.who.es}</span></span>
+            </span>
+            <span class="pk-price">
+              {p.price.desde && <span class="pp-desde mono" data-es="desde" data-en="from">desde</span>}
+              <span class="pp-ars" data-pk-count>{p.price.ars}</span>
+              <span class="pp-usd mono" data-pk-count>{p.price.usd}</span>
+            </span>
+            <span class="pk-plus" aria-hidden="true">+</span>
+          </button>
+
+          <div class="pk-panel" id={`pk-panel-${i}`}>
+            <div class="pk-panel-in">
+              <div class="pk-body">
+                <div class="pk-side">
+                  <p class="pk-time mono"><span data-es={p.time.es} data-en={p.time.en}>{p.time.es}</span></p>
+                  <a class="pk-wa" href={wa(p)} target="_blank" rel="noopener noreferrer" data-glow-dock>
+                    <T es="Contratar" en="Book" />
+                    <span aria-hidden="true">↗</span>
+                  </a>
+                </div>
+                <div class="pk-scope">
+                  <p class="pk-scope-t mono cap"><T es="Alcance completo" en="Full scope" /></p>
+                  <ul>
+                    {p.full.map((it) => (
+                      <li><span data-es={it.es} data-en={it.en}>{it.es}</span></li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
             </div>
-          </details>
-          <p class="pk-time mono"><span data-es={p.time.es} data-en={p.time.en}>{p.time.es}</span></p>
-          <div class="pk-ctas">
-            <a class="pk-wa" href={wa(p)} target="_blank" rel="noopener noreferrer" data-glow-dock>
-              <T es="Contratar" en="Book" />
-              <span aria-hidden="true">↗</span>
-            </a>
           </div>
         </article>
       ))}
@@ -195,298 +195,194 @@ const wa = (p: { fullName: string }) => `${site.whatsapp}?text=${encodeURICompon
   .pk-head { max-width: 60ch; margin-bottom: clamp(36px, 6vh, 64px); }
   .pk-kicker { color: var(--ink-45); margin-bottom: clamp(16px, 2.5vh, 26px); display: block; }
   .pk-title {
-    font-family: var(--serif);
-    font-weight: 400;
-    font-size: clamp(1.9rem, 4.2vw, 3.4rem);
-    line-height: 1.05;
-    letter-spacing: -0.02em;
+    font-family: var(--serif); font-weight: 400;
+    font-size: clamp(1.9rem, 4.2vw, 3.4rem); line-height: 1.05; letter-spacing: -0.02em;
   }
   .pk-sub {
-    margin-top: 16px;
-    font-family: var(--sans);
-    font-size: clamp(0.95rem, 1.15vw, 1.1rem);
-    line-height: 1.5;
-    color: var(--ink-80);
-    max-width: 52ch;
+    margin-top: 16px; font-family: var(--sans);
+    font-size: clamp(0.95rem, 1.15vw, 1.1rem); line-height: 1.5; color: var(--ink-80); max-width: 52ch;
   }
 
-  .pk-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: clamp(14px, 1.6vw, 24px);
-    align-items: stretch;
-  }
-  .pack {
-    position: relative;
-    display: flex; flex-direction: column;
-    border: 1px solid var(--line);
-    border-radius: 4px;
-    padding: clamp(20px, 2.2vw, 32px);
-    background: color-mix(in oklab, var(--paper) 72%, transparent);
-    transition: border-color var(--dur-ui) var(--ease-quint), transform var(--dur-ui) var(--ease-out);
-  }
-  .pack:hover { border-color: var(--ink-45); transform: translateY(-3px); }
-  /* el destacado manda: escala leve + sombra editorial */
-  .pack.is-featured {
-    border-color: var(--ink);
-    box-shadow: 0 18px 44px rgba(22, 21, 15, 0.09);
-  }
-  @media (min-width: 901px) {
-    .pack.is-featured { transform: scale(1.025); }
-    .pack.is-featured:hover { transform: scale(1.025) translateY(-3px); }
-  }
+  /* ---------- filas tipográficas ---------- */
+  .pk-list { border-top: 1px solid var(--ink); }
+  .pk-row { position: relative; border-bottom: 1px solid var(--line); }
 
+  .pk-hd {
+    width: 100%; display: grid; align-items: center; text-align: left;
+    grid-template-columns: clamp(34px, 4vw, 64px) minmax(0, 1fr) auto 36px;
+    gap: 0 clamp(10px, 2vw, 32px);
+    padding-block: clamp(22px, 3.6vh, 40px);
+    cursor: pointer; color: var(--ink);
+  }
+  .pk-num { color: var(--ink-35); align-self: start; padding-top: 0.6em; }
+  .pk-id { display: grid; gap: 6px; min-width: 0; }
+  .pk-pre { color: var(--ink-45); font-size: 10px !important; letter-spacing: 0.14em; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; }
   .pk-tag {
-    position: absolute; top: -11px; left: clamp(18px, 2vw, 30px);
-    background: var(--ink); color: var(--paper);
-    border: 1px solid var(--ink); /* invisible sobre tinta; aparece al invertir */
-    padding: 4px 12px; border-radius: 20px;
-    font-size: 10px !important;
-    z-index: 6;
-    transition: background var(--dur-ui) var(--ease-quint), color var(--dur-ui) var(--ease-quint);
+    background: var(--orange); color: #fff; padding: 3px 10px; border-radius: 20px;
+    font-size: 10px; letter-spacing: 0.1em;
   }
-  .pk-num { color: var(--ink-35); margin-bottom: clamp(18px, 3vh, 30px); }
   .pk-name {
-    font-family: var(--serif);
-    font-weight: 400;
-    font-size: clamp(1.4rem, 2vw, 1.9rem);
-    letter-spacing: -0.015em;
-    margin-bottom: 8px;
-    display: flex; flex-direction: column; gap: 6px;
+    font-family: var(--serif); font-weight: 300; font-style: normal;
+    font-size: clamp(2.8rem, 9vw, 8rem); line-height: 0.98; letter-spacing: -0.045em;
+    color: var(--ink); padding-bottom: 0.04em;
+    transition: color var(--dur-ui) var(--ease-quint);
   }
-  .pk-name-pre { color: var(--ink-45); font-size: 10px !important; letter-spacing: 0.14em; }
-  .pk-who {
-    font-family: var(--sans);
-    font-size: clamp(0.9rem, 1vw, 1rem);
-    color: var(--ink-60);
-    margin-bottom: clamp(12px, 2vh, 18px);
-    min-height: 2.6em;
+  .pk-who { font-family: var(--sans); font-size: clamp(0.9rem, 1vw, 1rem); color: var(--ink-60); margin-top: 2px; }
+
+  /* con mouse: el nombre está en gris y la luz del cursor lo enciende */
+  @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    .pk-name {
+      --bx: -9999px; --by: -9999px; --br: 0px; --base: rgba(22, 21, 15, 0.3);
+      color: var(--base);
+      background-image: radial-gradient(circle var(--br) at var(--bx) var(--by), #16150f 0%, rgba(22, 21, 15, 0.9) 45%, var(--base) 100%);
+      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .pk-row.open .pk-name, .pk-row:focus-within .pk-name { --base: rgba(22, 21, 15, 0.85); }
   }
 
-  /* precio: ARS protagonista + USD en mono (una sola regla debajo:
-     la aporta el primer ítem de la lista) */
-  .pk-price {
-    display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 10px;
-    margin-bottom: clamp(16px, 2.5vh, 24px);
-  }
+  .pk-price { display: grid; justify-items: end; gap: 6px; text-align: right; white-space: nowrap; }
   .pp-desde { color: var(--ink-45); font-size: 11px !important; letter-spacing: 0.1em; text-transform: uppercase; }
-  .pp-ars {
-    font-family: var(--serif);
-    font-weight: 400;
-    font-size: clamp(1.3rem, 1.9vw, 1.7rem);
-    letter-spacing: -0.01em;
-  }
-  .pp-sep { color: var(--ink-35); }
-  .pp-usd { font-family: var(--mono); color: var(--ink-60); font-size: clamp(11px, 1vw, 13px); letter-spacing: 0.06em; }
+  .pp-ars { font-family: var(--serif); font-weight: 300; font-size: clamp(1.4rem, 2.6vw, 2.4rem); letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+  .pp-usd { font-family: var(--mono); color: var(--ink-60); font-size: clamp(11px, 1vw, 13px); letter-spacing: 0.06em; font-variant-numeric: tabular-nums; }
+  /* en inglés, el protagonista es el USD */
+  :global(html[lang='en']) .pp-ars { order: 3; font-family: var(--mono); font-size: clamp(11px, 1vw, 13px); letter-spacing: 0.06em; color: var(--ink-60); }
+  :global(html[lang='en']) .pp-usd { order: 1; font-family: var(--serif); font-weight: 300; font-size: clamp(1.4rem, 2.6vw, 2.4rem); letter-spacing: -0.02em; color: var(--ink); }
 
-  /* en inglés, el protagonista es el USD y el ARS pasa a secundario */
-  :global(html[lang='en']) .pp-ars {
-    order: 3;
-    font-family: var(--mono);
-    font-size: clamp(11px, 1vw, 13px);
-    letter-spacing: 0.06em;
-    color: var(--ink-60);
+  .pk-plus {
+    width: 36px; height: 36px; border: 1px solid var(--ink-35); border-radius: 50%;
+    display: grid; place-items: center; font-family: var(--sans); font-size: 18px; line-height: 1; color: var(--ink);
+    transition: transform var(--dur-ui) var(--ease-out), background var(--dur-micro) var(--ease-quint), color var(--dur-micro) var(--ease-quint);
   }
-  :global(html[lang='en']) .pp-sep { order: 2; }
-  :global(html[lang='en']) .pp-usd {
-    order: 1;
-    font-family: var(--serif);
-    font-size: clamp(1.3rem, 1.9vw, 1.7rem);
-    letter-spacing: -0.01em;
-    color: var(--ink);
-  }
-  .pk-items { list-style: none; margin-bottom: clamp(16px, 2.5vh, 24px); }
-  .pk-items li {
-    font-family: var(--sans);
-    font-size: clamp(0.88rem, 1vw, 0.98rem);
-    color: var(--ink-80);
-    padding-block: 9px;
-    border-top: 1px solid var(--ink-12);
-    display: flex; gap: 10px;
-  }
-  .pk-items li::before { content: '·'; color: var(--ink-35); }
-  /* alcance completo: desplegable en táctil; en desktop, ventana en tinta */
-  .pk-full { margin-bottom: clamp(14px, 2vh, 20px); }
-  .pk-full summary {
-    cursor: pointer;
-    list-style: none;
-    width: max-content; /* el área sensible es SOLO el texto, no toda la fila */
-    color: var(--ink-60);
-    font-size: 11px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    transition: color var(--dur-micro) var(--ease-quint);
-  }
-  .pk-full summary::-webkit-details-marker { display: none; }
-  .pk-full summary:hover { color: var(--ink); }
-  .pk-full[open] summary span[aria-hidden] { display: inline-block; transform: rotate(45deg); }
-  .pk-sheet-t { display: none; }
-  .pk-close { display: none; } /* solo existe en la ventana de desktop */
-  .pk-full ul { list-style: none; margin-top: 10px; }
-  .pk-full li {
-    font-family: var(--sans);
-    font-size: 0.85rem;
-    color: var(--ink-60);
-    padding-block: 6px;
-    border-top: 1px solid var(--ink-06);
-    display: flex; gap: 9px;
-  }
-  .pk-full li::before { content: '·'; color: var(--ink-35); }
+  .pk-hd:hover .pk-plus { background: var(--ink); color: var(--paper); }
+  .pk-row.open .pk-plus { transform: rotate(45deg); }
 
-  @media (hover: hover) and (pointer: fine) {
-    /* la ventana negra cubre SOLO su tarjeta (no estira la fila);
-       SUBE al entrar el mouse y BAJA al salir (clase .show por JS) */
-    .pk-sheet {
-      position: absolute;
-      inset: 0;
-      z-index: 5;
-      background: var(--ink);
-      color: var(--paper);
-      border-radius: 4px;
-      padding: clamp(20px, 2.2vw, 30px);
-      padding-bottom: 96px; /* aire para el botón Contratar que queda encima */
-      overflow: auto;
-      opacity: 0;
-      transform: translateY(18px);
-      pointer-events: none;
-      transition: opacity 0.3s var(--ease-out), transform 0.34s var(--ease-out);
-    }
-    .pk-full.show .pk-sheet {
-      opacity: 1;
-      transform: translateY(0);
-      pointer-events: auto;
-    }
-    .pk-sheet-t {
-      display: block;
-      color: color-mix(in srgb, var(--paper) 55%, transparent);
-      font-size: 10px !important;
-      letter-spacing: 0.12em;
-      margin-bottom: 6px;
-    }
-    /* cierre manual */
-    .pk-close {
-      display: flex;
-      position: absolute;
-      top: 12px; right: 12px;
-      width: 30px; height: 30px;
-      align-items: center; justify-content: center;
-      border: 1px solid color-mix(in srgb, var(--paper) 35%, transparent);
-      border-radius: 50%;
-      color: var(--paper);
-      font-size: 12px;
-      line-height: 1;
-      z-index: 7;
-      transition: background var(--dur-micro) var(--ease-quint), color var(--dur-micro) var(--ease-quint);
-    }
-    .pk-close:hover { background: var(--paper); color: var(--ink); }
-    .pk-full li { color: color-mix(in srgb, var(--paper) 88%, transparent); border-top-color: color-mix(in srgb, var(--paper) 16%, transparent); }
-    .pk-full li::before { color: color-mix(in srgb, var(--paper) 45%, transparent); }
-    @media (prefers-reduced-motion: reduce) { .pk-sheet { transition: opacity 0.2s ease; transform: none; } }
-
-    /* el botón Contratar y el cartelito viven SIEMPRE sobre la ventana */
-    .pack:has(.pk-full.show) .pk-wa {
-      background: var(--paper);
-      color: var(--ink);
-    }
-    .pack.is-featured:has(.pk-full.show) .pk-wa { background: var(--orange); color: #fff; }
-    .pack:has(.pk-full.show) .pk-tag {
-      background: var(--paper);
-      color: var(--ink);
-    }
+  /* ---------- panel con el alcance completo ---------- */
+  .pk-panel { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.7s var(--ease-out); }
+  .pk-row.open .pk-panel { grid-template-rows: 1fr; }
+  .pk-panel-in { overflow: hidden; min-height: 0; }
+  .pk-body {
+    display: grid; grid-template-columns: minmax(180px, 0.55fr) minmax(0, 1.45fr);
+    gap: clamp(20px, 4vw, 64px);
+    padding: 4px 0 clamp(28px, 5vh, 48px) calc(clamp(34px, 4vw, 64px) + clamp(10px, 2vw, 32px));
+    opacity: 0; transform: translateY(14px);
+    transition: opacity 0.5s var(--ease-out), transform 0.7s var(--ease-out);
   }
+  .pk-row.open .pk-body { opacity: 1; transform: none; transition-delay: 0.18s; }
+  .pk-side { display: flex; flex-direction: column; align-items: flex-start; gap: 22px; }
+  .pk-time { color: var(--ink-45); }
+  .pk-scope-t { color: var(--ink-45); font-size: 10px !important; letter-spacing: 0.12em; margin-bottom: 8px; }
+  .pk-scope ul { list-style: none; columns: 2; column-gap: clamp(20px, 3vw, 44px); }
+  .pk-scope li {
+    break-inside: avoid; font-family: var(--sans); font-size: 0.92rem; line-height: 1.5; color: var(--ink-80);
+    padding-block: 9px; border-top: 1px solid var(--ink-12); display: flex; gap: 10px;
+  }
+  .pk-scope li::before { content: '·'; color: var(--ink-35); }
 
-  .pk-time { color: var(--ink-45); margin-bottom: clamp(18px, 3vh, 28px); }
-
-  .pk-ctas { margin-top: auto; display: flex; justify-content: flex-start; position: relative; z-index: 6; }
   .pk-wa {
     display: inline-flex; align-items: center; justify-content: center; gap: 9px;
-    padding: 12px 34px;
-    border-radius: 40px;
-    background: var(--ink);
-    color: var(--paper);
-    font-family: var(--sans);
-    font-size: 13.5px;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
+    padding: 12px 34px; border-radius: 40px; background: var(--ink); color: var(--paper);
+    font-family: var(--sans); font-size: 13.5px; letter-spacing: 0.04em; text-transform: uppercase;
     transition: opacity var(--dur-micro) var(--ease-quint);
   }
   .pk-wa:hover { opacity: 0.85; }
-  .pack.is-featured .pk-wa { background: var(--orange); color: #fff; }
+  .pk-row.is-featured .pk-wa { background: var(--orange); color: #fff; }
 
   .pk-audit {
-    margin-top: clamp(24px, 4vh, 40px);
-    text-align: left;
-    color: var(--ink-45);
-    font-size: 11px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    margin-top: clamp(24px, 4vh, 40px); text-align: left; color: var(--ink-45);
+    font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
   }
-
-  .pk-custom {
-    margin-top: clamp(40px, 7vh, 72px);
-    text-align: left;
-  }
-  .pkc-q {
-    font-family: var(--serif);
-    font-weight: 400;
-    font-size: clamp(1.4rem, 2.6vw, 2.2rem);
-    letter-spacing: -0.015em;
-    color: var(--ink);
-  }
-  .pkc-sub {
-    margin-top: 10px;
-    font-family: var(--sans);
-    font-size: clamp(0.95rem, 1.1vw, 1.05rem);
-    color: var(--ink-60);
-  }
+  .pk-custom { margin-top: clamp(40px, 7vh, 72px); text-align: left; }
+  .pkc-q { font-family: var(--serif); font-weight: 400; font-size: clamp(1.4rem, 2.6vw, 2.2rem); letter-spacing: -0.015em; color: var(--ink); }
+  .pkc-sub { margin-top: 10px; font-family: var(--sans); font-size: clamp(0.95rem, 1.1vw, 1.05rem); color: var(--ink-60); }
   .pkc-btn {
-    display: inline-flex; align-items: center; gap: 10px;
-    margin-top: clamp(18px, 3vh, 28px);
-    padding: 13px 30px;
-    border-radius: 40px;
-    border: 1px solid var(--ink);
-    color: var(--ink);
-    font-family: var(--sans);
-    font-size: 14px;
-    letter-spacing: 0.02em;
+    display: inline-flex; align-items: center; gap: 10px; margin-top: clamp(18px, 3vh, 28px);
+    padding: 13px 30px; border-radius: 40px; border: 1px solid var(--ink); color: var(--ink);
+    font-family: var(--sans); font-size: 14px; letter-spacing: 0.02em;
     transition: background var(--dur-micro) var(--ease-quint), color var(--dur-micro) var(--ease-quint);
   }
   .pkc-btn:hover { background: var(--ink); color: var(--paper); }
 
-  @media (max-width: 900px) {
-    .pk-grid { grid-template-columns: 1fr; max-width: 520px; }
-    .pk-who { min-height: 0; }
+  @media (max-width: 860px) {
+    .pk-hd { grid-template-columns: 28px minmax(0, 1fr) 36px; }
+    .pk-price { grid-column: 2; grid-row: 2; justify-items: start; text-align: left; margin-top: 10px; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; }
+    .pk-plus { grid-column: 3; grid-row: 1; }
+    .pk-name { font-size: clamp(2.4rem, 13vw, 4rem); }
+    .pk-body { grid-template-columns: 1fr; padding-left: 0; }
+    .pk-scope ul { columns: 1; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .pk-panel, .pk-body, .pk-plus { transition: none; }
   }
 </style>
 
 <script>
-  /* Desktop: la ventana de alcance completo SUBE con el hover sobre la
-     tarjeta y BAJA al salir (en táctil queda el <details> nativo). */
-  const fine = matchMedia('(hover:hover) and (pointer:fine)').matches;
-  if (fine) {
-    document.querySelectorAll<HTMLDetailsElement>('.pk-full').forEach((d) => {
-      let t = 0;
-      const card = d.closest('.pack') || d;
-      const summary = d.querySelector('summary');
-      const closeBtn = d.querySelector('[data-sheet-close]');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
+  const rows = Array.from(document.querySelectorAll<HTMLElement>('[data-pk]'));
 
-      const up = () => {
-        clearTimeout(t);
-        d.open = true; // contenido en el DOM (accesible) antes de animar
-        requestAnimationFrame(() => d.classList.add('show'));
-      };
-      const down = () => {
-        d.classList.remove('show');
-        clearTimeout(t);
-        t = window.setTimeout(() => { d.open = false; }, 360);
-      };
-
-      // sube SOLO al pasar por el texto "Ver alcance completo"
-      summary?.addEventListener('mouseenter', up);
-      // baja al sacar el mouse de la TARJETA…
-      card.addEventListener('mouseleave', down);
-      // …o manualmente con la ✕
-      closeBtn?.addEventListener('click', (e) => { e.preventDefault(); down(); });
+  /* ---------- acordeón: una fila abierta a la vez ---------- */
+  const setOpen = (row: HTMLElement, open: boolean) => {
+    row.classList.toggle('open', open);
+    row.querySelector('.pk-hd')?.setAttribute('aria-expanded', String(open));
+    const panel = row.querySelector<HTMLElement>('.pk-panel');
+    if (panel) { if (open) panel.removeAttribute('inert'); else panel.setAttribute('inert', ''); }
+  };
+  rows.forEach((row) => {
+    setOpen(row, row.dataset.open === 'true');
+    row.querySelector('.pk-hd')?.addEventListener('click', () => {
+      const willOpen = !row.classList.contains('open');
+      rows.forEach((r) => setOpen(r, r === row ? willOpen : false));
     });
+  });
+
+  /* ---------- los precios cuentan hasta su valor al entrar (una vez) ---------- */
+  const fmt = (n: number) => String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  const countEls = Array.from(document.querySelectorAll<HTMLElement>('.pk-price [data-pk-count]'));
+  if (!reduce && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver((es) => es.forEach((e) => {
+      if (!e.isIntersecting) return;
+      const el = e.target as HTMLElement; io.unobserve(el);
+      const txt = el.textContent || '';
+      const m = txt.match(/^(\D*)([\d.]+)(.*)$/);
+      if (!m) return;
+      const to = parseInt(m[2].replace(/\./g, ''), 10), t0 = performance.now(), D = 1300;
+      const tick = (now: number) => {
+        const p = Math.min(1, (now - t0) / D), v = to * (1 - Math.pow(1 - p, 3));
+        el.textContent = m[1] + (p < 1 ? fmt(v) : m[2]) + m[3];
+        if (p < 1) requestAnimationFrame(tick);
+      };
+      el.textContent = m[1] + '0' + m[3];
+      requestAnimationFrame(tick);
+    }), { threshold: 0.8 });
+    countEls.forEach((el) => io.observe(el));
+  }
+
+  /* ---------- la luz del cursor enciende el nombre de la fila ---------- */
+  if (fine && !reduce) {
+    const names = rows.map((r) => r.querySelector<HTMLElement>('[data-pk-name]'));
+    let px = -1e5, py = -1e5, bx = -1e5, by = -1e5, la = 0, raf = 0, last = 0;
+    const frame = (now: number) => {
+      const dt = Math.min(0.05, Math.max(0.001, (now - last) / 1000)); last = now;
+      const on = px > -9e4;
+      if (on && bx < -9e4) { bx = px; by = py; }
+      if (on) { const k = 1 - Math.exp(-9 * dt); bx += (px - bx) * k; by += (py - by) * k; }
+      la += ((on ? 1 : 0) - la) * (1 - Math.exp(-8 * dt));
+      const R = (260 * la).toFixed(1) + 'px';
+      names.forEach((el) => {
+        if (!el) return;
+        const r = el.getBoundingClientRect();
+        if (r.bottom < -50 || r.top > innerHeight + 50) return;
+        el.style.setProperty('--bx', (bx - r.left).toFixed(1) + 'px');
+        el.style.setProperty('--by', (by - r.top).toFixed(1) + 'px');
+        el.style.setProperty('--br', R);
+      });
+      const busy = (on && Math.hypot(px - bx, py - by) > 0.4) || Math.abs((on ? 1 : 0) - la) > 0.004;
+      raf = busy ? requestAnimationFrame(frame) : 0;
+    };
+    const kick = () => { if (!raf) { last = performance.now(); raf = requestAnimationFrame(frame); } };
+    const list = document.querySelector('.pk-list');
+    list?.addEventListener('pointermove', (e) => { px = (e as PointerEvent).clientX; py = (e as PointerEvent).clientY; kick(); }, { passive: true });
+    list?.addEventListener('pointerleave', () => { px = py = -1e5; kick(); });
+    addEventListener('scroll', () => { if (la > 0.01) kick(); }, { passive: true });
   }
 </script>
