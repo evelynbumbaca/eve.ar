@@ -182,7 +182,14 @@ const navItems = blocks.filter((b) => b.t === 'h') as { t: 'h'; n: string; es: s
             case 'video': return (
               <figure class="c-figure k-fig k-photo k-bleed">
                 <div class="frame reveal">
-                  <video class="revfill" src={link(`/${b.src}`)} autoplay muted loop playsinline preload="metadata" aria-label={b.es}></video>
+                  <video class="revfill" src={link(`/${b.src}`)} poster={b.poster ? link(`/${b.poster}`) : undefined} autoplay muted loop playsinline preload="metadata" aria-label={b.es}></video>
+                  {b.sound && (
+                    <button type="button" class="k-sound" data-sound aria-pressed="false">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path class="w" d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/><path class="x" d="M17 9l5 6M22 9l-5 6"/></svg>
+                      <span class="s-on" data-es="Activar sonido" data-en="Sound on">Activar sonido</span>
+                      <span class="s-off" data-es="Silenciar" data-en="Mute">Silenciar</span>
+                    </button>
+                  )}
                 </div>
                 <figcaption>
                   <span data-es={b.es} data-en={b.en}>{b.es}</span>
@@ -513,6 +520,20 @@ const navItems = blocks.filter((b) => b.t === 'h') as { t: 'h'; n: string; es: s
       </div>
     </div>
   </article>
+
+  <script is:inline>
+    /* video del caso con sonido: arranca mudo (autoplay) y se activa con el botón */
+    document.querySelectorAll('[data-sound]').forEach(function (btn) {
+      var v = btn.parentNode.querySelector('video');
+      if (!v) return;
+      btn.addEventListener('click', function () {
+        var on = v.muted;
+        v.muted = !on;
+        if (on) { v.currentTime = 0; v.play(); }
+        btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      });
+    });
+  </script>
 
   <script is:inline>
     /* las cifras de los casos cuentan hasta su valor al entrar en pantalla (una sola vez) */
@@ -921,6 +942,13 @@ const navItems = blocks.filter((b) => b.t === 'h') as { t: 'h'; n: string; es: s
   .k-bleed figcaption { padding-inline: max(var(--pad), calc((100vw - 980px) / 2 + var(--pad))); }
   /* nombre de la foto: adelante, al costadito (no debajo), y entra junto con la imagen */
   .k-photo { position: relative; }
+  .k-photo .frame { position: relative; }
+  .k-sound { position: absolute; left: var(--pad); bottom: 18px; z-index: 2; display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 16px; border: 0; border-radius: 99px; background: rgba(250, 249, 245, 0.92); color: var(--ink, #16150f); font-family: var(--sans); font-size: var(--t-xs, 13px); font-weight: 500; line-height: 1; cursor: pointer; }
+  .k-sound:hover { background: #fff; }
+  .k-sound:focus-visible { outline: 2px solid var(--lk-coral, #ce6c3f); outline-offset: 3px; }
+  .k-sound .s-off, .k-sound[aria-pressed='true'] .s-on, .k-sound .w { display: none; }
+  .k-sound[aria-pressed='true'] .s-off, .k-sound[aria-pressed='true'] .w { display: inline; }
+  .k-sound[aria-pressed='true'] .x { display: none; }
   .k-photo figcaption {
     position: absolute; right: 14px; bottom: 14px; z-index: 2; margin: 0;
     max-width: calc(100% - 28px); align-items: center; justify-content: flex-start; gap: 14px;

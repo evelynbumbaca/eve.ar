@@ -25,7 +25,14 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     </div>
     {works.map((p, i) => (
       <a class="card" href={link(`/trabajos/${p.id}`)} data-card>
-        {p.hero
+        {p.heroLoop
+          ? (
+            <video autoplay muted loop playsinline preload="auto" poster={p.hero ? `${base}/${p.hero}` : undefined} aria-hidden="true">
+              <source src={`${base}/${p.heroLoop.webm}`} type="video/webm" />
+              <source src={`${base}/${p.heroLoop.mp4}`} type="video/mp4" />
+            </video>
+          )
+          : p.hero
           ? <img src={`${base}/${p.hero}`} alt="" loading="eager" decoding="async" />
           : (
             <span class="ficha">
@@ -133,7 +140,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     will-change: transform, opacity;
     box-shadow: 0 1px 2px rgba(22, 21, 15, 0.14), 0 22px 50px -16px rgba(22, 21, 15, 0.4);
   }
-  .card img { display: block; width: 100%; height: 100%; object-fit: cover; transform: translate3d(var(--ix, 0px), var(--iy, 0px), 0) scale(var(--is, 1.08)); will-change: transform; }
+  .card img, .card video { display: block; width: 100%; height: 100%; object-fit: cover; transform: translate3d(var(--ix, 0px), var(--iy, 0px), 0) scale(var(--is, 1.08)); will-change: transform; }
   .card::after { content: ''; position: absolute; inset: 0; background: var(--paper); opacity: var(--dim, 0); pointer-events: none; }
   .card:focus-visible { outline: 2px solid var(--orange); outline-offset: 4px; }
 

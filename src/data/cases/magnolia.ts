@@ -41,6 +41,8 @@ export const magnolia: CaseContent = {
       ],
     },
 
+    { t: 'video', src: `${P}/presentacion.mp4`, poster: `${P}/presentacion-poster.jpg`, sound: true, es: 'Presentación de marca', en: 'Brand reveal' },
+
     /* ---------- 01 · Identidad ---------- */
     { t: 'break', kind: 'img', src: `${P}/relieve.jpg`, alt: 'Logo de Magnolia impreso en relieve sobre papel texturado' },
     { t: 'h', n: '01', es: 'Identidad', en: 'Identity' },
