@@ -85,6 +85,7 @@ export const magnolia: CaseContent = {
       t: 'gallery',
       es: 'Versiones del logo sobre terracota, negro y crema',
       en: 'Logo versions on terracotta, black and cream',
+      w: 'col',
       items: [
         { src: `${P}/logo-terracota.jpg`, alt: 'Logo de Magnolia en crema sobre fondo terracota' },
         { src: `${P}/logo-negro.jpg`, alt: 'Logo de Magnolia a color sobre fondo negro' },
