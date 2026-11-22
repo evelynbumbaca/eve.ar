@@ -20,7 +20,7 @@ const { project: P, next: NEXT } = Astro.props;
 /* caso con contenido propio (bloques) o molde genérico */
 const K = cases[P.id];
 let figN = 0;
-const blocks = (K?.blocks ?? []).map((b) => (b.t === 'fig' || b.t === 'video' || b.t === 'gallery' || b.t === 'deck' ? { ...b, n: ++figN } : b));
+const blocks = (K?.blocks ?? []).map((b) => (b.t === 'fig' || b.t === 'video' || b.t === 'gallery' || b.t === 'clips' || b.t === 'deck' ? { ...b, n: ++figN } : b));
 const linkBlock = blocks.find((b) => b.t === 'links') as { t: 'links'; items: { es: string; en: string; href: string }[] } | undefined;
 const pad = (n: number) => String(n).padStart(2, '0');
 const depth = (nodes: { kids?: any[] }[]): number => (nodes.length ? 1 + Math.max(...nodes.map((n) => depth(n.kids ?? []))) : 0);
@@ -410,6 +410,21 @@ const navItems = blocks.filter((b) => b.t === 'h') as { t: 'h'; n: string; es: s
                   </div>
                 </div>
                 <figcaption><span data-es={b.es} data-en={b.en}>{b.es}</span></figcaption>
+              </figure>
+            );
+            case 'clips': return (
+              <figure class="c-figure k-fig k-gallery k-grid k-clips">
+                <div class="k-gal-grid" style={`--n:${b.items.length}`}>
+                  {b.items.map((it) => (
+                    <div class="frame reveal">
+                      <video class="revfill" src={link(`/${it.src}`)} autoplay muted loop playsinline preload="metadata" aria-label={it.alt}></video>
+                    </div>
+                  ))}
+                </div>
+                <figcaption>
+                  <span data-es={b.es} data-en={b.en}>{b.es}</span>
+                  <span class="mono">FIG {pad(b.n)}</span>
+                </figcaption>
               </figure>
             );
             case 'gallery': return (
@@ -987,6 +1002,9 @@ const navItems = blocks.filter((b) => b.t === 'h') as { t: 'h'; n: string; es: s
   .k-bleed.k-gallery .frame { aspect-ratio: 1 / 1; }
   .k-gal-grid { display: grid; grid-template-columns: repeat(var(--n, 3), 1fr); gap: clamp(10px, 1.6vw, 22px); }
   .k-gallery.has-r .frame { aspect-ratio: var(--r); }
+  .k-clips .frame { aspect-ratio: 16 / 9 !important; overflow: hidden; }
+  .k-clips .frame > video { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: var(--k-r, 16px); }
+  @media (max-width: 860px) { .k-clips .k-gal-grid { grid-template-columns: 1fr; } .k-clips .frame:last-child { grid-column: auto; } }
   .k-gallery .frame { aspect-ratio: 4 / 5; }
   .k-gallery .frame > img { height: 100%; object-fit: cover; }
   .k-split { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: clamp(24px, 4vw, 64px); align-items: center; margin-top: clamp(32px, 5vh, 56px); }

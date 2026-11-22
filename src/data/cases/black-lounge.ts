@@ -128,6 +128,14 @@ export const blackLounge: CaseContent = {
       ],
     },
     {
+      t: 'video',
+      src: `${P}/afiches-calle.mp4`,
+      poster: `${P}/afiches-calle-poster.jpg`,
+      sound: true,
+      es: 'Afiches en la calle · animado con IA a partir del mockup',
+      en: 'Posters on the street · animated with AI from the mockup',
+    },
+    {
       t: 'split',
       src: `${P}/retrato.jpg`,
       alt: 'Retrato de campaña: una mujer con tatuajes y anteojos frente a una pared negra con BLACK escrito a pincel en rosa',
@@ -135,6 +143,15 @@ export const blackLounge: CaseContent = {
       en: 'For the campaign, the lettering breaks out of the logo and is painted large on the wall: BLACK, arrows and strokes in pink around the person, the same energy as the posters carried into photography.',
     },
     { t: 'fig', src: `${P}/frascos.jpg`, es: 'Frascos de Lash Shampoo y Lash Oil', en: 'Lash Shampoo and Lash Oil bottles' },
+    {
+      t: 'clips',
+      es: 'Spot de producto · generado con IA a partir del mockup',
+      en: 'Product spot · generated with AI from the mockup',
+      items: [
+        { src: `${P}/frascos-neon.mp4`, alt: 'Los tres frascos sobre un piso negro mojado con luz de neón rosa' },
+        { src: `${P}/spray.mp4`, alt: 'Macro en cámara lenta del spray de Lash Shampoo' },
+      ],
+    },
     {
       t: 'gallery',
       es: 'Tote bag y sticker',
