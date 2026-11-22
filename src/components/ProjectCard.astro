@@ -10,8 +10,17 @@ const { project: p } = Astro.props;
 
 <a class="card" href={link(`/trabajos/${p.id}`)} data-cat={p.cat}>
   <div class="card-frame reveal" data-glow-dock style={`aspect-ratio:${p.ratio}`}>
-    <span class="card-img ph revfill" data-label={`${p.title} — cover`}></span>
-    <span class="card-alt ph" data-label={`${p.title} — detalle`} aria-hidden="true"></span>
+    {p.hero
+      ? <img class="card-img revfill" src={link(`/${p.hero}`)} alt={`${p.title} — portada`} loading="lazy" decoding="async" />
+      : <span class="card-img ph revfill" data-label={`${p.title} — cover`}></span>}
+    {p.heroLoop
+      ? (
+        <video class="card-alt card-vid" muted loop playsinline preload="none" aria-hidden="true">
+          <source src={link(`/${p.heroLoop.webm}`)} type="video/webm" />
+          <source src={link(`/${p.heroLoop.mp4}`)} type="video/mp4" />
+        </video>
+      )
+      : <span class="card-alt ph" data-label={`${p.title} — detalle`} aria-hidden="true"></span>}
   </div>
   <div class="card-meta rise">
     <h3>{p.title}</h3>
@@ -33,6 +42,9 @@ const { project: p } = Astro.props;
     transition: transform 0.5s var(--ease-out);
   }
   .card:hover .card-img { transform: scale(1.03); }
+  img.card-img, .card-vid { display: block; object-fit: cover; }
+  .card-vid { width: 100%; height: 100%; background: none; transition: opacity 0.45s var(--ease-out, ease); }
+  .card:hover .card-alt.card-vid, .card.playing .card-alt.card-vid { animation: none; opacity: 1; }
 
   /* segunda toma del proyecto al hover (como en el home) */
   .card-alt {
@@ -71,3 +83,23 @@ const { project: p } = Astro.props;
   }
   .card-disc .year { color: var(--ink-35); }
 </style>
+
+<script>
+  /* video de la tarjeta: con el mouse encima (escritorio) o al estar en pantalla (táctil) */
+  const vcards = Array.from(document.querySelectorAll<HTMLElement>('a.card[data-cat]')).filter((c) => c.querySelector('.card-vid'));
+  const playV = (c: HTMLElement, on: boolean) => {
+    const v = c.querySelector<HTMLVideoElement>('.card-vid');
+    if (!v) return;
+    if (on) { v.preload = 'auto'; v.play().then(() => c.classList.add('playing')).catch(() => {}); }
+    else { c.classList.remove('playing'); v.pause(); }
+  };
+  if (matchMedia('(hover: hover)').matches) {
+    vcards.forEach((c) => {
+      c.addEventListener('mouseenter', () => playV(c, true));
+      c.addEventListener('mouseleave', () => playV(c, false));
+    });
+  } else if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const io = new IntersectionObserver((es) => es.forEach((e) => playV(e.target as HTMLElement, e.intersectionRatio > 0.6)), { threshold: [0, 0.6] });
+    vcards.forEach((c) => io.observe(c));
+  }
+</script>

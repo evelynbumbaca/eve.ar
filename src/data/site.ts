@@ -26,7 +26,8 @@ export interface Project {
   ratio: string;
   /* imagen de portada real (ruta en /public, sin barra inicial). Si falta, va placeholder */
   hero?: string;
-  /* loop de video para la tarjeta del inicio (WebM + MP4 de respaldo); hero queda como póster */
+  /* video corto del proyecto (WebM + MP4 de respaldo): se reproduce al frente de la pila,
+     al pasar el mouse y en el archivo de trabajos. Se descarga recién cuando va a sonar. */
   heroLoop?: { webm: string; mp4: string };
 }
 
@@ -75,8 +76,8 @@ export const filters: { key: string; label: Bilingual }[] = [
 /* ---------- proyectos (placeholders por ahora) ---------- */
 export const projects: Project[] = [
   { id: 'mercado-norte', cat: 'branding', year: '2025', title: 'Mercado Norte', disc: { es: 'Identidad de Marca', en: 'Brand Identity' }, ratio: '4 / 5' },
-  { id: 'magnolia', cat: 'branding', year: '2023', title: 'Magnolia', disc: { es: 'Identidad de Marca', en: 'Brand Identity' }, ratio: '4 / 5', hero: 'projects/magnolia/loop-poster.jpg', heroLoop: { webm: 'projects/magnolia/loop.webm', mp4: 'projects/magnolia/loop.mp4' } },
-  { id: 'lookap', cat: 'uxui', year: '2021', title: 'Lookap', disc: { es: 'Diseño UX/UI · App', en: 'UX/UI Design · App' }, ratio: '4 / 5', hero: 'projects/lookap/mockup-jeans.jpg' },
+  { id: 'magnolia', cat: 'branding', year: '2023', title: 'Magnolia', disc: { es: 'Identidad de Marca', en: 'Brand Identity' }, ratio: '4 / 5', hero: 'projects/magnolia/cover.jpg', heroLoop: { webm: 'projects/magnolia/loop.webm', mp4: 'projects/magnolia/loop.mp4' } },
+  { id: 'lookap', cat: 'uxui', year: '2021', title: 'Lookap', disc: { es: 'Diseño UX/UI · App', en: 'UX/UI Design · App' }, ratio: '4 / 5', hero: 'projects/lookap/mockup-jeans.jpg', heroLoop: { webm: 'projects/lookap/loop.webm', mp4: 'projects/lookap/loop.mp4' } },
   { id: 'marcas-en-movimiento', cat: 'motion', year: '2025', title: 'Marcas en Movimiento', disc: { es: 'Motion · Animación de logos', en: 'Motion · Logo animation' }, ratio: '4 / 5' },
   { id: 'revista-sur', cat: 'editorial', year: '2024', title: 'Revista Sur', disc: { es: 'Editorial', en: 'Editorial' }, ratio: '4 / 5' },
   { id: 'cafe-tostado', cat: 'packaging', year: '2024', title: 'Café Tostado', disc: { es: 'Packaging', en: 'Packaging' }, ratio: '4 / 5' },

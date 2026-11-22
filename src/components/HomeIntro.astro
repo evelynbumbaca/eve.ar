@@ -25,14 +25,13 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     </div>
     {works.map((p, i) => (
       <a class="card" href={link(`/trabajos/${p.id}`)} data-card>
-        {p.heroLoop
-          ? (
-            <video autoplay muted loop playsinline preload="auto" poster={p.hero ? `${base}/${p.hero}` : undefined} aria-hidden="true">
-              <source src={`${base}/${p.heroLoop.webm}`} type="video/webm" />
-              <source src={`${base}/${p.heroLoop.mp4}`} type="video/mp4" />
-            </video>
-          )
-          : p.hero
+        {p.heroLoop && (
+          <video muted loop playsinline preload="none" aria-hidden="true">
+            <source src={`${base}/${p.heroLoop.webm}`} type="video/webm" />
+            <source src={`${base}/${p.heroLoop.mp4}`} type="video/mp4" />
+          </video>
+        )}
+        {p.hero
           ? <img src={`${base}/${p.hero}`} alt="" loading="eager" decoding="async" />
           : (
             <span class="ficha">
@@ -140,8 +139,10 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     will-change: transform, opacity;
     box-shadow: 0 1px 2px rgba(22, 21, 15, 0.14), 0 22px 50px -16px rgba(22, 21, 15, 0.4);
   }
+  .card video { position: absolute; inset: 0; z-index: 1; opacity: 0; transition: opacity 0.45s var(--ease-out, ease); pointer-events: none; }
+  .card.playing video { opacity: 1; }
   .card img, .card video { display: block; width: 100%; height: 100%; object-fit: cover; transform: translate3d(var(--ix, 0px), var(--iy, 0px), 0) scale(var(--is, 1.08)); will-change: transform; }
-  .card::after { content: ''; position: absolute; inset: 0; background: var(--paper); opacity: var(--dim, 0); pointer-events: none; }
+  .card::after { content: ''; position: absolute; inset: 0; z-index: 2; background: var(--paper); opacity: var(--dim, 0); pointer-events: none; }
   .card:focus-visible { outline: 2px solid var(--orange); outline-offset: 4px; }
 
   .ficha {
@@ -153,7 +154,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
   .ccap {
     position: absolute; inset: auto 0 0 0; display: flex; align-items: flex-end; justify-content: space-between; gap: 6px 16px;
-    padding: clamp(10px, 1.6vw, 20px); opacity: var(--cap, 0); color: var(--ink);
+    padding: clamp(10px, 1.6vw, 20px); opacity: var(--cap, 0); color: var(--ink); z-index: 3;
   }
   .ccap.on-photo { padding-top: clamp(28px, 5vw, 56px); color: #fff; background: linear-gradient(to top, rgba(14, 13, 10, 0.74), rgba(14, 13, 10, 0)); }
   .ccap b { display: block; font-family: var(--serif); font-weight: 400; font-size: clamp(1.35rem, 3.1vw, 2.5rem); line-height: 1.04; letter-spacing: -0.015em; }
@@ -245,6 +246,32 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   const letters = eve ? Array.from(eve.querySelectorAll<SVGGElement>('.ltr')) : [];
   const footEl = document.querySelector<HTMLElement>('[data-foot]');
   const bigs = Array.from(document.querySelectorAll<HTMLElement>('[data-big]'));
+
+  /* videos de las tarjetas: se reproducen al frente de la pila o con el mouse encima.
+     preload="none": no se descargan hasta que van a sonar. */
+  const vids = cards.map((c) => c.querySelector<HTMLVideoElement>('video'));
+  const vOn = cards.map(() => false);
+  let hoverIdx = -1, frontIdx = -1;
+  const setVid = (i: number, on: boolean) => {
+    const v = vids[i];
+    if (!v || vOn[i] === on) return;
+    vOn[i] = on;
+    if (on) {
+      v.preload = 'auto';
+      const pr = v.play();
+      const show = () => { if (vOn[i]) cards[i].classList.add('playing'); };
+      if (pr) pr.then(show).catch(() => { vOn[i] = false; }); else show();
+    } else {
+      cards[i].classList.remove('playing');
+      v.pause();
+    }
+  };
+  const syncVids = () => vids.forEach((v, i) => { if (v) setVid(i, i === frontIdx || i === hoverIdx); });
+  cards.forEach((c, i) => {
+    if (!vids[i]) return;
+    c.addEventListener('mouseenter', () => { hoverIdx = i; syncVids(); });
+    c.addEventListener('mouseleave', () => { if (hoverIdx === i) hoverIdx = -1; syncVids(); });
+  });
 
   if (footEl) {
     if (matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) footEl.classList.add('in');
@@ -366,6 +393,8 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       }
       if (roleEl) roleEl.style.opacity = (1 - clamp01(opening / 0.3)).toFixed(3);
       if (countEl) countEl.style.opacity = clamp01((g - 0.7) / 0.3).toFixed(3);
+      const fi = Math.round(q2), fr = g > 0.85 && Math.abs(fi - q2) < 0.3 ? fi : -1;
+      if (fr !== frontIdx) { frontIdx = fr; syncVids(); }
       const n = Math.min(N, Math.round(q2) + 1);
       if (n !== lastNum && numEl) { lastNum = n; numEl.textContent = (n < 10 ? '0' : '') + n; }
     };
