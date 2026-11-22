@@ -251,7 +251,8 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
      preload="none": no se descargan hasta que van a sonar. */
   const vids = cards.map((c) => c.querySelector<HTMLVideoElement>('video'));
   const vOn = cards.map(() => false);
-  let hoverIdx = -1, frontIdx = -1;
+  let hoverIdx = -1, frontIdx = -1, stackOn = false;
+  const touchOnly = !matchMedia('(hover: hover)').matches;
   const setVid = (i: number, on: boolean) => {
     const v = vids[i];
     if (!v || vOn[i] === on) return;
@@ -266,7 +267,9 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       v.pause();
     }
   };
-  const syncVids = () => vids.forEach((v, i) => { if (v) setVid(i, i === frontIdx || i === hoverIdx); });
+  /* solo con la pila armada (no en la escena suelta): la tarjeta de adelante, al pasar el mouse;
+     en pantallas táctiles, la de adelante directamente */
+  const syncVids = () => vids.forEach((v, i) => { if (v) setVid(i, stackOn && i === frontIdx && (touchOnly || i === hoverIdx)); });
   cards.forEach((c, i) => {
     if (!vids[i]) return;
     c.addEventListener('mouseenter', () => { hoverIdx = i; syncVids(); });
@@ -287,12 +290,12 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
     // posición suelta de cada pieza (fracción del escenario desde el centro), escala, giro y profundidad
     const loose = [
-      { fx: -0.33, fy: -0.20, s: 0.44, rot: -4, depth: 0.35 },
-      { fx:  0.32, fy: -0.25, s: 0.56, rot:  3, depth: 0.80 },
-      { fx:  0.28, fy:  0.27, s: 0.38, rot: -2, depth: 1.25 },
-      { fx: -0.27, fy:  0.27, s: 0.36, rot:  5, depth: 0.60 },
-      { fx: -0.02, fy:  0.37, s: 0.30, rot: -6, depth: 1.00 },
-      { fx:  0.04, fy: -0.34, s: 0.32, rot:  4, depth: 0.50 },
+      { fx: -0.34, fy: -0.20, s: 0.40, rot: -4, depth: 0.35 },
+      { fx:  0.33, fy: -0.22, s: 0.44, rot:  3, depth: 0.80 },
+      { fx:  0.30, fy:  0.26, s: 0.36, rot: -2, depth: 1.25 },
+      { fx: -0.30, fy:  0.28, s: 0.36, rot:  5, depth: 0.60 },
+      { fx: -0.08, fy:  0.36, s: 0.30, rot: -6, depth: 1.00 },
+      { fx:  0.08, fy: -0.36, s: 0.30, rot:  4, depth: 0.50 },
     ];
 
     let W = 0, H = 0, ch = 0, lastNum = 0, exW = 0, exH = 0;
@@ -301,6 +304,44 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
     let opening = 0;                  // 0 = logo grande · 1 = logo en el menú y frase visible
     const mix = (a: number, b: number, t: number) => a + (b - a) * t;
+
+    /* escena suelta: cada tarjeta parte de su lugar en `loose` y se separa de las demás y del logo
+       hasta que no se pisan (con aire entre medio). Se calcula al medir, no en cada cuadro. */
+    const loosePos: { x: number; y: number; s: number }[] = [];
+    const layLoose = () => {
+      const SAFE_TOP = 104, SAFE_BOT = 92, PAR = 34, GAP = 30;
+      const k = 0.82 * Math.min(1, Math.max(W * 0.55, 300) / ch, H * 0.62 / ch);
+      const P = cards.map((_, i) => { const L = loose[i % loose.length]; return { x: L.fx * W, y: L.fy * H, s: L.s * k }; });
+      const half = (p: { s: number }) => { const hh = p.s * ch / 2; return [hh * 0.8 + 8, hh + 8]; }; // +8: el giro
+      const clampP = (p: { x: number; y: number; s: number }) => {
+        const [hw, hh] = half(p);
+        const bx = W / 2 - hw - 12 - PAR, by0 = -H / 2 + SAFE_TOP + hh + PAR, by1 = H / 2 - SAFE_BOT - hh - PAR;
+        p.x = Math.max(-bx, Math.min(bx, p.x));
+        p.y = by0 > by1 ? (by0 + by1) / 2 : Math.max(by0, Math.min(by1, p.y));
+      };
+      const sgn = (v: number) => (v < 0 ? -1 : 1);
+      for (let it = 0; it < 400; it++) {
+        let moved = false;
+        for (let i = 0; i < P.length; i++) {
+          const a = P[i], [aw, ah] = half(a);
+          const ox = exW + aw - Math.abs(a.x), oy = exH + ah - Math.abs(a.y);
+          if (ox > 0 && oy > 0) { moved = true; if (ox < oy) a.x += sgn(a.x) * ox; else a.y += sgn(a.y) * oy; }
+          for (let j = i + 1; j < P.length; j++) {
+            const b = P[j], [bw, bh] = half(b), dx = b.x - a.x, dy = b.y - a.y;
+            const px = aw + bw + GAP - Math.abs(dx), py = ah + bh + GAP - Math.abs(dy);
+            if (px > 0 && py > 0) {
+              moved = true;
+              if (px < py) { a.x -= sgn(dx) * px / 2; b.x += sgn(dx) * px / 2; }
+              else { a.y -= sgn(dy) * py / 2; b.y += sgn(dy) * py / 2; }
+            }
+          }
+          clampP(a);
+        }
+        if (!moved) break;
+        if (it % 50 === 49) P.forEach((p) => { p.s *= 0.95; });   // si no entran, se achican un poco
+      }
+      P.forEach((p, i) => { loosePos[i] = p; });
+    };
 
     const measure = () => {
       W = stage.clientWidth; H = stage.clientHeight;
@@ -318,6 +359,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         const w100 = el.offsetWidth || 1;
         el.style.fontSize = Math.min((W * 1.02 / w100) * 100, H * 0.5).toFixed(1) + 'px';
       });
+      layLoose();
     };
 
     // Objetivos según el scroll (sin suavizar). El suavizado va en el tiempo (frame), así cada
@@ -354,20 +396,9 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
           X = dir * t * W * 0.16; Y = front - t * H * 0.16; S = 1 + 0.55 * t; R = dir * t * 7;
           O = 1 - clamp01((t - 0.12) / 0.5); dim = 0; cap = 1 - clamp01(t * 2.4);
         }
-        // escena suelta: tamaño según el ancho y dentro de una zona segura (sin pisar el logo ni el menú de arriba)
-        const ls = L.s * 1.15 * Math.min(1, Math.max(W * 0.55, 300) / ch, H * 0.62 / ch);
-        const hh = ls * ch / 2, hw = hh * 0.8, SAFE_TOP = 104, SAFE_BOT = 92, PAR = 34;
-        const bx = W / 2 - hw - 12 - PAR, by0 = -H / 2 + SAFE_TOP + hh + PAR, by1 = H / 2 - SAFE_BOT - hh - PAR;
-        let lx = Math.max(-bx, Math.min(bx, L.fx * W));
-        let ly = Math.max(by0, Math.min(by1, L.fy * H));
-        // si la tarjeta toca la zona del texto, se corre hacia afuera por el lado que menos le cuesta
-        const ox = exW + hw - Math.abs(lx), oy = exH + hh - Math.abs(ly);
-        if (ox > 0 && oy > 0) {
-          const nx = (lx < 0 ? -1 : 1) * (exW + hw), ny = (ly < 0 ? -1 : 1) * (exH + hh);
-          const fitsX = Math.abs(nx) <= bx, fitsY = ny >= by0 && ny <= by1;
-          if (fitsX && (ox <= oy || !fitsY)) lx = nx; else if (fitsY) ly = ny; else lx = nx;
-        }
-        lx = Math.max(-bx, Math.min(bx, lx));
+        // escena suelta: posición ya repartida sin superposiciones (layLoose)
+        const lp = loosePos[i] || { x: 0, y: 0, s: 0.3 };
+        const ls = lp.s, lx = lp.x, ly = lp.y;
         const x = mix(lx - sx * L.depth * 30, X, g);
         const y = mix(ly - sy * L.depth * 30, Y, g);
         const s = mix(ls, S, g), rot = mix(L.rot, R, g), o = mix(1, O, g);
@@ -394,7 +425,8 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       if (roleEl) roleEl.style.opacity = (1 - clamp01(opening / 0.3)).toFixed(3);
       if (countEl) countEl.style.opacity = clamp01((g - 0.7) / 0.3).toFixed(3);
       const fi = Math.round(q2), fr = g > 0.85 && Math.abs(fi - q2) < 0.3 ? fi : -1;
-      if (fr !== frontIdx) { frontIdx = fr; syncVids(); }
+      const so = g > 0.85;
+      if (fr !== frontIdx || so !== stackOn) { frontIdx = fr; stackOn = so; syncVids(); }
       const n = Math.min(N, Math.round(q2) + 1);
       if (n !== lastNum && numEl) { lastNum = n; numEl.textContent = (n < 10 ? '0' : '') + n; }
     };
@@ -526,13 +558,21 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       };
 
       // rueda y trackpad: la inercia de un mismo gesto no avanza más de un paso
-      let locked = false, lockT = 0, lastT = 0, lastAbs = 0, lastSign = 0;
+      // Un gesto = un paso. La inercia del trackpad (Mac) sigue mandando eventos más de un segundo,
+      // a veces con repuntes: no cuentan como gesto nuevo. Gesto nuevo = una pausa real (>220 ms),
+      // un cambio de sentido, o un empujón claramente más fuerte que lo que venía llegando.
+      let locked = false, lockT = 0, lastT = 0, lastSign = 0;
+      const recent: number[] = [];
       addEventListener('wheel', (e) => {
         if (e.ctrlKey || e.deltaY === 0 || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
         const now = performance.now(), abs = Math.abs(e.deltaY), sign = e.deltaY > 0 ? 1 : -1;
-        const fresh = now - lastT > 160 || sign !== lastSign ||
-          (now - lockT > 320 && abs > lastAbs * 1.6 + 2);
-        lastT = now; lastAbs = abs; lastSign = sign;
+        const gap = now - lastT, since = now - lockT;
+        if (gap > 220) recent.length = 0;
+        const avg = recent.length ? recent.reduce((x, y) => x + y, 0) / recent.length : 0;
+        recent.push(abs); if (recent.length > 6) recent.shift();
+        const fresh = (sign !== lastSign && since > 250) ||
+          (since > 480 && (gap > 220 || (since > 750 && avg > 0 && abs > avg * 2.5 && abs > 10)));
+        lastT = now; lastSign = sign;
         const u = scrollU();
         if (!inZone(u)) { locked = false; return; }
         if (locked && !fresh) { e.preventDefault(); return; }
@@ -540,7 +580,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         const target = nextRest(u, sign);
         if (target === null) return;                 // extremo: sigue el scroll normal
         e.preventDefault();
-        jumpTo(target); locked = true; lockT = now;
+        jumpTo(target); locked = true; lockT = now; recent.length = 0;
       }, { passive: false });
 
       // deslizar en pantallas táctiles
