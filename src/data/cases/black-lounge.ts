@@ -41,6 +41,8 @@ export const blackLounge: CaseContent = {
       ],
     },
 
+    { t: 'video', src: `${P}/presentacion.mp4`, poster: `${P}/presentacion-poster.jpg`, sound: true, es: 'Presentación de marca', en: 'Brand reveal' },
+
     /* ---------- 01 · Identidad ---------- */
     { t: 'h', n: '01', es: 'Identidad', en: 'Identity' },
     {
