@@ -169,7 +169,7 @@ const navItems = blocks.filter((b) => b.t === 'h') as { t: 'h'; n: string; es: s
               </div>
             );
             case 'fig': return (
-              <figure class={`c-figure k-fig k-photo ${b.w === 'narrow' ? 'narrow' : ''} ${b.w === 'wide' ? 'k-wide k-board' : ''}`}>
+              <figure class={`c-figure k-fig k-photo ${b.w === 'narrow' ? 'narrow' : ''} ${b.w === 'wide' ? 'k-wide k-board' : ''} ${b.w === 'board' ? 'k-board' : ''}`}>
                 <div class="frame reveal">
                   <img class="revfill" src={link(`/${b.src}`)} alt={b.es} loading="lazy" decoding="async" />
                 </div>
@@ -413,7 +413,7 @@ const navItems = blocks.filter((b) => b.t === 'h') as { t: 'h'; n: string; es: s
               </figure>
             );
             case 'clips': return (
-              <figure class="c-figure k-fig k-gallery k-grid k-clips">
+              <figure class="c-figure k-fig k-gallery k-col k-clips">
                 <div class="k-gal-grid" style={`--n:${b.items.length}`}>
                   {b.items.map((it) => (
                     <div class="frame reveal">

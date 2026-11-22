@@ -100,6 +100,7 @@ export const blackLounge: CaseContent = {
       t: 'gallery',
       es: 'Patrones',
       en: 'Patterns',
+      w: 'col',
       items: [
         { src: `${P}/patron-negro.jpg`, alt: 'Patrón de trazos de pincel en negro sobre blanco' },
         { src: `${P}/patron-rosa.jpg`, alt: 'Patrón de trazos de pincel en dos rosas' },
@@ -119,6 +120,7 @@ export const blackLounge: CaseContent = {
       t: 'gallery',
       es: 'Afiches en cuatro colores',
       en: 'Posters in four colors',
+      w: 'col',
       r: '4 / 5',
       items: [
         { src: `${P}/afiche-crema.jpg`, alt: 'Afiche crema con el logo en rosa y trazos negros' },
@@ -138,9 +140,9 @@ export const blackLounge: CaseContent = {
     {
       t: 'split',
       src: `${P}/retrato.jpg`,
-      alt: 'Retrato de campaña: una mujer con tatuajes y anteojos frente a una pared negra con BLACK escrito a pincel en rosa',
-      es: 'Para la campaña, el lettering sale del logo y se pinta en grande sobre la pared: BLACK, flechas y trazos en rosa alrededor de la persona, la misma energía de los afiches llevada a la fotografía.',
-      en: 'For the campaign, the lettering breaks out of the logo and is painted large on the wall: BLACK, arrows and strokes in pink around the person, the same energy as the posters carried into photography.',
+      alt: 'Retrato de campaña: la dueña del estudio, con tatuajes y anteojos frente a una pared negra con BLACK escrito a pincel en rosa',
+      es: 'Para la campaña, el lettering sale del logo y se pinta en grande sobre la pared: BLACK, flechas y trazos en rosa alrededor de la dueña del negocio, la misma energía de los afiches llevada a la fotografía.',
+      en: 'For the campaign, the lettering breaks out of the logo and is painted large on the wall: BLACK, arrows and strokes in pink around the business owner, the same energy as the posters carried into photography.',
     },
     { t: 'fig', src: `${P}/frascos.jpg`, es: 'Frascos de Lash Shampoo y Lash Oil', en: 'Lash Shampoo and Lash Oil bottles' },
     {
@@ -156,11 +158,12 @@ export const blackLounge: CaseContent = {
       t: 'gallery',
       es: 'Tote bag y sticker',
       en: 'Tote bag and sticker',
+      w: 'col',
       items: [
         { src: `${P}/tote.jpg`, alt: 'Tote bag blanca con el logo de Black Lounge Studio' },
         { src: `${P}/sticker.jpg`, alt: 'Sticker redondo con el logo de Black Lounge Studio' },
       ],
     },
-    { t: 'fig', src: `${P}/destacadas.jpg`, w: 'wide', es: 'Portadas de historias destacadas para Instagram', en: 'Instagram highlight covers' },
+    { t: 'fig', src: `${P}/destacadas.jpg`, w: 'board', es: 'Portadas de historias destacadas para Instagram', en: 'Instagram highlight covers' },
   ],
 };
