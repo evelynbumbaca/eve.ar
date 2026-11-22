@@ -169,7 +169,7 @@ const navItems = blocks.filter((b) => b.t === 'h') as { t: 'h'; n: string; es: s
               </div>
             );
             case 'fig': return (
-              <figure class={`c-figure k-fig k-photo ${b.w === 'narrow' ? 'narrow' : ''}`}>
+              <figure class={`c-figure k-fig k-photo ${b.w === 'narrow' ? 'narrow' : ''} ${b.w === 'wide' ? 'k-wide k-board' : ''}`}>
                 <div class="frame reveal">
                   <img class="revfill" src={link(`/${b.src}`)} alt={b.es} loading="lazy" decoding="async" />
                 </div>
@@ -413,8 +413,8 @@ const navItems = blocks.filter((b) => b.t === 'h') as { t: 'h'; n: string; es: s
               </figure>
             );
             case 'gallery': return (
-              <figure class={`c-figure k-fig k-gallery ${b.w === 'col' ? 'k-col' : 'k-grid'}`}>
-                <div class="k-gal-grid" style={`--n:${b.items.length}`}>
+              <figure class={`c-figure k-fig k-gallery ${b.w === 'col' ? 'k-col' : 'k-grid'} ${b.r ? 'has-r' : ''}`}>
+                <div class="k-gal-grid" style={`--n:${b.items.length}${b.r ? `;--r:${b.r}` : ''}`}>
                   {b.items.map((it) => (
                     <div class="frame reveal">
                       <img class="revfill" src={link(`/${it.src}`)} alt={it.alt} loading="lazy" decoding="async" />
@@ -964,6 +964,8 @@ const navItems = blocks.filter((b) => b.t === 'h') as { t: 'h'; n: string; es: s
     background: rgba(250, 249, 245, 0.84); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
   }
   .k-photo.k-bleed figcaption { right: var(--pad); bottom: 18px; padding-inline: 14px; }
+  /* lámina (fig ancho): el nombre va debajo, como en las galerías */
+  .k-photo.k-board figcaption { position: static; max-width: none; padding: 0; border-radius: 0; background: none; -webkit-backdrop-filter: none; backdrop-filter: none; color: var(--ink-60); margin-top: 18px; justify-content: space-between; }
   @media (prefers-reduced-motion: no-preference) {
     .case .k-photo figcaption {
       opacity: 0; transform: translateY(10px); filter: blur(5px);
@@ -984,6 +986,7 @@ const navItems = blocks.filter((b) => b.t === 'h') as { t: 'h'; n: string; es: s
   .k-col .frame, .k-col .frame > img { border-radius: var(--k-box, 16px); }
   .k-bleed.k-gallery .frame { aspect-ratio: 1 / 1; }
   .k-gal-grid { display: grid; grid-template-columns: repeat(var(--n, 3), 1fr); gap: clamp(10px, 1.6vw, 22px); }
+  .k-gallery.has-r .frame { aspect-ratio: var(--r); }
   .k-gallery .frame { aspect-ratio: 4 / 5; }
   .k-gallery .frame > img { height: 100%; object-fit: cover; }
   .k-split { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: clamp(24px, 4vw, 64px); align-items: center; margin-top: clamp(32px, 5vh, 56px); }
@@ -1008,7 +1011,7 @@ const navItems = blocks.filter((b) => b.t === 'h') as { t: 'h'; n: string; es: s
     .k-os, .k-cols, .k-stats { grid-template-columns: 1fr; }
     .k-gal-grid { grid-template-columns: 1fr 1fr; }
     .k-split { grid-template-columns: 1fr; }
-    .k-gal-grid .frame:last-child { grid-column: 1 / -1; aspect-ratio: 4 / 3; }
+    .k-gal-grid .frame:last-child:nth-child(odd) { grid-column: 1 / -1; aspect-ratio: 4 / 3; }
   }
 
   /* ---------- piezas rediseñadas con la estética de Lookap (vino · coral · crema) ---------- */

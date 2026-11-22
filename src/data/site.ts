@@ -76,6 +76,7 @@ export const filters: { key: string; label: Bilingual }[] = [
 /* ---------- proyectos (placeholders por ahora) ---------- */
 export const projects: Project[] = [
   { id: 'mercado-norte', cat: 'branding', year: '2025', title: 'Mercado Norte', disc: { es: 'Identidad de Marca', en: 'Brand Identity' }, ratio: '4 / 5' },
+  { id: 'black-lounge', cat: 'branding', year: '2025', title: 'Black Lounge Studio', disc: { es: 'Rebranding · Identidad', en: 'Rebranding · Identity' }, ratio: '4 / 5', hero: 'projects/black-lounge/cover.jpg', heroLoop: { webm: 'projects/black-lounge/loop.webm', mp4: 'projects/black-lounge/loop.mp4' } },
   { id: 'magnolia', cat: 'branding', year: '2023', title: 'Magnolia', disc: { es: 'Identidad de Marca', en: 'Brand Identity' }, ratio: '4 / 5', hero: 'projects/magnolia/cover.jpg', heroLoop: { webm: 'projects/magnolia/loop.webm', mp4: 'projects/magnolia/loop.mp4' } },
   { id: 'lookap', cat: 'uxui', year: '2021', title: 'Lookap', disc: { es: 'Diseño UX/UI · App', en: 'UX/UI Design · App' }, ratio: '4 / 5', hero: 'projects/lookap/mockup-jeans.jpg', heroLoop: { webm: 'projects/lookap/loop.webm', mp4: 'projects/lookap/loop.mp4' } },
   { id: 'marcas-en-movimiento', cat: 'motion', year: '2025', title: 'Marcas en Movimiento', disc: { es: 'Motion · Animación de logos', en: 'Motion · Logo animation' }, ratio: '4 / 5' },
