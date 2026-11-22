@@ -12,7 +12,7 @@ export const blackLounge: CaseContent = {
   theme: { wine: '#1D1D1D', coral: '#F33283', cream: '#FEFDF8', night: '#000000' },
   meta: {
     context: { es: 'Cliente · Estudio de belleza', en: 'Client · Beauty studio' },
-    role: { es: 'Rebranding · Identidad visual · Patrones · Piezas gráficas · Redes', en: 'Rebranding · Visual identity · Patterns · Print · Social media' },
+    role: { es: 'Rebranding · Identidad visual · Patrones · Piezas gráficas · Motion', en: 'Rebranding · Visual identity · Patterns · Print · Motion' },
     tools: 'Illustrator · Photoshop',
   },
   intro: {
@@ -113,8 +113,8 @@ export const blackLounge: CaseContent = {
     { t: 'h', n: '02', es: 'Aplicaciones', en: 'Applications' },
     {
       t: 'p',
-      es: 'El sistema se lleva a afiches en los colores de la paleta, frascos para la línea de cuidado de pestañas, tote bags, stickers y las portadas de historias destacadas de Instagram, con íconos dibujados con el mismo pincel.',
-      en: 'The system carries over to posters in the palette colors, bottles for the lash care line, tote bags, stickers and the Instagram highlight covers, with icons drawn with the same brush.',
+      es: 'El sistema se lleva a afiches en los colores de la paleta, una campaña de fotos, frascos para la línea de cuidado de pestañas, tote bags y stickers.',
+      en: 'The system carries over to posters in the palette colors, a photo campaign, bottles for the lash care line, tote bags and stickers.',
     },
     {
       t: 'gallery',
@@ -164,6 +164,5 @@ export const blackLounge: CaseContent = {
         { src: `${P}/sticker.jpg`, alt: 'Sticker redondo con el logo de Black Lounge Studio' },
       ],
     },
-    { t: 'fig', src: `${P}/destacadas.jpg`, w: 'board', es: 'Portadas de historias destacadas para Instagram', en: 'Instagram highlight covers' },
   ],
 };
