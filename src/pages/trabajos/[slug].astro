@@ -428,7 +428,7 @@ const navItems = blocks.filter((b) => b.t === 'h') as { t: 'h'; n: string; es: s
               </figure>
             );
             case 'gallery': return (
-              <figure class={`c-figure k-fig k-gallery ${b.w === 'col' ? 'k-col' : 'k-grid'} ${b.r ? 'has-r' : ''}`}>
+              <figure class={`c-figure k-fig k-gallery ${b.w === 'grid' ? 'k-grid' : 'k-col'} ${b.r ? 'has-r' : ''}`}>
                 <div class="k-gal-grid" style={`--n:${b.items.length}${b.r ? `;--r:${b.r}` : ''}`}>
                   {b.items.map((it) => (
                     <div class="frame reveal">

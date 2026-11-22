@@ -13,7 +13,7 @@ export const blackLounge: CaseContent = {
   meta: {
     context: { es: 'Cliente · Estudio de belleza', en: 'Client · Beauty studio' },
     role: { es: 'Rebranding · Identidad visual · Patrones · Piezas gráficas · Motion', en: 'Rebranding · Visual identity · Patterns · Print · Motion' },
-    tools: 'Illustrator · Photoshop',
+    tools: 'Illustrator · Photoshop · After Effects · IA generativa',
   },
   intro: {
     es: 'Blak Lashes era un estudio de extensiones de pestañas que quería convertirse en algo más grande: un espacio de belleza y expresión personal. Hice el rebranding a Black Lounge Studio, una identidad de espíritu urbano —lettering a pincel, stickers y grafiti— pensada para destacarse en la calle y en Instagram.',

@@ -18,7 +18,7 @@ export type Block =
   | { t: 'fig'; src: string; es: string; en: string; w?: 'wide' | 'narrow' | 'board' }
   | { t: 'video'; src: string; es: string; en: string; poster?: string; sound?: boolean }
   | { t: 'clips'; es: string; en: string; items: { src: string; alt: string }[] }
-  | { t: 'gallery'; es: string; en: string; items: { src: string; alt: string }[]; w?: 'col'; r?: string }
+  | { t: 'gallery'; es: string; en: string; items: { src: string; alt: string }[]; w?: 'col' | 'grid'; r?: string }
   | { t: 'deck'; es: string; en: string; items: { src: string; alt: string; word: Bilingual }[] }
   | { t: 'split'; src: string; alt: string; es: string; en: string }
   | { t: 'break'; kind: 'img' | 'video'; src: string; alt: string; w?: 'wide' | 'narrow' }
