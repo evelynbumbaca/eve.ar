@@ -52,9 +52,10 @@ export const blackLounge: CaseContent = {
     },
     {
       t: 'brand',
-      es: 'Logo, monograma, color y tipografía',
-      en: 'Logo, monogram, color and typography',
+      es: 'Logo, logo horizontal, monograma, color y tipografía',
+      en: 'Logo, horizontal logo, monogram, color and typography',
       logo: `${P}/logo.png`,
+      logoH: `${P}/logo-horizontal.png`,
       icon: `${P}/icono.png`,
       iconPlain: true,
       fontCss: 'https://fonts.googleapis.com/css2?family=Anton&display=swap',
@@ -67,6 +68,7 @@ export const blackLounge: CaseContent = {
       ],
       labels: {
         logo: { es: 'Logo', en: 'Logo' },
+        logoH: { es: 'Logo horizontal', en: 'Horizontal logo' },
         icon: { es: 'Monograma', en: 'Monogram' },
         palette: { es: 'Paleta', en: 'Palette' },
         type: { es: 'Tipografía', en: 'Typography' },
@@ -79,18 +81,6 @@ export const blackLounge: CaseContent = {
           { es: 'Destacado', en: 'Highlight', size: 20, weight: 400 },
         ],
       },
-    },
-    {
-      t: 'gallery',
-      es: 'Logo horizontal, versiones de color y monograma',
-      en: 'Horizontal logo, color versions and monogram',
-      w: 'col',
-      items: [
-        { src: `${P}/logo-horizontal.jpg`, alt: 'Logo horizontal de Black Lounge Studio con patrón rosa, sobre fondo rosa' },
-        { src: `${P}/logo-crema.jpg`, alt: 'Logo de Black Lounge Studio en rosas sobre fondo crema' },
-        { src: `${P}/logo-negro.jpg`, alt: 'Logo de Black Lounge Studio en crema sobre fondo negro' },
-        { src: `${P}/monograma-rosa.jpg`, alt: 'Monograma BK sobre fondo rosa persa' },
-      ],
     },
     {
       t: 'p',

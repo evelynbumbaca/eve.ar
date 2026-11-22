@@ -392,6 +392,12 @@ const navItems = blocks.filter((b) => b.t === 'h') as { t: 'h'; n: string; es: s
                     <img src={link(`/${b.icon}`)} alt={`Ícono ${P.title}`} width="132" height="132" loading="lazy" decoding="async" />
                     <span class="lk-tag" data-es={b.labels.icon.es} data-en={b.labels.icon.en}>{b.labels.icon.es}</span>
                   </div>
+                  {b.logoH && (
+                    <div class="lk-b logoh rise">
+                      <img src={link(`/${b.logoH}`)} alt={`Logo horizontal ${P.title}`} loading="lazy" decoding="async" />
+                      {b.labels.logoH && <span class="lk-tag" data-es={b.labels.logoH.es} data-en={b.labels.logoH.en}>{b.labels.logoH.es}</span>}
+                    </div>
+                  )}
                   <div class={`lk-b palette rise ${b.swatches.length > 4 ? 'many' : ''}`}>
                     {b.swatches.map((sw) => (
                       <div class={`lk-band tone-${sw.tone}`} style={sw.bg ? `background:${sw.bg};color:${sw.fg ?? '#fff'}` : undefined}><span class="lk-cn" data-es={sw.name.es} data-en={sw.name.en}>{sw.name.es}</span><code class="lk-hex">{sw.hex}</code></div>
@@ -1131,6 +1137,9 @@ const navItems = blocks.filter((b) => b.t === 'h') as { t: 'h'; n: string; es: s
   .lk-b.logo { grid-column: span 8; background: var(--lk-cream, #fff9ed); border: 1px solid var(--k-line); display: grid; place-items: center; padding: clamp(32px, 5vw, 64px) clamp(24px, 4vw, 56px); }
   .lk-b.logo img { width: min(76%, 330px); height: auto; }
   .lk-b.logo .lk-tag { color: var(--ink-60); }
+  .lk-b.logoh { grid-column: span 12; min-height: clamp(180px, 18vw, 240px); background: var(--lk-cream, #fff9ed); border: 1px solid var(--k-line); display: grid; place-items: center; padding: clamp(28px, 4vw, 48px) clamp(24px, 4vw, 56px); }
+  .lk-b.logoh img { width: min(78%, 520px); height: auto; }
+  .lk-b.logoh .lk-tag { color: var(--ink-60); }
   .lk-b.icon { grid-column: span 4; background: transparent; border: 1.5px solid var(--lk-wine, #a82838); display: grid; place-items: center; padding: 32px; }
   .lk-b.icon img { width: clamp(96px, 11vw, 132px); height: auto; border-radius: 28px; box-shadow: 0 12px 26px rgba(31, 10, 14, 0.16); }
   .lk-b.icon .lk-tag { color: var(--ink-60); }

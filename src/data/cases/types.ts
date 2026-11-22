@@ -27,7 +27,7 @@ export type Block =
   | { t: 'steps'; es: string; en: string; items: Bilingual[] }
   | { t: 'fidelity'; es: string; en: string; logo: string; items: { kind: 'sketch' | 'wire' | 'mid' | 'hi'; shot?: string; title: Bilingual; text: Bilingual }[] }
   | { t: 'bars'; es: string; en: string; legend: { key: string; label: Bilingual }[]; items: { q: Bilingual; hot?: boolean; why?: Bilingual; parts: { key: string; pct: number }[] }[] }
-  | { t: 'brand'; es: string; en: string; logo: string; icon: string; iconPlain?: boolean; fontCss?: string; swatches: { name: Bilingual; tone: string; hex: string; bg?: string; fg?: string }[]; labels: { logo: Bilingual; icon: Bilingual; palette: Bilingual; type: Bilingual }; font: { name: string; specs: { es: string; en: string; size: number; weight: number }[] } }
+  | { t: 'brand'; es: string; en: string; logo: string; logoH?: string; icon: string; iconPlain?: boolean; fontCss?: string; swatches: { name: Bilingual; tone: string; hex: string; bg?: string; fg?: string }[]; labels: { logo: Bilingual; logoH?: Bilingual; icon: Bilingual; palette: Bilingual; type: Bilingual }; font: { name: string; specs: { es: string; en: string; size: number; weight: number }[] } }
   | { t: 'proto'; title: Bilingual; veil: Bilingual; hint: Bilingual; open: Bilingual; fallback: Bilingual; url: string }
   | { t: 'links'; items: { es: string; en: string; href: string }[] };
 
