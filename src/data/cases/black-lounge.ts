@@ -57,6 +57,14 @@ export const blackLounge: CaseContent = {
       logo: `${P}/logo.png`,
       logoH: `${P}/logo-horizontal.png`,
       icon: `${P}/icono.png`,
+      iconCycle: [
+        { src: `${P}/bk/original.png`, bg: '#FEFDF8', fg: 'rgba(29,29,29,.6)' },
+        { src: `${P}/bk/rosa-crema.png`, bg: '#1D1D1D', fg: 'rgba(254,253,248,.7)' },
+        { src: `${P}/bk/crema-negro.png`, bg: '#F33283', fg: 'rgba(254,253,248,.85)' },
+        { src: `${P}/bk/negro-rosa.png`, bg: '#FEFDF8', fg: 'rgba(29,29,29,.6)' },
+        { src: `${P}/bk/rosa-lavanda.png`, bg: '#1D1D1D', fg: 'rgba(254,253,248,.7)' },
+        { src: `${P}/bk/negro-crema.png`, bg: '#FF80B5', fg: 'rgba(29,29,29,.7)' },
+      ],
       iconPlain: true,
       fontCss: 'https://fonts.googleapis.com/css2?family=Anton&display=swap',
       swatches: [
