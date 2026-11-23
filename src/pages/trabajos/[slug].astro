@@ -430,10 +430,12 @@ const navItems = blocks.filter((b) => b.t === 'h') as { t: 'h'; n: string; es: s
               </figure>
             );
             case 'clips': return (
-              <figure class="c-figure k-fig k-gallery k-col k-clips">
-                <div class="k-gal-grid" style={`--n:${b.items.length}`}>
+              <figure class={`c-figure k-fig k-gallery k-col k-clips ${b.items.some((it) => it.r) ? 'mixed' : ''}`}>
+                <div class="k-gal-grid" style={b.items.some((it) => it.r)
+                  ? `grid-template-columns:${b.items.map((it) => { const [w, h] = (it.r || '16 / 9').split('/').map(Number); return `${(w / h).toFixed(4)}fr`; }).join(' ')}`
+                  : `--n:${b.items.length}`}>
                   {b.items.map((it) => (
-                    <div class="frame reveal">
+                    <div class="frame reveal" style={it.r ? `--r:${it.r}` : undefined}>
                       <video class="revfill" src={link(`/${it.src}`)} autoplay muted loop playsinline preload="metadata" aria-label={it.alt}></video>
                     </div>
                   ))}
@@ -1039,9 +1041,9 @@ const navItems = blocks.filter((b) => b.t === 'h') as { t: 'h'; n: string; es: s
   .k-bleed.k-gallery .frame { aspect-ratio: 1 / 1; }
   .k-gal-grid { display: grid; grid-template-columns: repeat(var(--n, 3), 1fr); gap: clamp(10px, 1.6vw, 22px); }
   .k-gallery.has-r .frame { aspect-ratio: var(--r); }
-  .k-clips .frame { aspect-ratio: 16 / 9 !important; overflow: hidden; }
+  .k-clips .frame { aspect-ratio: var(--r, 16 / 9) !important; overflow: hidden; }
   .k-clips .frame > video { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: var(--k-r, 16px); }
-  @media (max-width: 860px) { .k-clips .k-gal-grid { grid-template-columns: 1fr; } .k-clips .frame:last-child { grid-column: auto; } }
+  @media (max-width: 860px) { .k-clips:not(.mixed) .k-gal-grid { grid-template-columns: 1fr; } .k-clips .frame:last-child { grid-column: auto; } }
   .k-gallery .frame { aspect-ratio: 4 / 5; }
   .k-gallery .frame > img { height: 100%; object-fit: cover; }
   .k-split { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: clamp(24px, 4vw, 64px); align-items: center; margin-top: clamp(32px, 5vh, 56px); }

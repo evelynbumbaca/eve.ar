@@ -91,6 +91,15 @@ export const blackLounge: CaseContent = {
       },
     },
     {
+      t: 'clips',
+      es: 'Monograma animado · feed y stories',
+      en: 'Animated monogram · feed and stories',
+      items: [
+        { src: `${P}/bk-feed.mp4`, alt: 'Monograma BK pasando por las versiones de color, formato cuadrado', r: '1 / 1' },
+        { src: `${P}/bk-story.mp4`, alt: 'Monograma BK pasando por las versiones de color, formato vertical', r: '9 / 16' },
+      ],
+    },
+    {
       t: 'p',
       es: 'Los trazos del grafiti —coronas, corazones, flechas, signos— se vuelven patrones en negro y en rosas; un tercero junta los stickers de la marca. Visten fondos, packaging y publicaciones.',
       en: 'The graffiti strokes —crowns, hearts, arrows, symbols— become patterns in black and in pinks; a third one gathers the brand stickers. They dress backgrounds, packaging and posts.',

@@ -17,7 +17,7 @@ export type Block =
   | { t: 'finding'; found: { title: Bilingual; n: string; es: string; en: string }; changed: { title: Bilingual; items: { from: Bilingual; to: Bilingual }[] } }
   | { t: 'fig'; src: string; es: string; en: string; w?: 'wide' | 'narrow' | 'board' }
   | { t: 'video'; src: string; es: string; en: string; poster?: string; sound?: boolean }
-  | { t: 'clips'; es: string; en: string; items: { src: string; alt: string }[] }
+  | { t: 'clips'; es: string; en: string; items: { src: string; alt: string; r?: string }[] }
   | { t: 'gallery'; es: string; en: string; items: { src: string; alt: string }[]; w?: 'col' | 'grid'; r?: string }
   | { t: 'deck'; es: string; en: string; items: { src: string; alt: string; word: Bilingual }[] }
   | { t: 'split'; src: string; alt: string; es: string; en: string }
