@@ -325,15 +325,6 @@ export const planon: CaseContent = {
       ],
     },
     {
-      t: 'clips',
-      es: 'PLANON en uso · un plan para la tarde y una receta para el desayuno',
-      en: 'PLANON in use · a plan for the afternoon and a recipe for breakfast',
-      items: [
-        { src: `${P}/en-uso-plaza.mp4`, alt: 'Un chico en un banco de plaza mira el panel del Museo Malba en PLANON', r: '16 / 9' },
-        { src: `${P}/en-uso-cocina.mp4`, alt: 'Manos sosteniendo el celular con la receta de waffles de PLANON junto al desayuno', r: '16 / 9' },
-      ],
-    },
-    {
       t: 'p',
       es: 'La agenda muestra el pronóstico de cada día del mes, así elegís cuándo hacer cada plan. Desde ahí también podés sumar uno propio.',
       en: 'The calendar shows the forecast for every day of the month, so you can choose when to do each plan. You can also add your own from there.',
