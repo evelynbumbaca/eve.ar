@@ -60,6 +60,7 @@ export const planon: CaseContent = {
       ],
     },
     { t: 'video', src: `${P}/presentacion.mp4`, poster: `${P}/presentacion-poster.jpg`, sound: true, es: 'El logo: un interruptor que prende el plan', en: 'The logo: a switch that turns the plan on' },
+    { t: 'video', src: `${P}/promo.mp4`, poster: `${P}/promo-poster.jpg`, sound: true, es: 'Spot de PLANON', en: 'PLANON spot' },
     {
       t: 'deck',
       es: 'App en contexto',
