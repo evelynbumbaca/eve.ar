@@ -278,6 +278,7 @@ export const planon: CaseContent = {
     { t: 'fig', src: `${P}/ui-kit.jpg`, w: 'board', es: 'UI kit · cards de planes, plan musical y botones por categoría', en: 'UI kit · plan cards, music plan and category buttons' },
 
     /* ---------- 04 · Pantallas ---------- */
+    { t: 'break', kind: 'img', src: `${P}/en-casa.jpg`, alt: 'Una chica sentada en un puf verde junto a la ventana mira PLANON en el celular, con la tele apagada enfrente' },
     { t: 'h', n: '04', es: 'Pantallas', en: 'Screens' },
     {
       t: 'p',
@@ -324,6 +325,7 @@ export const planon: CaseContent = {
         { src: `${P}/panel-waffles.jpg`, alt: 'Panel de la receta de waffles con el botón Ver receta' },
       ],
     },
+    { t: 'video', src: `${P}/en-casa.mp4`, poster: `${P}/en-casa.jpg`, es: 'PLANON en uso · el plan de hoy: una peli en casa', en: 'PLANON in use · today’s plan: a movie at home' },
     {
       t: 'p',
       es: 'La agenda muestra el pronóstico de cada día del mes, así elegís cuándo hacer cada plan. Desde ahí también podés sumar uno propio.',
